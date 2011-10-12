@@ -6,7 +6,7 @@ Pirateplayer depends upon Qt4 and librtmp (part of Rtmpdump).
 
 Unix/Linux:
 
-1) Run 'qmake'.
+1) Run 'qmake' (optionally 'qmake PREFIX=yourdir' for custom prefix [default: /usr/local/]).
 2) Run 'make'.
 3) Optionally run 'make clean' to remove files created during compilation.
 4) Run 'make install' as root to install.
