@@ -39,6 +39,10 @@ unix {
     LIBS += -L/usr/lib/ -Wl,-Bstatic -lrtmp -Wl,-Bdynamic
     INCLUDEPATH += /usr/include
     DEPENDPATH += /usr/include
+
+    target.path = /usr/local/bin
+    target.files = pirateplayer
+    INSTALLS += target
 }
 
 #Statiiiskt
