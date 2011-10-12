@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QFile>
-#include <piratenetworkaccessmanager.h>
+#include "piratenetworkaccessmanager.h"
 
 namespace Ui {
     class MainWindow;

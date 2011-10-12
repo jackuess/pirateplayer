@@ -2,7 +2,7 @@
 #include <QNetworkRequest>
 
 #include "piratenetworkaccessmanager.h"
-#include <piratenetworkreply.h>
+#include "piratenetworkreply.h"
 
 PirateNetworkAccessManager::PirateNetworkAccessManager(QObject *parent) :
     QNetworkAccessManager(parent)
