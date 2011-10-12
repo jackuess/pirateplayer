@@ -1,0 +1,11 @@
+**********************
+* Build instructions *
+**********************
+
+Linux:
+
+1) Run 'qmake'.
+2) Run 'make'.
+3) Optionally run 'make clean' to remove files created during compilation.
+
+You should now have the executable "qtclient" and you're done!
