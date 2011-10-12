@@ -40,8 +40,13 @@ unix {
     INCLUDEPATH += /usr/include
     DEPENDPATH += /usr/include
 
-    target.path = /usr/local/bin
-    target.files = pirateplayer
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+    target.path = $$PREFIX/bin
+
+    #target.path = /usr/local/bin
+    #target.files = pirateplayer
     INSTALLS += target
 }
 
