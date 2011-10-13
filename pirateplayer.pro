@@ -51,6 +51,11 @@ unix {
     #target.files = pirateplayer
     INSTALLS += target
 }
+mac {
+    LIBS += -lrtmp
+    INCLUDEPATH += /usr/include
+    DEPENDPATH += /usr/include
+}
 
 #Statiiiskt
 #CONFIG += static
