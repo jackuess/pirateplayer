@@ -63,6 +63,7 @@ void MainWindow::on_pushButton_Download_clicked()
 
         ui->pushButton_Download->setEnabled(false);
         ui->comboBox_Stream->setEnabled(false);
+        ui->pushButton_Cancel->setEnabled(true);
     };
 }
 
@@ -121,4 +122,10 @@ void MainWindow::fetchFinished(QNetworkReply *reply) {
     ui->comboBox_Stream->setEnabled(true);
 
     disconnect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fetchFinished(QNetworkReply*)));
+}
+
+void MainWindow::on_pushButton_Cancel_clicked() {
+    networkReply->abort();
+    ui->pushButton_Cancel->setEnabled(false);
+    ui->pushButton_Fetch->setEnabled(true);
 }

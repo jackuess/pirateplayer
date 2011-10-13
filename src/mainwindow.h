@@ -20,6 +20,7 @@ public:
 private slots:
     void on_pushButton_Download_clicked();
     void on_pushButton_Fetch_clicked();
+    void on_pushButton_Cancel_clicked();
 
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void writeToFile();
