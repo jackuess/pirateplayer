@@ -51,7 +51,7 @@ void MainWindow::on_pushButton_Download_clicked()
         cmd.replace(QRegExp("-v |--live "), "live=");
         cmd.replace(QRegExp("-a |--app "), "app=");
         cmd.remove(QRegExp("-o -|--flv -"));
-        qDebug() << cmd;
+        //qDebug() << cmd;
         rtmpUrl += cmd;
         rtmpUrl.remove('"');
         qDebug() << rtmpUrl;
@@ -80,9 +80,7 @@ void MainWindow::ppDownloadFinished(QNetworkReply *reply) {
     reply->deleteLater();
     file.close();
 
-    ui->pushButton_Fetch->setEnabled(true);
-    ui->lineEdit_URL->setEnabled(true);
-    ui->comboBox_Stream->clear();
+    resetButtons();
 
     disconnect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(ppDownloadFinished(QNetworkReply*)));
 }
@@ -125,7 +123,15 @@ void MainWindow::fetchFinished(QNetworkReply *reply) {
 }
 
 void MainWindow::on_pushButton_Cancel_clicked() {
+    disconnect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(ppDownloadFinished(QNetworkReply*)));
     networkReply->abort();
+    resetButtons();
+}
+
+void MainWindow::resetButtons() {
     ui->pushButton_Cancel->setEnabled(false);
     ui->pushButton_Fetch->setEnabled(true);
+    ui->lineEdit_URL->setEnabled(true);
+    ui->comboBox_Stream->clear();
+    ui->lineEdit_URL->setFocus();
 }

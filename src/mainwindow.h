@@ -28,6 +28,8 @@ private slots:
     void fetchFinished(QNetworkReply * reply);
 
 private:
+    void resetButtons();
+
     Ui::MainWindow *ui;
     PirateNetworkAccessManager *networkAccessManager;
     QNetworkReply *networkReply;
