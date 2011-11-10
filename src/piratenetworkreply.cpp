@@ -59,7 +59,7 @@ void PirateNetworkReply::fillBuffer() {
 }
 
 bool PirateNetworkReply::isSequential() const {
-    return true;
+    return false;
 }
 
 qint64 PirateNetworkReply::readData(char *data, qint64 maxSize) {
@@ -74,7 +74,7 @@ qint64 PirateNetworkReply::readData(char *data, qint64 maxSize) {
 }
 
 qint64 PirateNetworkReply::bytesAvailable() const {
-    return bytesToRead - offset;// + QIODevice::bytesAvailable();
+    return bytesToRead - offset + QIODevice::bytesAvailable();
 }
 
 void PirateNetworkReply::abort() {

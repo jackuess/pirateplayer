@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += network
 QT       += xml
+QT       += phonon
 
 TARGET = pirateplayer
 TEMPLATE = app
@@ -15,11 +16,15 @@ TEMPLATE = app
 SOURCES += src/main.cpp\
     src/mainwindow.cpp \
     src/piratenetworkaccessmanager.cpp \
-    src/piratenetworkreply.cpp
+    src/piratenetworkreply.cpp \
+    src/downloadwidget.cpp \
+    src/piratevideoplayer.cpp
 
 HEADERS  += src/mainwindow.h \
     src/piratenetworkaccessmanager.h \
-    src/piratenetworkreply.h
+    src/piratenetworkreply.h \
+    src/downloadwidget.h \
+    src/piratevideoplayer.h
 
 FORMS    += src/mainwindow.ui
 
@@ -40,7 +45,7 @@ win32 {
     #QMAKE_LFLAGS += -static -static-libgcc
 }
 unix {
-    LIBS += -L/usr/lib/ -Wl,-Bstatic -lrtmp -Wl,-Bdynamic
+    LIBS += -L/usr/lib/ -lrtmp
     INCLUDEPATH += /usr/include
     DEPENDPATH += /usr/include
 
@@ -52,15 +57,19 @@ unix {
     INSTALLS += target
 }
 mac {
-    LIBS += -lrtmp
-    INCLUDEPATH += /usr/include
-    DEPENDPATH += /usr/include
+    LIBS += -L/usr/lib -L/opt/local/lib -lrtmp
+    INCLUDEPATH += /usr/include /opt/local/include
+    DEPENDPATH += /usr/include /opt/local/include
 }
 
 #Statiiiskt
 #CONFIG += static
 #QMAKE_LFLAGS += -static
 #QMAKE_LIBDIR_QT += /opt/qt-static/lib
+
+
+
+
 
 
 

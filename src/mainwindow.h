@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QFile>
 #include "piratenetworkaccessmanager.h"
+#include "downloadwidget.h"
+#include "piratevideoplayer.h"
 
 namespace Ui {
     class MainWindow;
@@ -20,20 +22,16 @@ public:
 private slots:
     void on_pushButton_Download_clicked();
     void on_pushButton_Fetch_clicked();
-    void on_pushButton_Cancel_clicked();
+    void on_pbPlay_clicked();
 
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void writeToFile();
-    void ppDownloadFinished(QNetworkReply * reply);
     void fetchFinished(QNetworkReply * reply);
+    void killDownloadWidget();
 
 private:
-    void resetButtons();
-
     Ui::MainWindow *ui;
     PirateNetworkAccessManager *networkAccessManager;
-    QNetworkReply *networkReply;
-    QFile file;
+    QString fetchUrl;
+    PirateVideoPlayer *videoPlayer;
 };
 
 #endif // MAINWINDOW_H

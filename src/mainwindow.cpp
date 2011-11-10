@@ -10,20 +10,26 @@
 #include <QMessageBox>
 #include <QtXml>
 #include <QDesktopServices>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    networkAccessManager = new PirateNetworkAccessManager(this);
+
     ui->setupUi(this);
 
-    networkAccessManager = new PirateNetworkAccessManager(this);
+    videoPlayer = new PirateVideoPlayer(ui->tabVideoPlayer, networkAccessManager);
+    ui->tabVideoPlayer->layout()->addWidget(videoPlayer);
 
     QRegExp rx("http://*");
     rx.setPatternSyntax(QRegExp::Wildcard);
     QClipboard *clipboard = QApplication::clipboard();
     if (rx.exactMatch(clipboard->text()))
         ui->lineEdit_URL->setText(clipboard->text());
+
+    //layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 MainWindow::~MainWindow()
@@ -32,106 +38,83 @@ MainWindow::~MainWindow()
     delete networkAccessManager;
 }
 
-void MainWindow::on_pushButton_Download_clicked()
-{
-    QString filePath = QFileDialog::getSaveFileName(this, "Spara videoström", QDesktopServices::storageLocation(QDesktopServices::HomeLocation), "Flashvideo (*.flv)");
-    if (filePath != "") {
-        //file = QFile(filePath);
-        file.setFileName(filePath);
-        file.open(QIODevice::WriteOnly);
-
-        QString cmd = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toString();
-        cmd.remove(0, 8);
-        QRegExp rxUrl(" (?:-r|--rtmp) ([^ ]+)");
-        rxUrl.indexIn(cmd);
-        cmd.remove(rxUrl);
-        QString rtmpUrl = rxUrl.cap(1);
-        cmd.replace(QRegExp("-W |--swfVfy "), "swfVfy=1 swfUrl=");
-        cmd.replace(QRegExp("-y |--playpath "), "playpath=");
-        cmd.replace(QRegExp("-v |--live "), "live=");
-        cmd.replace(QRegExp("-a |--app "), "app=");
-        cmd.remove(QRegExp("-o -|--flv -"));
-        //qDebug() << cmd;
-        rtmpUrl += cmd;
-        rtmpUrl.remove('"');
-        qDebug() << rtmpUrl;
-
-        networkReply = networkAccessManager->get(QNetworkRequest(QUrl(rtmpUrl)));
-        connect(networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
-        connect(networkReply, SIGNAL(readyRead()), this, SLOT(writeToFile()));
-        connect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(ppDownloadFinished(QNetworkReply*)));
-
-        ui->pushButton_Download->setEnabled(false);
-        ui->comboBox_Stream->setEnabled(false);
-        ui->pushButton_Cancel->setEnabled(true);
-    };
-}
-
-void MainWindow::downloadProgress(qint64 bytesReceived, qint64 bytesTotal) {
-    ui->progressBar->setValue((int)((double)bytesReceived/(double)bytesTotal*100.0));
-}
-
-void MainWindow::writeToFile() {
-    file.write(networkReply->read(networkReply->bytesAvailable()));
-}
-
-void MainWindow::ppDownloadFinished(QNetworkReply *reply) {
-    QMessageBox::information(this, "Nedladdning", "Nedladdning klar!");
-    reply->deleteLater();
-    file.close();
-
-    resetButtons();
-
-    disconnect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(ppDownloadFinished(QNetworkReply*)));
-}
-
 void MainWindow::on_pushButton_Fetch_clicked()
 {
+    fetchUrl = ui->lineEdit_URL->text();
     QUrl url("http://pirateplay.se/generate;application.xml");
-    QPair <QString , QString>pair;
-    pair.first = "url";
-    pair.second = ui->lineEdit_URL->text();
+    QPair <QString , QString>urlArg;
+    urlArg.first = "url";
+    urlArg.second = fetchUrl;
+    QPair <QString , QString>libRtmpArg;
+    libRtmpArg.first = "librtmp";
+    libRtmpArg.second = "1";
     QList<QPair<QString, QString> > query;
-    query.insert(0, pair);
+    query.insert(1, urlArg);
+    query.insert(0, libRtmpArg);
     url.setQueryItems(query);
     QNetworkRequest req;
     req.setUrl(url);
     req.setRawHeader("User-Agent", "Pirateplayer");
-    networkReply = networkAccessManager->get(req);
+    networkAccessManager->get(req);
     connect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fetchFinished(QNetworkReply*)));
-    connect(networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 
     ui->pushButton_Fetch->setEnabled(false);
     ui->lineEdit_URL->setEnabled(false);
 }
 
+void MainWindow::on_pushButton_Download_clicked()
+{
+    QString filePath = QFileDialog::getSaveFileName(this, "Spara videoström", QDesktopServices::storageLocation(QDesktopServices::HomeLocation), "Flashvideo (*.flv)");
+    if (filePath != "") {
+        QString url = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toString();
+
+        DownloadWidget *downloadWidget = new DownloadWidget(ui->tabDownloads, networkAccessManager);
+        connect(downloadWidget, SIGNAL(kill()), this, SLOT(killDownloadWidget()));
+        ui->tabDownloads->layout()->addWidget(downloadWidget);
+        downloadWidget->startDownload(url, filePath, fetchUrl);
+
+        ui->comboBox_Stream->clear();
+        ui->comboBox_Stream->setEnabled(false);
+        ui->pushButton_Download->setEnabled(false);
+        ui->pbPlay->setEnabled(false);
+    }
+}
+
+void MainWindow::on_pbPlay_clicked() {
+    videoPlayer->playUrl(ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toString());
+    ui->tabWidget->setCurrentIndex(1);
+}
+
+struct Stream {
+    QString title;
+    QString subtitles;
+    QString url;
+};
+
 void MainWindow::fetchFinished(QNetworkReply *reply) {
     QDomDocument ppReplyDoc;
     ppReplyDoc.setContent(reply->readAll());
     QDomNodeList nodeList = ppReplyDoc.elementsByTagName("cmd");
+    Stream stream;
     for(int i=0; i<nodeList.count(); i++) {
-        QStringList streamPair = nodeList.item(i).toElement().text().split("\n");
-        ui->comboBox_Stream->insertItem(i+1, streamPair[0], streamPair[1]);
+        if(nodeList.item(i).attributes().contains("quality"))
+            stream.title = nodeList.item(i).attributes().namedItem("quality").toAttr().value();
+        else
+            stream.title = QString("Ström %1").arg(i+1);
+        stream.url = nodeList.item(i).toElement().text();
+        ui->comboBox_Stream->insertItem(i+1, stream.title, stream.url);
     }
     reply->deleteLater();
 
-    ui->progressBar->setValue(0);
     ui->pushButton_Download->setEnabled(true);
+    ui->pbPlay->setEnabled(true);
     ui->comboBox_Stream->setEnabled(true);
+    ui->pushButton_Fetch->setEnabled(true);
+    ui->lineEdit_URL->setEnabled(true);
 
     disconnect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fetchFinished(QNetworkReply*)));
 }
 
-void MainWindow::on_pushButton_Cancel_clicked() {
-    disconnect(networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(ppDownloadFinished(QNetworkReply*)));
-    networkReply->abort();
-    resetButtons();
-}
-
-void MainWindow::resetButtons() {
-    ui->pushButton_Cancel->setEnabled(false);
-    ui->pushButton_Fetch->setEnabled(true);
-    ui->lineEdit_URL->setEnabled(true);
-    ui->comboBox_Stream->clear();
-    ui->lineEdit_URL->setFocus();
+void MainWindow::killDownloadWidget() {
+    delete QObject::sender();
 }
