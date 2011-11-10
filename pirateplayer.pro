@@ -37,9 +37,11 @@ UI_DIR = build/ui/
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/debug/ -lrtmp
 win32 {
     INCLUDEPATH += /usr/include
+    INCLUDEPATH += "C:/Users/chucky/include"
+    LIBS += -L"C:/Program Files/rtmpdump-git" -lrtmp -lws2_32
     #LIBS += -L/usr/i486-mingw32/bin/
-    LIBS += -L/home/chucky/src/rtmpdump-win-git/ -lrtmp
-    QMAKE_LFLAGS += -static-libstdc++ -static-libgcc
+    #LIBS += -L/home/chucky/src/rtmpdump-win-git/ -lrtmp
+    #QMAKE_LFLAGS += -static-libstdc++ -static-libgcc
     #LIBS += -L/home/chucky/src/rtmpdump/librtmp/ -Wl,-Bstatic -lrtmp -lssl -lcrypto -lz -lwinmm -lws2_32 -Wl,-Bdynamic
     #CONFIG += static
     #QMAKE_LFLAGS += -static -static-libgcc

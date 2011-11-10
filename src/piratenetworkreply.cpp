@@ -3,11 +3,35 @@
 
 #include "piratenetworkreply.h"
 
+int
+init_fitta()
+{
+#ifdef WIN32
+  WORD version;
+  WSADATA wsaData;
+
+  version = MAKEWORD(1, 1);
+  return (WSAStartup(version, &wsaData) == 0);
+#else
+  return TRUE;
+#endif
+}
+
+inline void
+cleanup_sockets()
+{
+#ifdef WIN32
+  WSACleanup();
+#endif
+}
+
 PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl) :
     QNetworkReply(parent)
 {
     toAbort = false;
     bytesReceived = 0;
+
+    init_fitta();
 
     buffer = new char[BUFFER_SIZE + 2];
     rtmp = RTMP_Alloc();
