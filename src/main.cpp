@@ -9,6 +9,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setApplicationName("Pirateplayer");
     a.setApplicationVersion("0.2");
+
+    QStringList libPaths = QCoreApplication::libraryPaths();
+    libPaths << QCoreApplication::applicationDirPath() + "/plugins";
+    QCoreApplication::setLibraryPaths(libPaths);
+
     MainWindow w;
     w.setWindowTitle(a.applicationName() + " v" + a.applicationVersion());
     w.show();
