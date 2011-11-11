@@ -15,7 +15,7 @@ class DownloadWidget : public QWidget
 public:
     explicit DownloadWidget(QWidget *parent = 0, QNetworkAccessManager *qnam = 0);
 
-    void startDownload(QString url, QString fileName, QString fetchUrl);
+    void startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl);
 
 signals:
     void kill();
@@ -25,12 +25,14 @@ private slots:
     void writeToFile();
     void on_killButtonClicked();
     void finished();
+    void subtitlesFinished();
 
 private:
     QProgressBar *progressBar;
     QPushButton *killButton;
     QNetworkAccessManager *networkAccessManager;
     QNetworkReply *networkReply;
+    QNetworkReply *subtitlesReply;
     QFile file;
 };
 

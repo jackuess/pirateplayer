@@ -30,7 +30,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     PirateNetworkAccessManager *networkAccessManager;
-    QString fetchUrl;
     PirateVideoPlayer *videoPlayer;
 };
 

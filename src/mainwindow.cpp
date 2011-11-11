@@ -40,11 +40,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_Fetch_clicked()
 {
-    fetchUrl = ui->lineEdit_URL->text();
     QUrl url("http://pirateplay.se/generate;application.xml");
     QPair <QString , QString>urlArg;
     urlArg.first = "url";
-    urlArg.second = fetchUrl;
+    urlArg.second = ui->lineEdit_URL->text();
     QPair <QString , QString>libRtmpArg;
     libRtmpArg.first = "librtmp";
     libRtmpArg.second = "1";
@@ -66,12 +65,13 @@ void MainWindow::on_pushButton_Download_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this, "Spara videoström", QDesktopServices::storageLocation(QDesktopServices::HomeLocation), "Flashvideo (*.flv)");
     if (filePath != "") {
-        QString url = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toString();
+        QHash<QString, QVariant> userData = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toHash();
 
         DownloadWidget *downloadWidget = new DownloadWidget(ui->tabDownloads, networkAccessManager);
         connect(downloadWidget, SIGNAL(kill()), this, SLOT(killDownloadWidget()));
-        ui->tabDownloads->layout()->addWidget(downloadWidget);
-        downloadWidget->startDownload(url, filePath, fetchUrl);
+        ((QVBoxLayout*)ui->tabDownloads->layout())->insertWidget(ui->tabDownloads->layout()->count()-1, downloadWidget);
+        downloadWidget->startDownload(userData["url"].toString(), userData.value("subtitles", "").toString(), filePath, userData["referer"].toString());
+
 
         ui->comboBox_Stream->clear();
         ui->comboBox_Stream->setEnabled(false);
@@ -81,28 +81,29 @@ void MainWindow::on_pushButton_Download_clicked()
 }
 
 void MainWindow::on_pbPlay_clicked() {
-    videoPlayer->playUrl(ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toString());
+    QHash<QString, QVariant> userData = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toHash();
+    videoPlayer->playUrl(userData["url"].toString());
     ui->tabWidget->setCurrentIndex(1);
 }
-
-struct Stream {
-    QString title;
-    QString subtitles;
-    QString url;
-};
 
 void MainWindow::fetchFinished(QNetworkReply *reply) {
     QDomDocument ppReplyDoc;
     ppReplyDoc.setContent(reply->readAll());
     QDomNodeList nodeList = ppReplyDoc.elementsByTagName("cmd");
-    Stream stream;
+    QString title;
+    QHash<QString, QVariant> userData;
     for(int i=0; i<nodeList.count(); i++) {
         if(nodeList.item(i).attributes().contains("quality"))
-            stream.title = nodeList.item(i).attributes().namedItem("quality").toAttr().value();
+            title = nodeList.item(i).attributes().namedItem("quality").toAttr().value();
         else
-            stream.title = QString("Ström %1").arg(i+1);
-        stream.url = nodeList.item(i).toElement().text();
-        ui->comboBox_Stream->insertItem(i+1, stream.title, stream.url);
+            title = QString("Ström %1").arg(i+1);
+
+        if(nodeList.item(i).attributes().contains("subtitles"))
+            userData["subtitles"] = nodeList.item(i).attributes().namedItem("subtitles").toAttr().value();
+        userData["url"] = nodeList.item(i).toElement().text();
+        userData["referer"] = reply->request().url().queryItemValue("url");
+
+        ui->comboBox_Stream->addItem(title, userData);
     }
     reply->deleteLater();
 

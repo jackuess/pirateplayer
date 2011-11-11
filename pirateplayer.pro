@@ -28,23 +28,17 @@ HEADERS  += src/mainwindow.h \
 
 FORMS    += src/mainwindow.ui
 
+RESOURCES += resources.qrc
+
 DESTDIR = build/target/
 OBJECTS_DIR = build/obj/
 MOC_DIR = build/moc/
 UI_DIR = build/ui/
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/release/ -lrtmp
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/debug/ -lrtmp
 win32 {
     INCLUDEPATH += /usr/include
     INCLUDEPATH += "C:/Users/chucky/include"
     LIBS += -L"C:/Program Files/rtmpdump-git" -lrtmp -lws2_32
-    #LIBS += -L/usr/i486-mingw32/bin/
-    #LIBS += -L/home/chucky/src/rtmpdump-win-git/ -lrtmp
-    #QMAKE_LFLAGS += -static-libstdc++ -static-libgcc
-    #LIBS += -L/home/chucky/src/rtmpdump/librtmp/ -Wl,-Bstatic -lrtmp -lssl -lcrypto -lz -lwinmm -lws2_32 -Wl,-Bdynamic
-    #CONFIG += static
-    #QMAKE_LFLAGS += -static -static-libgcc
 }
 unix {
     LIBS += -L/usr/lib/ -lrtmp
@@ -54,20 +48,11 @@ unix {
     isEmpty(PREFIX):PREFIX = /usr/local
     target.path = $$PREFIX/bin
 
-    #target.path = /usr/local/bin
-    #target.files = pirateplayer
     INSTALLS += target
 }
 mac {
-    LIBS += -L/usr/lib -L/opt/local/lib -lrtmp
-    INCLUDEPATH += /usr/include /opt/local/include
-    DEPENDPATH += /usr/include /opt/local/include
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
 }
-
-#Statiiiskt
-#CONFIG += static
-#QMAKE_LFLAGS += -static
-#QMAKE_LIBDIR_QT += /opt/qt-static/lib
 
 
 

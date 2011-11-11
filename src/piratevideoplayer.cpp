@@ -9,9 +9,9 @@ PirateVideoPlayer::PirateVideoPlayer(QWidget *parent, QNetworkAccessManager *qna
 
     //Set up UI
     controlPanel = new QWidget(this);
-    pbPause = new QPushButton(QIcon("/home/chucky/utveckling/phonon_test/High-contrast-media-playback-pause.svg"), "", controlPanel);
-    pbFullScreen = new QPushButton(QIcon("/home/chucky/utveckling/phonon_test/High-contrast-view-fullscreen.svg"), "", controlPanel);
-    pbVolumeControl = new QPushButton(QIcon("/home/chucky/utveckling/phonon_test/High-contrast-multimedia-volume-control.svg"), "", controlPanel);
+    pbPause = new QPushButton(QIcon(":/images/High-contrast-media-playback-pause.svg"), "", controlPanel);
+    pbFullScreen = new QPushButton(QIcon(":/images/High-contrast-view-fullscreen.svg"), "", controlPanel);
+    pbVolumeControl = new QPushButton(QIcon(":/images/High-contrast-multimedia-volume-control.svg"), "", controlPanel);
     pbPause->setCheckable(true);
     pbFullScreen->setCheckable(true);
     pbVolumeControl->setCheckable(true);

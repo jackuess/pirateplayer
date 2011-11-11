@@ -10,7 +10,7 @@ DownloadWidget::DownloadWidget(QWidget *parent, QNetworkAccessManager *qnam) :
     networkAccessManager = qnam;
 }
 
-void DownloadWidget::startDownload(QString url, QString fileName, QString fetchUrl) {
+void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl) {
     QGridLayout *layout = new QGridLayout(this);
     progressBar = new QProgressBar(this);
     killButton = new QPushButton("Avbryt", this);
@@ -28,6 +28,15 @@ void DownloadWidget::startDownload(QString url, QString fileName, QString fetchU
     connect(networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     connect(networkReply, SIGNAL(readyRead()), this, SLOT(writeToFile()));
     connect(networkReply, SIGNAL(finished()), this, SLOT(finished()));
+
+    if (subtitlesUrl != "") {
+        //Catch xml and tt extension
+        QString extension = subtitlesUrl.mid(subtitlesUrl.lastIndexOf('.'));
+        if (extension == ".xml" || extension == ".tt")
+            subtitlesUrl = "http://pirateplay.se/convertsub;default.srt?url=" + subtitlesUrl;
+        subtitlesReply = networkAccessManager->get(QNetworkRequest(QUrl(subtitlesUrl)));
+        connect(subtitlesReply, SIGNAL(finished()), this, SLOT(subtitlesFinished()));
+    }
 }
 
 void DownloadWidget::downloadProgress(qint64 bytesReceived, qint64 bytesTotal) {
@@ -45,4 +54,22 @@ void DownloadWidget::on_killButtonClicked() {
 void DownloadWidget::finished() {
     networkReply->deleteLater();
     killButton->setText("Stäng");
+}
+
+void DownloadWidget::subtitlesFinished() {
+    if (subtitlesReply->error() == QNetworkReply::NoError && subtitlesReply->size() > 0) {
+        QFile subsFile;
+        QString fileName = file.fileName().left(file.fileName().lastIndexOf('.'));
+        QString reqUrl = subtitlesReply->request().url().toString();
+
+        //Add extension
+        fileName += reqUrl.remove(0, reqUrl.lastIndexOf('.')).replace(QRegExp("(wsrt)|(xml)|(tt)"), "srt");
+
+        subsFile.setFileName(fileName);
+        subsFile.open(QIODevice::WriteOnly);
+        subsFile.write(subtitlesReply->readAll());
+        subtitlesReply->deleteLater();
+
+        layout()->addWidget(new QLabel("Undertext sparad till " + fileName));
+    }
 }
