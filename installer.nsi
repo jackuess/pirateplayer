@@ -30,6 +30,7 @@ Section "Pirateplayer (obligatorisk)"
   SetOutPath $INSTDIR
   File "build\target\pirateplayer.exe"
   File "build\target\*.dll"
+  File "LICENSE"
 
   SetOutPath $INSTDIR\phonon_backend
   File "build\target\phonon_backend\*.*"
@@ -77,6 +78,7 @@ Section "Uninstall"
   ; Remove files and uninstaller
   Delete $INSTDIR\pirateplayer.exe
   Delete $INSTDIR\uninstall.exe
+  Delete $INSTDIR\LICENSE
   Delete "$INSTDIR\*.dll"
   Delete "$INSTDIR\phonon_backend\*.*"
   Delete "$INSTDIR\plugins\*.*"
