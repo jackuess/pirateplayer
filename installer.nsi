@@ -91,5 +91,9 @@ Section "Uninstall"
   ; Remove directories used
   RMDir "$SMPROGRAMS\Pirateplayer"
   RMDir "$INSTDIR"
+  RMDir "$INSTDIR\phonon_backend"
+  RMDir "$INSTDIR\plugins"
+  RMDir "$INSTDIR\imageformats"
+  RMDir "$INSTDIR\iconengines"
 
 SectionEnd
