@@ -51,7 +51,7 @@ unix {
     INSTALLS += target
 }
 mac {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
+    #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     LIBS += -L/usr/local/lib
     INCLUDEPATH += /usr/local/include
     DEPENDPATH += /usr/local/include
