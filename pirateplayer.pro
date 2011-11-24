@@ -54,9 +54,9 @@ mac {
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     QT += opengl
-    LIBS += -L/usr/local/lib
-    INCLUDEPATH += /usr/local/include
-    DEPENDPATH += /usr/local/include
+    LIBS = -L/usr/local/lib -lrtmp
+    INCLUDEPATH = /usr/local/include
+    DEPENDPATH = /usr/local/include
 }
 
 
