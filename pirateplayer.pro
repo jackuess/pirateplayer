@@ -52,6 +52,7 @@ unix {
 }
 mac {
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
+    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     LIBS += -L/usr/local/lib
     INCLUDEPATH += /usr/local/include
     DEPENDPATH += /usr/local/include
