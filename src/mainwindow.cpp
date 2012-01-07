@@ -11,14 +11,20 @@
 #include <QtXml>
 #include <QDesktopServices>
 #include <QVBoxLayout>
+#include <QtWebKit>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    networkAccessManager = new PirateNetworkAccessManager(this);
+    //networkAccessManager = new PirateNetworkAccessManager(this);
+    networkAccessManager = new QNetworkAccessManager(this);
 
     ui->setupUi(this);
+
+    ui->browser->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    ui->browser->load(QUrl("http://wrutschkow.org:8080/playbrowser/browser.html"));
+    connect(ui->browser->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     videoPlayer = new PirateVideoPlayer(ui->tabVideoPlayer, networkAccessManager);
     ui->tabVideoPlayer->layout()->addWidget(videoPlayer);
@@ -38,6 +44,20 @@ MainWindow::~MainWindow()
     delete networkAccessManager;
 }
 
+void MainWindow::linkClicked(QUrl url) {
+    ui->lineEdit_URL->setText(url.toString());
+}
+
+void MainWindow::on_pushButton_Minimize_clicked(bool checked) {
+    if (checked) {
+        ui->browser->hide();
+        QApplication::processEvents();
+        adjustSize();
+    }
+    else
+        ui->browser->show();
+}
+
 void MainWindow::on_pushButton_Fetch_clicked()
 {
     QUrl url("http://pirateplay.se/generate;application.xml");
@@ -46,10 +66,14 @@ void MainWindow::on_pushButton_Fetch_clicked()
     urlArg.second = ui->lineEdit_URL->text();
     QPair <QString , QString>libRtmpArg;
     libRtmpArg.first = "librtmp";
-    libRtmpArg.second = "1";
+    libRtmpArg.second = "0";
+    QPair <QString , QString>metaArg;
+    libRtmpArg.first = "metaincmd";
+    libRtmpArg.second = "0";
     QList<QPair<QString, QString> > query;
-    query.insert(1, urlArg);
-    query.insert(0, libRtmpArg);
+    query.insert(2, urlArg);
+    query.insert(1, libRtmpArg);
+    query.insert(0, metaArg);
     url.setQueryItems(query);
     QNetworkRequest req;
     req.setUrl(url);
@@ -63,20 +87,39 @@ void MainWindow::on_pushButton_Fetch_clicked()
 
 void MainWindow::on_pushButton_Download_clicked()
 {
-    QString filePath = QFileDialog::getSaveFileName(this, "Spara videoström", QDesktopServices::storageLocation(QDesktopServices::HomeLocation), "Flashvideo (*.flv)");
+    QString filePath = QFileDialog::getSaveFileName(this, "Spara videoström", QDesktopServices::storageLocation(QDesktopServices::HomeLocation), "Flashvideo (*.flv)", 0, QFileDialog::DontConfirmOverwrite);
+
     if (filePath != "") {
-        QHash<QString, QVariant> userData = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toHash();
+        bool oldFile = QFile::exists(filePath);
+        bool resume = false;
+        QMessageBox msgBox;
+        QPushButton *overwriteButton = msgBox.addButton("Skriv över filen", QMessageBox::ActionRole);
+        QPushButton *resumeButton = msgBox.addButton("Försök återuppta avbruten nedladdning", QMessageBox::ActionRole);
+        QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
 
-        DownloadWidget *downloadWidget = new DownloadWidget(ui->tabDownloads, networkAccessManager);
-        connect(downloadWidget, SIGNAL(kill()), this, SLOT(killDownloadWidget()));
-        ((QVBoxLayout*)ui->tabDownloads->layout())->insertWidget(ui->tabDownloads->layout()->count()-1, downloadWidget);
-        downloadWidget->startDownload(userData["url"].toString(), userData.value("subtitles", "").toString(), filePath, userData["referer"].toString());
+        if (oldFile) {
+            msgBox.setText("Filen existerar redan. Vad vill du göra?");
+            msgBox.exec();
+            resume = msgBox.clickedButton() == resumeButton ? true : false;
+        }
 
+        if (!oldFile || msgBox.clickedButton() != abortButton) {
+            QHash<QString, QVariant> userData = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toHash();
 
-        ui->comboBox_Stream->clear();
-        ui->comboBox_Stream->setEnabled(false);
-        ui->pushButton_Download->setEnabled(false);
-        ui->pbPlay->setEnabled(false);
+            DownloadWidget *downloadWidget = new DownloadWidget(ui->tabDownloads, networkAccessManager);
+            connect(downloadWidget, SIGNAL(kill()), this, SLOT(killDownloadWidget()));
+            ((QVBoxLayout*)ui->tabDownloads->layout())->insertWidget(ui->tabDownloads->layout()->count()-1, downloadWidget);
+            downloadWidget->startDownload(userData["url"].toString(), userData.value("subtitles", "").toString(), filePath, userData["referer"].toString(), resume);
+
+            ui->comboBox_Stream->clear();
+            ui->comboBox_Stream->setEnabled(false);
+            ui->pushButton_Download->setEnabled(false);
+            ui->pbPlay->setEnabled(false);
+        }
+
+        delete overwriteButton;
+        delete resumeButton;
+        delete abortButton;
     }
 }
 

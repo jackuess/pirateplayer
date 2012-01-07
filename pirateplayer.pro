@@ -8,6 +8,7 @@ QT       += core gui
 QT       += network
 QT       += xml
 QT       += phonon
+QT       += webkit
 
 TARGET = pirateplayer
 TEMPLATE = app
@@ -15,16 +16,21 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
     src/mainwindow.cpp \
-    src/piratenetworkaccessmanager.cpp \
-    src/piratenetworkreply.cpp \
+#    src/piratenetworkaccessmanager.cpp \
+#    src/piratenetworkreply.cpp \
     src/downloadwidget.cpp \
-    src/piratevideoplayer.cpp
+    src/piratevideoplayer.cpp \
+    src/downloadhttp.cpp \
+    src/downloadrtmp.cpp
 
 HEADERS  += src/mainwindow.h \
-    src/piratenetworkaccessmanager.h \
-    src/piratenetworkreply.h \
+#    src/piratenetworkaccessmanager.h \
+#    src/piratenetworkreply.h \
     src/downloadwidget.h \
-    src/piratevideoplayer.h
+    src/piratevideoplayer.h \
+    src/download.h \
+    src/downloadhttp.h \
+    src/downloadrtmp.h
 
 FORMS    += src/mainwindow.ui
 
@@ -38,10 +44,10 @@ UI_DIR = build/ui/
 win32 {
     INCLUDEPATH += /usr/include
     INCLUDEPATH += "C:/Users/chucky/include"
-    LIBS += -L"C:/Program Files/rtmpdump-git" -lrtmp -lws2_32
+    LIBS += -L"C:/Program Files/rtmpdump-git" #-lrtmp -lws2_32
 }
 unix {
-    LIBS += -L/usr/lib/ -lrtmp
+    LIBS += -L/usr/lib/ #-lrtmp
     INCLUDEPATH += /usr/include
     DEPENDPATH += /usr/include
 
@@ -54,7 +60,7 @@ mac {
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     QT += opengl
-    LIBS += -L/usr/lib -L/usr/local/lib -lrtmp
+    LIBS += -L/usr/lib -L/usr/local/lib #-lrtmp
     INCLUDEPATH += /usr/local/include
     #LIBS += -L/usr/local/lib
     #INCLUDEPATH += /usr/local/include

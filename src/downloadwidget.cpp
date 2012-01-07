@@ -10,7 +10,11 @@ DownloadWidget::DownloadWidget(QWidget *parent, QNetworkAccessManager *qnam) :
     networkAccessManager = qnam;
 }
 
-void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl) {
+DownloadWidget::~DownloadWidget() {
+    delete downloader;
+}
+
+void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl, bool resume) {
     QGridLayout *layout = new QGridLayout(this);
     progressBar = new QProgressBar(this);
     killButton = new QPushButton("Avbryt", this);
@@ -21,13 +25,21 @@ void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fi
     connect(killButton, SIGNAL(clicked()), this, SLOT(on_killButtonClicked()));
     setLayout(layout);
 
-    file.setFileName(fileName);
+    /*file.setFileName(fileName);
     file.open(QIODevice::WriteOnly);
 
     networkReply = networkAccessManager->get(QNetworkRequest(QUrl(url)));
     connect(networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     connect(networkReply, SIGNAL(readyRead()), this, SLOT(writeToFile()));
-    connect(networkReply, SIGNAL(finished()), this, SLOT(finished()));
+    connect(networkReply, SIGNAL(finished()), this, SLOT(finished()));*/
+
+    if (url.startsWith("rtmpdump"))
+        downloader = new DownloadRtmp(this);
+    else
+        downloader = new DownloadHttp(this, networkAccessManager);
+    connect(downloader, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    connect(downloader, SIGNAL(finished()), this, SLOT(finished()));
+    downloader->downloadToFile(url, fileName, resume);
 
     if (subtitlesUrl != "") {
         //Catch xml and tt extension
@@ -52,18 +64,20 @@ void DownloadWidget::on_killButtonClicked() {
 }
 
 void DownloadWidget::finished() {
-    networkReply->deleteLater();
+    //networkReply->deleteLater();
+    progressBar->setValue(100);
     killButton->setText("Stäng");
 }
 
 void DownloadWidget::subtitlesFinished() {
     if (subtitlesReply->error() == QNetworkReply::NoError && subtitlesReply->size() > 0) {
         QFile subsFile;
-        QString fileName = file.fileName().left(file.fileName().lastIndexOf('.'));
+        //QString fileName = file.fileName().left(file.fileName().lastIndexOf('.'));
+        QString fileName = downloader->getFileName().left(downloader->getFileName().lastIndexOf('.'));
         QString reqUrl = subtitlesReply->request().url().toString();
 
         //Add extension
-        fileName += reqUrl.remove(0, reqUrl.lastIndexOf('.')).replace(QRegExp("(wsrt)|(xml)|(tt)"), "srt");
+        fileName += reqUrl.remove(0, reqUrl.lastIndexOf('.')).replace(QRegExp("(wsrt)|(xml)|(tt)$"), "srt").replace(QRegExp("smi\\?$"), ".smi");
 
         subsFile.setFileName(fileName);
         subsFile.open(QIODevice::WriteOnly);

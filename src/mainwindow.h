@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QFile>
-#include "piratenetworkaccessmanager.h"
+//#include "piratenetworkaccessmanager.h"
 #include "downloadwidget.h"
 #include "piratevideoplayer.h"
 
@@ -23,13 +23,16 @@ private slots:
     void on_pushButton_Download_clicked();
     void on_pushButton_Fetch_clicked();
     void on_pbPlay_clicked();
+    void on_pushButton_Minimize_clicked(bool checked = false);
 
     void fetchFinished(QNetworkReply * reply);
     void killDownloadWidget();
+    void linkClicked(QUrl url);
 
 private:
     Ui::MainWindow *ui;
-    PirateNetworkAccessManager *networkAccessManager;
+    //PirateNetworkAccessManager *networkAccessManager;
+    QNetworkAccessManager *networkAccessManager;
     PirateVideoPlayer *videoPlayer;
 };
 

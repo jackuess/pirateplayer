@@ -9,13 +9,17 @@
 #include <QtNetwork/QNetworkReply>
 #include <QFile>
 
+#include "downloadhttp.h"
+#include "downloadrtmp.h"
+
 class DownloadWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit DownloadWidget(QWidget *parent = 0, QNetworkAccessManager *qnam = 0);
+    ~DownloadWidget();
 
-    void startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl);
+    void startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl, bool resume = false);
 
 signals:
     void kill();
@@ -33,6 +37,7 @@ private:
     QNetworkAccessManager *networkAccessManager;
     QNetworkReply *networkReply;
     QNetworkReply *subtitlesReply;
+    Download *downloader;
     QFile file;
 };
 

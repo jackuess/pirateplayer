@@ -25,11 +25,15 @@
 #include <QLabel>
 #include <QIcon>
 
+#include "downloadhttp.h"
+#include "downloadrtmp.h"
+
 class PirateVideoPlayer : public QWidget
 {
     Q_OBJECT
 public:
     explicit PirateVideoPlayer(QWidget *parent = 0, QNetworkAccessManager *qnam = 0);
+    ~PirateVideoPlayer();
 
     void playUrl(QString url);
 
@@ -55,6 +59,7 @@ private:
     Phonon::MediaObject* media;
     Phonon::AudioOutput *audioOutput;
     QNetworkReply *reply;
+    Download *downloader;
 
     QString formatMs(qint64 ms);
 
