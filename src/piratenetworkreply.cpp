@@ -30,6 +30,7 @@ PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl) :
 {
     toAbort = false;
     bytesReceived = 0;
+    rtmpBufferTime = DEF_BUFTIME;
 
     init_fitta();
 
@@ -37,20 +38,34 @@ PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl) :
     rtmp = RTMP_Alloc();
     RTMP_Init(rtmp);
 
+    buffer2 = new ring_buffer;
+    buffer2->nUsedBytes = 0;
+    buffer2->offset = 0;
+
     QByteArray ba = rtmpUrl.toLocal8Bit();
     if (RTMP_SetupURL(rtmp, ba.data())) {
         RTMP_SetBufferMS(rtmp, rtmpBufferTime);
         if(RTMP_Connect(rtmp, NULL)) {
             if(RTMP_ConnectStream(rtmp, 0)) {
                 open(ReadOnly);
-                fillBuffer();
+                //fillBuffer();
+                rtmpSession = new RtmpSession(this, rtmp, buffer2);
+                connect(rtmpSession, SIGNAL(downloadProgress(qint64,qint64)), this, SIGNAL(downloadProgress(qint64,qint64)));
+                connect(rtmpSession, SIGNAL(readyRead()), this, SIGNAL(readyRead()));
+                connect(rtmpSession, SIGNAL(finished()), this, SIGNAL(finished()));
+                rtmpSession->start();
             }
         }
     }
 }
 
 PirateNetworkReply::~PirateNetworkReply() {
-    delete buffer;
+    delete[] buffer;
+    rtmpSession->abort();
+    rtmpSession->wait();
+    delete rtmpSession;
+    delete buffer2;
+    RTMP_Free(rtmp);
 }
 
 void PirateNetworkReply::fillBuffer() {
@@ -87,18 +102,42 @@ bool PirateNetworkReply::isSequential() const {
 }
 
 qint64 PirateNetworkReply::readData(char *data, qint64 maxSize) {
-    qint64 number = qMin(maxSize, bytesToRead - offset);
+    /*qint64 number = qMin(maxSize, bytesToRead - offset);
     memcpy(data, buffer + offset, number);
     offset += number;
 
     if (offset >= bytesToRead)
         fillBuffer();
 
+    return number;*/
+
+    buffer2->mutex.lock();
+    if (buffer2->nUsedBytes == 0)
+        buffer2->notEmpty.wait(&buffer2->mutex);
+    qint64 number = qMin(maxSize, buffer2->nUsedBytes);
+    buffer2->mutex.unlock();
+
+    if(buffer2->offset + number <= BUFFER_SIZE)
+        memcpy(data, buffer2->data+buffer2->offset, number);
+    else {
+        memcpy(data, buffer2->data+buffer2->offset, BUFFER_SIZE - buffer2->offset);
+        memcpy(data+BUFFER_SIZE-buffer2->offset, buffer2->data, number-(BUFFER_SIZE-buffer2->offset));
+    }
+
+    buffer2->mutex.lock();
+    buffer2->nUsedBytes -= number;
+    buffer2->offset =  (buffer2->offset+number) % BUFFER_SIZE;
+    //qDebug() << buffer2->offset;
+    buffer2->notFull.wakeAll();
+    buffer2->mutex.unlock();
+
     return number;
+    return 0;
 }
 
 qint64 PirateNetworkReply::bytesAvailable() const {
-    return bytesToRead - offset + QIODevice::bytesAvailable();
+    //return bytesToRead - offset + QIODevice::bytesAvailable();
+    return buffer2->nUsedBytes;
 }
 
 void PirateNetworkReply::abort() {

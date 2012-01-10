@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QFile>
-//#include "piratenetworkaccessmanager.h"
+#include "piratenetworkaccessmanager.h"
 #include "downloadwidget.h"
 #include "piratevideoplayer.h"
 
@@ -31,8 +31,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    //PirateNetworkAccessManager *networkAccessManager;
-    QNetworkAccessManager *networkAccessManager;
+    PirateNetworkAccessManager *networkAccessManager;
+    //QNetworkAccessManager *networkAccessManager;
     PirateVideoPlayer *videoPlayer;
 };
 

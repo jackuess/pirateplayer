@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    //networkAccessManager = new PirateNetworkAccessManager(this);
-    networkAccessManager = new QNetworkAccessManager(this);
+    networkAccessManager = new PirateNetworkAccessManager(this);
+    //networkAccessManager = new QNetworkAccessManager(this);
 
     ui->setupUi(this);
 
@@ -66,14 +66,14 @@ void MainWindow::on_pushButton_Fetch_clicked()
     urlArg.second = ui->lineEdit_URL->text();
     QPair <QString , QString>libRtmpArg;
     libRtmpArg.first = "librtmp";
-    libRtmpArg.second = "0";
+    libRtmpArg.second = "1";
     QPair <QString , QString>metaArg;
-    libRtmpArg.first = "metaincmd";
-    libRtmpArg.second = "0";
+    //libRtmpArg.first = "metaincmd";
+    //libRtmpArg.second = "0";
     QList<QPair<QString, QString> > query;
     query.insert(2, urlArg);
     query.insert(1, libRtmpArg);
-    query.insert(0, metaArg);
+    //query.insert(0, metaArg);
     url.setQueryItems(query);
     QNetworkRequest req;
     req.setUrl(url);

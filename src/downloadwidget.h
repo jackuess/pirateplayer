@@ -9,6 +9,10 @@
 #include <QtNetwork/QNetworkReply>
 #include <QFile>
 
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "downloadhttp.h"
 #include "downloadrtmp.h"
 
@@ -39,6 +43,8 @@ private:
     QNetworkReply *subtitlesReply;
     Download *downloader;
     QFile file;
+
+    int GetLastKeyframe(FILE * file, int nSkipKeyFrames, uint32_t * dSeek, char **initialFrame, int *initialFrameType, uint32_t * nInitialFrameSize);
 };
 
 #endif // DOWNLOADWIDGET_H
