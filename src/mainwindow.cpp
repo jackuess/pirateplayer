@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->browser->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    ui->browser->settings()->globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     ui->browser->load(QUrl("http://wrutschkow.org:8080/playbrowser/browser.html"));
     connect(ui->browser->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
