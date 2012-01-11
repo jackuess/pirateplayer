@@ -13,6 +13,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "downloadhttp.h"
+#include "downloadrtmp.h"
+
+#ifdef WIN32
+#define fseeko fseeko64
+#define ftello ftello64
+#endif
+
 class DownloadWidget : public QWidget
 {
     Q_OBJECT
