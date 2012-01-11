@@ -6,7 +6,6 @@ PirateVideoPlayer::PirateVideoPlayer(QWidget *parent, QNetworkAccessManager *qna
 {
     state = Phonon::StoppedState;
     networkAccess = qnam;
-    downloader = NULL;
 
     //Set up UI
     controlPanel = new QWidget(this);
@@ -85,28 +84,19 @@ PirateVideoPlayer::PirateVideoPlayer(QWidget *parent, QNetworkAccessManager *qna
 }
 
 PirateVideoPlayer::~PirateVideoPlayer() {
-    if (downloader != NULL)
-        delete downloader;
+    ;
 }
 
 void PirateVideoPlayer::playUrl(QString url) {
-    //reply = networkAccess->get(QNetworkRequest(QUrl(url)));
+    reply = networkAccess->get(QNetworkRequest(QUrl(url)));
 
     state = Phonon::LoadingState;
 
-    //connect(reply, SIGNAL(readyRead()), this, SLOT(read()));
-    //connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    connect(reply, SIGNAL(readyRead()), this, SLOT(read()));
+    connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 
     if(!tmpFile.open())
         qDebug() << "Kunde inte öppna den temporära filen.";
-
-    if (url.startsWith("rtmpdump"))
-        downloader = new DownloadRtmp(this);
-    else
-        downloader = new DownloadHttp(this, networkAccess);
-    connect(downloader, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
-    //connect(downloader, SIGNAL(finished()), this, SLOT(finished()));
-    downloader->downloadToFile(url, tmpFile.fileName());
 }
 
 void PirateVideoPlayer::mouseMoveEvent(QMouseEvent *event) {

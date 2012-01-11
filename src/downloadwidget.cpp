@@ -3,6 +3,10 @@
 #include <QDesktopServices>
 #include <QLabel>
 #include <QDebug>
+#include <QMessageBox>
+#include <QVariant>
+
+#include "piratenetworkreply.h"
 
 unsigned int
 AMF_DecodeInt24(const char *data)
@@ -30,12 +34,19 @@ DownloadWidget::DownloadWidget(QWidget *parent, QNetworkAccessManager *qnam) :
 }
 
 DownloadWidget::~DownloadWidget() {
-    delete downloader;
-    delete networkReply;
+    //delete downloader;
+    if (file.isOpen()) {
+        file.close();
+    }
 }
 
-void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl, bool resume) {
+void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fileName, QString fetchUrl) {
+    resumeSeek = 0;
+    QNetworkRequest req;
     QGridLayout *layout = new QGridLayout(this);
+    WriteMode mode = OverWrite;
+    RtmpResume resumeData = RtmpResume();
+
     progressBar = new QProgressBar(this);
     killButton = new QPushButton("Avbryt", this);
     QLabel *label = new QLabel(fetchUrl, this);
@@ -46,55 +57,69 @@ void DownloadWidget::startDownload(QString url, QString subtitlesUrl, QString fi
     setLayout(layout);
 
     FILE * pFile;
-    uint32_t dSeek;
-    char *initialFrame = 0;
-    int initialFrameType = 0;
-    uint32_t nInitialFrameSize;
-
-    QByteArray ba = fileName.toLocal8Bit();
-
-    pFile = fopen(ba.data(), "r+b");
-    if (pFile!=NULL) {
-        if (GetLastKeyframe(pFile, 0, &dSeek, &initialFrame, &initialFrameType, &nInitialFrameSize) == 0)
-            qDebug() << "Seek: " << dSeek;
-        else
-            qDebug() << "Kunde inte hitta någon keyframe!";
-        qDebug() << ftell(pFile);
-        fclose (pFile);
-        free(initialFrame);
-    }
 
     file.setFileName(fileName);
-    file.open(QIODevice::WriteOnly);
+    if (file.exists())
+        mode = queryFileExists();
 
-    //file.seek(1230261960);
+    switch (mode) {
+        case Resume:
+            if (url.startsWith("rtmp")) {
+                QVariant vResume;
+                QByteArray ba = fileName.toLocal8Bit();
+                pFile = fopen(ba.data(), "r+b");
+                if (pFile!=NULL) {
+                    if (!GetLastKeyframe(pFile, 0, &resumeData.dSeek, &resumeData.initialFrame, &resumeData.initialFrameType, &resumeData.nInitialFrameSize) == 0)
+                        resumeData.dSeek = 0;
+                    qDebug() << "Seek: " << resumeData.dSeek;
+                    uint32_t seek = ftell(pFile);
+                    fclose (pFile);
+                    //free(initialFrame);
+                    if (resumeData.dSeek > 0) {
+                        file.open(QIODevice::ReadWrite);
+                        file.seek(seek);
+                    }
+                    else
+                        file.open(QIODevice::WriteOnly);
+                }
+                vResume.setValue(resumeData);
+                req.setAttribute(QNetworkRequest::User, vResume);
+            }
+            else {
+                resumeSeek = file.size();
+                file.open(QIODevice::WriteOnly | QIODevice::Append);
+                req.setRawHeader("Range", "bytes=" + QByteArray::number(resumeSeek) + "-");
+            }
+            break;
 
-    //url = "rtmp://fl11.c91005.cdn.qbrick.com/91005/_definst_/kluster/20111218/2011-1218-WEBBAGENDA-mp4-c-v1.mp4 swfVfy=1 swfUrl=http://svtplay.se/flash/svtplayer-2011.18.swf";
-    networkReply = networkAccessManager->get(QNetworkRequest(QUrl(url)));
+        case OverWrite:
+            file.open(QIODevice::WriteOnly);
+            break;
+
+        case Abort:
+            emit kill();
+            return;
+    }
+
+    req.setUrl(QUrl(url));
+    networkReply = networkAccessManager->get(req);
     connect(networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     connect(networkReply, SIGNAL(readyRead()), this, SLOT(writeToFile()));
-    connect(networkReply, SIGNAL(finished()), this, SLOT(finished()));
+    connect(networkReply, SIGNAL(finished()), this, SLOT(replyFinished()));
+    connect(networkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
 
-    /*if (url.startsWith("rtmpdump"))
-        downloader = new DownloadRtmp(this);
-    else
-        downloader = new DownloadHttp(this, networkAccessManager);
-    connect(downloader, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
-    connect(downloader, SIGNAL(finished()), this, SLOT(finished()));
-    downloader->downloadToFile(url, fileName, resume);*/
-
-    /*if (subtitlesUrl != "") {
+    if (subtitlesUrl != "") {
         //Catch xml and tt extension
         QString extension = subtitlesUrl.mid(subtitlesUrl.lastIndexOf('.'));
         if (extension == ".xml" || extension == ".tt")
             subtitlesUrl = "http://pirateplay.se/convertsub;default.srt?url=" + subtitlesUrl;
         subtitlesReply = networkAccessManager->get(QNetworkRequest(QUrl(subtitlesUrl)));
         connect(subtitlesReply, SIGNAL(finished()), this, SLOT(subtitlesFinished()));
-    }*/
+    }
 }
 
 void DownloadWidget::downloadProgress(qint64 bytesReceived, qint64 bytesTotal) {
-    progressBar->setValue((int)((double)bytesReceived/(double)bytesTotal*100.0));
+    progressBar->setValue((resumeSeek+(int)((double)bytesReceived))/(double)bytesTotal*100.0);
 }
 
 void DownloadWidget::writeToFile() {
@@ -102,20 +127,29 @@ void DownloadWidget::writeToFile() {
 }
 
 void DownloadWidget::on_killButtonClicked() {
+    if(file.isOpen()) {
+        networkReply->abort();
+        delete networkReply;
+    }
     emit kill();
 }
 
-void DownloadWidget::finished() {
-    //networkReply->deleteLater();
+void DownloadWidget::replyFinished() {
+    networkReply->deleteLater();
+    file.close();
     progressBar->setValue(100);
+    killButton->setText("Stäng");
+}
+
+void DownloadWidget::replyError(QNetworkReply::NetworkError e) {
+    networkReply->deleteLater();
     killButton->setText("Stäng");
 }
 
 void DownloadWidget::subtitlesFinished() {
     if (subtitlesReply->error() == QNetworkReply::NoError && subtitlesReply->size() > 0) {
         QFile subsFile;
-        //QString fileName = file.fileName().left(file.fileName().lastIndexOf('.'));
-        QString fileName = downloader->getFileName().left(downloader->getFileName().lastIndexOf('.'));
+        QString fileName = file.fileName().left(file.fileName().lastIndexOf('.'));
         QString reqUrl = subtitlesReply->request().url().toString();
 
         //Add extension
@@ -128,6 +162,29 @@ void DownloadWidget::subtitlesFinished() {
 
         layout()->addWidget(new QLabel("Undertext sparad till " + fileName));
     }
+}
+
+DownloadWidget::WriteMode DownloadWidget::queryFileExists() {
+    QMessageBox msgBox;
+    QPushButton *bOverwrite = msgBox.addButton("Skriv över filen", QMessageBox::ActionRole);
+    QPushButton *bResume = msgBox.addButton("Försök återuppta avbruten nedladdning", QMessageBox::ActionRole);
+    QPushButton *bAbort = msgBox.addButton(QMessageBox::Abort);
+    WriteMode r;
+
+    msgBox.setText("Filen existerar redan. Vad vill du göra?");
+    msgBox.exec();
+    if (msgBox.clickedButton() == bOverwrite)
+        r = OverWrite;
+    else if (msgBox.clickedButton() == bResume)
+        r = Resume;
+    else
+        r = Abort;
+
+    delete bOverwrite;
+    delete bResume;
+    delete bAbort;
+
+    return r;
 }
 
 int DownloadWidget::GetLastKeyframe(FILE *file, int nSkipKeyFrames, uint32_t *dSeek, char **initialFrame, int *initialFrameType, uint32_t *nInitialFrameSize) {

@@ -12,12 +12,8 @@ PirateNetworkAccessManager::PirateNetworkAccessManager(QObject *parent) :
 QNetworkReply *PirateNetworkAccessManager::createRequest(Operation op,
                              const QNetworkRequest &request,
                              QIODevice *outgoingData) {
-    QString protocol = request.url().scheme();
-    protocol.truncate(4);
-    if(protocol == "rtmp") {
-        PirateNetworkReply *reply = new PirateNetworkReply(this, request.url().toString());
-        return reply;
-    }
+    if(request.url().scheme().startsWith("rtmp"))
+        return new PirateNetworkReply(this, request.url().toString(), request.attribute(QNetworkRequest::User).value<RtmpResume>());
     else
         return QNetworkAccessManager::createRequest(op, request, outgoingData);
 }

@@ -20,7 +20,6 @@ RtmpSession::~RtmpSession() {
 }
 
 void RtmpSession::run() {
-    const int READ_SIZE = 64 * 1024;
     int bufferSize = 0;
     size = 0;
     qint64 nRead = 0;
@@ -30,18 +29,14 @@ void RtmpSession::run() {
 
     do {
         buffer->mutex.lock();
-        if (buffer->nUsedBytes == READ_SIZE)
+        if (buffer->nUsedBytes == BUFFER_SIZE)
             buffer->notFull.wait(&buffer->mutex);
-        bufferSize = READ_SIZE - buffer->nUsedBytes;
+        bufferSize = BUFFER_SIZE - buffer->nUsedBytes;
         buffer->mutex.unlock();
 
         readBuffer = new char[bufferSize];
-        //qDebug() << "Buffer size: " << bufferSize;
-        //qDebug() << "Timestamp: " << rtmp->m_read.timestamp;
         nRead = RTMP_Read(rtmp, readBuffer, bufferSize);
         size += nRead;
-        //qDebug() << "Read bytes: " << nRead << "Size: " << size;
-        //qDebug() << "Offset: " << buffer->offset;
 
         int beginFreeBytes = (buffer->offset + buffer->nUsedBytes) % BUFFER_SIZE;
         int sizeFirstChunk = BUFFER_SIZE - beginFreeBytes;
@@ -62,10 +57,8 @@ void RtmpSession::run() {
         duration = RTMP_GetDuration(rtmp);
 
         // Make sure we claim to have enough buffer time!
-        //qDebug() << "Buffer Time: " << rtmpBufferTime << " duration: " << (uint32_t)(duration * 1000.0);
         if (rtmpBufferTime < (duration * 1000.0)) {
             rtmpBufferTime = (uint32_t) (duration * 1000.0) + 5000;   // extra 5sec to make sure we've got enough
-
             RTMP_SetBufferMS(rtmp, rtmpBufferTime);
             RTMP_UpdateBufferMS(rtmp);
         }
@@ -77,15 +70,12 @@ void RtmpSession::run() {
 
         if (RTMP_IsTimedout(rtmp)) {
             qDebug() << "Trying to reconnect";
-            /*RTMP_ReconnectStream(rtmp, rtmp->m_pauseStamp);
-            rtmp->m_read.flags |= RTMP_READ_RESUME;
-            rtmp->m_read.nResumeTS = rtmp->m_pauseStamp;
-            qDebug() << (bool) RTMP_IsConnected(rtmp);*/
             RTMP_ToggleStream(rtmp);
         }
     } while (!toAbort && nRead > -1 && RTMP_IsConnected(rtmp));
 
-    emit finished();
+    if (!toAbort)
+        emit finished();
 }
 
 void RtmpSession::abort() {

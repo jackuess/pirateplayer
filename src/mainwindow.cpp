@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     networkAccessManager = new PirateNetworkAccessManager(this);
-    //networkAccessManager = new QNetworkAccessManager(this);
 
     ui->setupUi(this);
 
@@ -91,36 +90,17 @@ void MainWindow::on_pushButton_Download_clicked()
     QString filePath = QFileDialog::getSaveFileName(this, "Spara videoström", QDesktopServices::storageLocation(QDesktopServices::HomeLocation), "Flashvideo (*.flv)", 0, QFileDialog::DontConfirmOverwrite);
 
     if (filePath != "") {
-        bool oldFile = QFile::exists(filePath);
-        bool resume = false;
-        QMessageBox msgBox;
-        QPushButton *overwriteButton = msgBox.addButton("Skriv över filen", QMessageBox::ActionRole);
-        QPushButton *resumeButton = msgBox.addButton("Försök återuppta avbruten nedladdning", QMessageBox::ActionRole);
-        QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+        QHash<QString, QVariant> userData = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toHash();
 
-        if (oldFile) {
-            msgBox.setText("Filen existerar redan. Vad vill du göra?");
-            msgBox.exec();
-            resume = msgBox.clickedButton() == resumeButton ? true : false;
-        }
+        DownloadWidget *downloadWidget = new DownloadWidget(ui->tabDownloads, networkAccessManager);
+        connect(downloadWidget, SIGNAL(kill()), this, SLOT(killDownloadWidget()));
+        ((QVBoxLayout*)ui->tabDownloads->layout())->insertWidget(ui->tabDownloads->layout()->count()-1, downloadWidget);
+        downloadWidget->startDownload(userData["url"].toString(), userData.value("subtitles", "").toString(), filePath, userData["referer"].toString());
 
-        if (!oldFile || msgBox.clickedButton() != abortButton) {
-            QHash<QString, QVariant> userData = ui->comboBox_Stream->itemData(ui->comboBox_Stream->currentIndex()).toHash();
-
-            DownloadWidget *downloadWidget = new DownloadWidget(ui->tabDownloads, networkAccessManager);
-            connect(downloadWidget, SIGNAL(kill()), this, SLOT(killDownloadWidget()));
-            ((QVBoxLayout*)ui->tabDownloads->layout())->insertWidget(ui->tabDownloads->layout()->count()-1, downloadWidget);
-            downloadWidget->startDownload(userData["url"].toString(), userData.value("subtitles", "").toString(), filePath, userData["referer"].toString(), resume);
-
-            ui->comboBox_Stream->clear();
-            ui->comboBox_Stream->setEnabled(false);
-            ui->pushButton_Download->setEnabled(false);
-            ui->pbPlay->setEnabled(false);
-        }
-
-        delete overwriteButton;
-        delete resumeButton;
-        delete abortButton;
+        ui->comboBox_Stream->clear();
+        ui->comboBox_Stream->setEnabled(false);
+        ui->pushButton_Download->setEnabled(false);
+        ui->pbPlay->setEnabled(false);
     }
 }
 

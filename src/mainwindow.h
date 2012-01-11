@@ -32,7 +32,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     PirateNetworkAccessManager *networkAccessManager;
-    //QNetworkAccessManager *networkAccessManager;
     PirateVideoPlayer *videoPlayer;
 };
 

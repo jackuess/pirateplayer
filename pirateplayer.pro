@@ -20,8 +20,6 @@ SOURCES += src/main.cpp\
     src/piratenetworkreply.cpp \
     src/downloadwidget.cpp \
     src/piratevideoplayer.cpp \
-    src/downloadhttp.cpp \
-    src/downloadrtmp.cpp \
     src/rtmpsession.cpp
 
 HEADERS  += src/mainwindow.h \
@@ -29,9 +27,6 @@ HEADERS  += src/mainwindow.h \
     src/piratenetworkreply.h \
     src/downloadwidget.h \
     src/piratevideoplayer.h \
-    src/download.h \
-    src/downloadhttp.h \
-    src/downloadrtmp.h \
     src/rtmpsession.h
 
 FORMS    += src/mainwindow.ui

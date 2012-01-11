@@ -11,11 +11,22 @@
 #include <ws2tcpip.h>
 #endif
 
+struct RtmpResume {
+    int initialFrameType;
+    uint32_t dSeek;
+    char *metaHeader;
+    char *initialFrame;
+    uint32_t nMetaHeaderSize;
+    uint32_t nInitialFrameSize;
+    RtmpResume() : initialFrameType(0), dSeek(0), metaHeader(0), initialFrame(0), nMetaHeaderSize(0), nInitialFrameSize(0) {}
+};
+Q_DECLARE_METATYPE(RtmpResume)
+
 class PirateNetworkReply : public QNetworkReply
 {
     Q_OBJECT
 public:
-    PirateNetworkReply(QObject *parent = 0, QString rtmpUrl = "");
+    PirateNetworkReply(QObject *parent = 0, QString rtmpUrl = "", RtmpResume resumeData = RtmpResume());
     ~PirateNetworkReply();
 
     qint64 bytesAvailable() const;
@@ -26,17 +37,10 @@ protected:
     qint64 readData(char *data, qint64 maxSize);
 
 private:
-    void fillBuffer();
-
     RtmpSession *rtmpSession;
     RTMP * rtmp;
-    ring_buffer *buffer2;
+    ring_buffer *buffer;
     uint32_t rtmpBufferTime;
-    char * buffer;
-    qint64 offset;
-    qint64 bytesToRead;
-    qint64 bytesReceived;
-    bool toAbort;
 };
 
 #endif // PIRATENETWORKREPLY_H
