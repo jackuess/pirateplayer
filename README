@@ -19,3 +19,10 @@ Unix/Linux:
 4) Run 'make install' as root to install.
 
 ..and you're done! To uninstall: run 'make uninstall' as root.
+
+OS X:
+
+1) Follow steps one and two from Unix/Linux instructions.
+2) Run 'cd build/target'
+2) Run 'macdeployqt -dmg pirateplayer.app'
+3) You now have an Apple disk image, "pirateplayer.dmg" to install!
