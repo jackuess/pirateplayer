@@ -12,12 +12,15 @@
 #include <QDesktopServices>
 #include <QVBoxLayout>
 #include <QtWebKit>
+#include <qglobal.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     networkAccessManager = new PirateNetworkAccessManager(this);
+
+    setWindowIcon(QIcon(":/data/16x16/pirateplayer.png"));
 
     ui->setupUi(this);
 

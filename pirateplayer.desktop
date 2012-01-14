@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pirateplayer
+Comment=Qt-based utility for watching and downloading swedish broadcasting
+TryExec=pirateplayer
+Exec=pirateplayer %F
+Icon=pirateplayer

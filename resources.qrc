@@ -1,7 +1,8 @@
-<!DOCTYPE RCC><RCC version="1.0">
- <qresource>
-     <file>images/High-contrast-media-playback-pause.svg</file>
-     <file>images/High-contrast-multimedia-volume-control.svg</file>
-     <file>images/High-contrast-view-fullscreen.svg</file>
- </qresource>
- </RCC>
+<RCC>
+    <qresource prefix="/">
+        <file>images/High-contrast-media-playback-pause.svg</file>
+        <file>images/High-contrast-multimedia-volume-control.svg</file>
+        <file>images/High-contrast-view-fullscreen.svg</file>
+        <file>data/16x16/pirateplayer.png</file>
+    </qresource>
+</RCC>
