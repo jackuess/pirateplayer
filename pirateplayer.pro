@@ -60,7 +60,7 @@ unix {
         icon16 \
         icon32 \
         icon48 \
-        #icon64 \
+        icon64 \
         icon128 \
         icon256 \
         icon512
@@ -76,8 +76,8 @@ unix {
     icon32.files += data/32x32/pirateplayer.png
     icon48.path = $$DATADIR/icons/hicolor/48x48/apps
     icon48.files += data/48x48/pirateplayer.png
-    #icon64.path = $$DATADIR/icons/hicolor/64x64/apps
-    #icon64.files += data/64x64/pirateplayer.png
+    icon64.path = $$DATADIR/icons/hicolor/64x64/apps
+    icon64.files += data/64x64/pirateplayer.png
     icon128.path = $$DATADIR/icons/hicolor/128x128/apps
     icon128.files += data/128x128/pirateplayer.png
     icon256.path = $$DATADIR/icons/hicolor/256x256/apps
