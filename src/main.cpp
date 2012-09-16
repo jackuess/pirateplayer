@@ -1,29 +1,24 @@
-#include <QtGui/QApplication>
-#include <QTextCodec>
+#include <QApplication>
+#include <QLocale>
 #include <QTranslator>
 #include <QLibraryInfo>
-
-#include "mainwindow.h"
-
+#include "gui/mainwindow.h"
 
 int main(int argc, char *argv[])
 {
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     QApplication a(argc, argv);
-    a.setApplicationName("Pirateplayer");
-    a.setApplicationVersion("0.3.1");
+    a.setApplicationName("pirateplayer");
+    a.setApplicationVersion("0.4.0");
+    a.setOrganizationName("wrutschkow");
+    a.setOrganizationDomain("pirateplay.se");
 
     QTranslator qtTranslator;
     qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qtTranslator);
 
-    QStringList libPaths = QCoreApplication::libraryPaths();
-    libPaths << QCoreApplication::applicationDirPath() + "/plugins";
-    QCoreApplication::setLibraryPaths(libPaths);
-
     MainWindow w;
-    w.setWindowTitle(a.applicationName() + " v" + a.applicationVersion());
+    w.setWindowTitle("Pirateplayer v" + a.applicationVersion());
     w.show();
-
+    
     return a.exec();
 }
