@@ -16,8 +16,8 @@ DownloadListView::DownloadListView(QWidget *parent) :
     QVBoxLayout *buttonLayout = new QVBoxLayout();
     table = new QTableView(this);
     table->setGridStyle(Qt::NoPen);
-    table->setItemDelegateForColumn(2, new ProgressWidgetDelegate(this));
-    table->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+    table->setItemDelegate(new ProgressWidgetDelegate(this));
+    table->setColumnWidth(2, 200);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setSelectionMode(QAbstractItemView::SingleSelection);
 
