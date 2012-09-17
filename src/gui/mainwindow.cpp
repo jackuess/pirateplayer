@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     ui->webView->settings()->globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     ui->webView->settings()->setUserStyleSheetUrl(QUrl("data:text/css;charset=utf-8;base64,LnYwXzN7ZGlzcGxheTogbm9uZTt9")); // ".v0_3{display: none;}"
-    ui->webView->load(QUrl("http://pirateplay.se:8080/playbrowser/browser.html"));
+    ui->webView->load(QUrl("http://pirateplay.se/playbrowser/browser.html"));
 
     ui->groupMessages->setLayout(new QVBoxLayout());
 
