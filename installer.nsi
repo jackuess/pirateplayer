@@ -28,12 +28,12 @@ Section "Pirateplayer (obligatorisk)"
   SectionIn RO
   
   SetOutPath $INSTDIR
-  File "build\target\pirateplayer.exe"
+  File "build\target\*.exe"
   File "build\target\*.dll"
   File "LICENSE"
 
-  SetOutPath $INSTDIR\phonon_backend
-  File "build\target\phonon_backend\*.*"
+  #SetOutPath $INSTDIR\phonon_backend
+  #File "build\target\phonon_backend\*.*"
 
   SetOutPath $INSTDIR\plugins
   File "build\target\plugins\*.*"
@@ -76,11 +76,10 @@ Section "Uninstall"
   DeleteRegKey HKLM SOFTWARE\Pirateplayer
 
   ; Remove files and uninstaller
-  Delete $INSTDIR\pirateplayer.exe
-  Delete $INSTDIR\uninstall.exe
+  Delete $INSTDIR\*.exe
   Delete $INSTDIR\LICENSE
   Delete "$INSTDIR\*.dll"
-  Delete "$INSTDIR\phonon_backend\*.*"
+  #Delete "$INSTDIR\phonon_backend\*.*"
   Delete "$INSTDIR\plugins\*.*"
   Delete "$INSTDIR\imageformats\*.*"
   Delete "$INSTDIR\iconengines\*.*"
@@ -90,7 +89,7 @@ Section "Uninstall"
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\Pirateplayer"
-  RMDir "$INSTDIR\phonon_backend"
+  #RMDir "$INSTDIR\phonon_backend"
   RMDir "$INSTDIR\plugins"
   RMDir "$INSTDIR\imageformats"
   RMDir "$INSTDIR\iconengines"
