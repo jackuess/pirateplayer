@@ -12,7 +12,6 @@ FilePathEdit::FilePathEdit(QString dir, QWidget *parent) :
     QWidget(parent)
 {
     defaultDir = dir;
-
     layout = new QHBoxLayout(this);
     editPath = new QLineEdit(this);
     buttonBrowse = new QPushButton(QString::fromUtf8("Bläddra"), this);
@@ -23,11 +22,11 @@ FilePathEdit::FilePathEdit(QString dir, QWidget *parent) :
     layout->addWidget(editPath);
     layout->addWidget(buttonBrowse);
 
-    QTimer::singleShot(0, this, SLOT(setToHomeLocation()));
+    QTimer::singleShot(0, this, SLOT(setToDefault()));
 }
 
-FilePathEdit::~FilePathEdit() {
-    ;
+void FilePathEdit::setToDefault() {
+    editPath->setText(defaultDir);
 }
 
 QString FilePathEdit::filePath() {
@@ -54,13 +53,10 @@ void FilePathEdit::pathChanged(QString newPath) {
     emit pathValid(!info.isDir());
 }
 
-void FilePathEdit::setToHomeLocation() {
-    editPath->setText(QDesktopServices::storageLocation(QDesktopServices::HomeLocation) + QDir::separator());
-}
-
 void FilePathEdit::browse() {
     QString chosenFilter;
-    QString filePath = QFileDialog::getSaveFileName(this, "Spara fil", defaultDir, filter[0], &chosenFilter, QFileDialog::DontConfirmOverwrite);
+    QDir dir(editPath->text());
+    QString filePath = QFileDialog::getSaveFileName(this, "Spara fil", dir.path(), filter[0], &chosenFilter, QFileDialog::DontConfirmOverwrite);
     if (filePath != "")
         editPath->setText(filePath);
 }
@@ -75,5 +71,9 @@ void FilePathEdit::setDir(QString newDir) {
     QFileInfo info(editPath->text());
     if (!newDir.endsWith(QDir::separator()))
         newDir += QDir::separator();
-    editPath->setText(newDir + info.fileName());
+
+    if (info.isDir())
+        editPath->setText(newDir);
+    else
+        editPath->setText(newDir + info.fileName());
 }

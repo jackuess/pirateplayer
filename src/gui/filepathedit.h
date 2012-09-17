@@ -12,7 +12,6 @@ class FilePathEdit : public QWidget
     Q_OBJECT
 public:
     explicit FilePathEdit(QString dir = QDesktopServices::storageLocation(QDesktopServices::HomeLocation), QWidget *parent = 0);
-    ~FilePathEdit();
 
     QString filePath();
     void setFilePath(QString newFilePath);
@@ -41,7 +40,7 @@ private:
 
 private slots:
     void pathChanged(QString newPath);
-    void setToHomeLocation();
+    void setToDefault();
     void browse();
 };
 
