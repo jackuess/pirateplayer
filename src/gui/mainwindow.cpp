@@ -176,7 +176,7 @@ void MainWindow::tabChanged(int index) {
 }
 
 void MainWindow::readUserSettings() {
-    userSettings["player_cmd"] = settings.value("Location/player_cmd", "vlc --sub-file=\"%1\" \"%0\"");
+    userSettings["player_cmd"] = settings.value("Location/player_cmd", "ffplay \"%0\"");
     userSettings["start_dir"] = settings.value("Location/start_dir", QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
     ui->editPlayer->setText(userSettings["player_cmd"].toString());
     ui->editStartDir->setText(userSettings["start_dir"].toString());
