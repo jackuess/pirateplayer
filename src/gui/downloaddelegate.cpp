@@ -1,18 +1,20 @@
-#include "progresswidgetdelegate.h"
+#include "downloaddelegate.h"
 #include "../models/downloadlistmodel.h"
 
 #include <QApplication>
 
-ProgressWidgetDelegate::ProgressWidgetDelegate(QObject *parent) :
+DownloadDelegate::DownloadDelegate(QObject *parent) :
     QStyledItemDelegate(parent)
 {
 }
 
-void ProgressWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
-    if (index.column() == DownloadListModel::ProgressColumn) {
-        int progress = index.data().toInt();
+void DownloadDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+    QStyleOptionProgressBar progressBarOption;
+    int progress;
 
-        QStyleOptionProgressBar progressBarOption;
+    switch (index.column()) {
+    case DownloadListModel::ProgressColumn:
+        progress = index.data().toInt();
         progressBarOption.rect = option.rect;
         progressBarOption.minimum = 0;
         progressBarOption.maximum = 100;
@@ -22,7 +24,9 @@ void ProgressWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 
         QApplication::style()->drawControl(QStyle::CE_ProgressBar,
                                            &progressBarOption, painter);
-    }
-    else
+        return;
+
+    default:
         QStyledItemDelegate::paint(painter, option, index);
+    }
 }

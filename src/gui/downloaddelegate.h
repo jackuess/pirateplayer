@@ -1,13 +1,13 @@
-#ifndef PROGRESSWIDGETDELEGATE_H
-#define PROGRESSWIDGETDELEGATE_H
+#ifndef DOWNLOADDELEGATE_H
+#define DOWNLOADDELEGATE_H
 
 #include <QStyledItemDelegate>
 
-class ProgressWidgetDelegate : public QStyledItemDelegate
+class DownloadDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit ProgressWidgetDelegate(QObject *parent = 0);
+    explicit DownloadDelegate(QObject *parent = 0);
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     
@@ -17,4 +17,4 @@ public slots:
     
 };
 
-#endif // PROGRESSWIDGETDELEGATE_H
+#endif // DOWNLOADDELEGATE_H

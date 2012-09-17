@@ -1,19 +1,19 @@
-#ifndef DOWNLOADLISTVIEW_H
-#define DOWNLOADLISTVIEW_H
+#ifndef DOWNLOADTABLEWIDGET_H
+#define DOWNLOADTABLEWIDGET_H
 
 #include "../models/downloadlistmodel.h"
-#include "progresswidgetdelegate.h"
+#include "downloaddelegate.h"
 
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
 #include <QTableView>
 
-class DownloadListView : public QWidget
+class DownloadTableWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DownloadListView(QWidget *parent = 0);
+    explicit DownloadTableWidget(QWidget *parent = 0);
 
     void setModel(DownloadListModel *m);
     
@@ -45,4 +45,4 @@ private slots:
     void removeCurrentFromDisk();
 };
 
-#endif // DOWNLOADLISTVIEW_H
+#endif // DOWNLOADTABLEWIDGET_H

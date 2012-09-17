@@ -39,6 +39,7 @@ class DownloadListModel : public QAbstractTableModel
 
     static QStringList headers;
     static QStringList statusText;
+    static int statusColor[5];
 
 private slots:
     void onProgress();

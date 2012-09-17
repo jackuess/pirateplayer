@@ -50,7 +50,7 @@ private slots:
     void adressTabChanged(int index);
     void tabChanged(int index);
     void linkClicked(QUrl url);
-    void fetchClicked();
+    void fetch();
     void enableTwitterButtons(int currentIndex);
     void openCurrentTweet();
     void resetUserSettings();

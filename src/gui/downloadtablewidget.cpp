@@ -1,5 +1,4 @@
-#include "downloadlistview.h"
-#include "progresswidgetdelegate.h"
+#include "downloadtablewidget.h"
 #include "../network/abstractdownload.h"
 
 #include <QVBoxLayout>
@@ -9,14 +8,14 @@
 #include <QDesktopServices>
 #include <QFile>
 
-DownloadListView::DownloadListView(QWidget *parent) :
+DownloadTableWidget::DownloadTableWidget(QWidget *parent) :
     QWidget(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     QVBoxLayout *buttonLayout = new QVBoxLayout();
     table = new QTableView(this);
     table->setGridStyle(Qt::NoPen);
-    table->setItemDelegate(new ProgressWidgetDelegate(this));
+    table->setItemDelegate(new DownloadDelegate(this));
     //table->setColumnWidth(2, 200);
     table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -45,7 +44,7 @@ DownloadListView::DownloadListView(QWidget *parent) :
     selectionModel = 0;
 }
 
-void DownloadListView::setModel(DownloadListModel *m) {
+void DownloadTableWidget::setModel(DownloadListModel *m) {
     model = m;
     table->setModel(model);
     if (selectionModel != 0)
@@ -57,53 +56,53 @@ void DownloadListView::setModel(DownloadListModel *m) {
     connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(selectionChanged(QItemSelection,QItemSelection)));
 }
 
-int DownloadListView::currentRow() {
+int DownloadTableWidget::currentRow() {
     return selectionModel->currentIndex().row();
 }
 
-QModelIndex DownloadListView::currentStatusIndex() {
+QModelIndex DownloadTableWidget::currentStatusIndex() {
     return model->index(currentRow(), DownloadListModel::StatusColumn);
 }
 
-bool DownloadListView::currentIsDownloading() {
+bool DownloadTableWidget::currentIsDownloading() {
     return model->data(currentStatusIndex(), Qt::UserRole).toInt() == AbstractDownload::Downloading;
 }
 
-void DownloadListView::enableButtons(bool enabled) {
+void DownloadTableWidget::enableButtons(bool enabled) {
     removeButton->setEnabled(enabled);
     removeFromDiskButton->setEnabled(enabled);
     openButton->setEnabled(enabled);
 }
 
-void DownloadListView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight) {
+void DownloadTableWidget::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight) {
     QItemSelection range = QItemSelection(topLeft, bottomRight);
     if (range.contains(currentStatusIndex()))
         abortButton->setEnabled(currentIsDownloading());
 }
 
-void DownloadListView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+void DownloadTableWidget::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     bool anythingSelected = selected.count() > 0;
 
     enableButtons(anythingSelected);
     abortButton->setEnabled(anythingSelected && currentIsDownloading());
 }
 
-void DownloadListView::openCurrentFile() {
+void DownloadTableWidget::openCurrentFile() {
     QString fileName = model->data(model->index(currentRow(), DownloadListModel::FileNameColumn), Qt::DisplayRole).toString();
     QDesktopServices::openUrl(QUrl("file://" + fileName));
 }
 
-void DownloadListView::abortCurrent() {
+void DownloadTableWidget::abortCurrent() {
     model->abortDownload(currentRow());
 }
 
-void DownloadListView::removeCurrent() {
+void DownloadTableWidget::removeCurrent() {
     if (currentIsDownloading())
         abortCurrent();
     model->removeRow(currentRow());
 }
 
-void DownloadListView::removeCurrentFromDisk() {
+void DownloadTableWidget::removeCurrentFromDisk() {
     QString path = model->data(model->index(currentRow(), DownloadListModel::FileNameColumn), Qt::DisplayRole).toString();
     removeCurrent();
     QFile::remove(path);

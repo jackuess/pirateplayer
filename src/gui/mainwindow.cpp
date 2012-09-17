@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "downloadlistview.h"
+#include "downloadtablewidget.h"
 #include "../network/download.h"
 #include "../network/systemdownload.h"
 #include "savestreamdialog.h"
@@ -32,15 +32,16 @@ MainWindow::MainWindow(QWidget *parent) :
     if (clip.startsWith("http"))
         ui->editAdress->setText(clip);
 
-    connect(ui->buttonFetch, SIGNAL(clicked()), this, SLOT(fetchClicked()));
+    connect(ui->buttonFetch, SIGNAL(clicked()), this, SLOT(fetch()));
+    connect(ui->editAdress, SIGNAL(returnPressed()), this, SLOT(fetch()));
     connect(ui->adressTabWidget, SIGNAL(currentChanged(int)), this, SLOT(adressTabChanged(int)));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
     connect(ui->webView, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
     connect(ui->buttonResetSettings, SIGNAL(clicked()), this, SLOT(resetUserSettings()));
 
-    DownloadListView *downloadList = new DownloadListView(this);
-    downloadList->setModel(downloadStack);
-    ui->groupDownloads->layout()->addWidget(downloadList);
+    DownloadTableWidget *downloadTable = new DownloadTableWidget(this);
+    downloadTable->setModel(downloadStack);
+    ui->groupDownloads->layout()->addWidget(downloadTable);
 
     ui->webView->hide();
     ui->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -128,7 +129,7 @@ void MainWindow::adressTabChanged(int index) {
         ui->webView->show();
 }
 
-void MainWindow::fetchClicked() {
+void MainWindow::fetch() {
     getStreams(ui->editAdress->text());
 }
 

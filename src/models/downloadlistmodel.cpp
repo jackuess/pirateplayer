@@ -5,9 +5,11 @@
 #include <QStringList>
 #include <QDebug>
 #include <QtAlgorithms>
+#include <QColor>
 
 QStringList DownloadListModel::headers = QStringList() << "Status" << "Filnamn" << QString::fromUtf8("Förlopp");
 QStringList DownloadListModel::statusText = QStringList() << "Inte startad" << "Laddar ned" << QString::fromUtf8("Färdig") << "Fel uppstod" << "Avbruten";
+int DownloadListModel::statusColor[5] = {Qt::black, Qt::darkBlue, Qt::darkGreen, Qt::red, Qt::darkRed};
 
 DownloadListModel::DownloadListModel(QObject *parent, QNetworkAccessManager *n)
     : QAbstractTableModel(parent) {
@@ -27,15 +29,15 @@ int DownloadListModel::columnCount(const QModelIndex &parent) const {
 }
 
 QVariant DownloadListModel::data(const QModelIndex &index, int role) const {
+    AbstractDownload *item = downloads[index.row()];
+
     if (!index.isValid())
         return QVariant();
 
-    AbstractDownload *item = downloads[index.row()];
-
-    if (role == Qt::UserRole && index.column() == 0) {
+    if (role == Qt::UserRole && index.column() == 0)
         return QVariant(item->getStatus());
-    }
-    else if (role == Qt::DisplayRole) {
+
+    if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case StatusColumn:
             return QVariant(DownloadListModel::statusText[item->getStatus()]);
@@ -45,8 +47,11 @@ QVariant DownloadListModel::data(const QModelIndex &index, int role) const {
             return QVariant(item->getProgress());
         }
     }
-    else
-        return QVariant();
+
+    if (role == Qt::ForegroundRole && index.column() == 0)
+        return QColor((Qt::GlobalColor)statusColor[item->getStatus()]);
+
+    return QVariant();
 }
 
 QVariant DownloadListModel::headerData(int section, Qt::Orientation orientation, int role) const {
