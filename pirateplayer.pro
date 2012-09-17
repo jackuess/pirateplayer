@@ -17,7 +17,7 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
     src/gui/mainwindow.cpp \
-    src/gui/progresswidgetdelegate.cpp \
+    src/gui/downloaddelegate.cpp \
     src/gui/savestreamdialog.cpp \
     src/gui/filepathedit.cpp \
     src/network/download.cpp \
@@ -28,10 +28,10 @@ SOURCES += src/main.cpp\
     src/models/downloadlistmodel.cpp \
     src/models/twitterfeedmodel.cpp \
     src/models/streamtablemodel.cpp \
-    src/gui/downloadlistview.cpp
+    src/gui/downloadtablewidget.cpp
 
 HEADERS  += src/gui/mainwindow.h \
-    src/gui/progresswidgetdelegate.h \
+    src/gui/downloaddelegate.h \
     src/gui/savestreamdialog.h \
     src/gui/filepathedit.h \
     src/network/abstractdownload.h \
@@ -43,7 +43,7 @@ HEADERS  += src/gui/mainwindow.h \
     src/models/downloadlistmodel.h \
     src/models/twitterfeedmodel.h \
     src/models/streamtablemodel.h \
-    src/gui/downloadlistview.h
+    src/gui/downloadtablewidget.h
 
 FORMS    += src/gui/mainwindow.ui
 
