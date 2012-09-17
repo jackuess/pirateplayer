@@ -28,15 +28,17 @@ Section "Pirateplayer (obligatorisk)"
   SectionIn RO
   
   SetOutPath $INSTDIR
-  File "build\target\*.exe"
+  File "build\target\pirateplayer.exe"
+  File "build\target\ffmpeg.exe"
+  File "build\target\ffplay.exe"
   File "build\target\*.dll"
   File "LICENSE"
 
   #SetOutPath $INSTDIR\phonon_backend
   #File "build\target\phonon_backend\*.*"
 
-  SetOutPath $INSTDIR\plugins
-  File "build\target\plugins\*.*"
+  #SetOutPath $INSTDIR\plugins
+  #File "build\target\plugins\*.*"
 
   SetOutPath $INSTDIR\iconengines
   File "build\target\iconengines\*.*"
@@ -80,7 +82,7 @@ Section "Uninstall"
   Delete $INSTDIR\LICENSE
   Delete "$INSTDIR\*.dll"
   #Delete "$INSTDIR\phonon_backend\*.*"
-  Delete "$INSTDIR\plugins\*.*"
+  #Delete "$INSTDIR\plugins\*.*"
   Delete "$INSTDIR\imageformats\*.*"
   Delete "$INSTDIR\iconengines\*.*"
 
@@ -90,7 +92,7 @@ Section "Uninstall"
   ; Remove directories used
   RMDir "$SMPROGRAMS\Pirateplayer"
   #RMDir "$INSTDIR\phonon_backend"
-  RMDir "$INSTDIR\plugins"
+  #RMDir "$INSTDIR\plugins"
   RMDir "$INSTDIR\imageformats"
   RMDir "$INSTDIR\iconengines"
   RMDir "$INSTDIR"
