@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFile>
+#include <QDir>
 
 DownloadTableWidget::DownloadTableWidget(QWidget *parent) :
     QWidget(parent)
@@ -89,7 +90,8 @@ void DownloadTableWidget::selectionChanged(const QItemSelection &selected, const
 
 void DownloadTableWidget::openCurrentFile() {
     QString fileName = model->data(model->index(currentRow(), DownloadListModel::FileNameColumn), Qt::DisplayRole).toString();
-    QDesktopServices::openUrl(QUrl("file://" + fileName));
+    qDebug() << QUrl("file:///" + QDir::fromNativeSeparators(fileName), QUrl::TolerantMode);
+    QDesktopServices::openUrl(QUrl("file:///" + QDir::fromNativeSeparators(fileName), QUrl::TolerantMode));
 }
 
 void DownloadTableWidget::abortCurrent() {

@@ -6,3 +6,4 @@ Makefile.Debug
 Makefile.Release
 object_script.pritateplayer.Debug
 object_script.pirateplayer.Release
+object_script.pirateplayer.Debug
