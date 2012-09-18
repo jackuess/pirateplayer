@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QProcess>
 #include <QMessageBox>
+#include <QLabel>
 
 SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVariant> settings, QWidget *parent):
     QDialog(parent)
@@ -26,6 +27,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVaria
     QDataWidgetMapper *dataMapper = new QDataWidgetMapper(this);
 
     editFileName = new FilePathEdit(settings["start_dir"].toString(), this);
+    QLabel *suffixHint = new QLabel(this);
     checkSubtitles = new QCheckBox("Ladda ner undertexter till:", this);
     checkSubtitles->hide();
     editSubFileName = new FilePathEdit(settings["start_dir"].toString(), this);
@@ -66,11 +68,13 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVaria
     dataMapper->setCurrentIndex(comboQuality->currentIndex());
     dataMapper->addMapping(editStreamUrl, StreamTableModel::UrlColumn);
     dataMapper->addMapping(editSubUrl, StreamTableModel::SubtitlesColumn);
+    dataMapper->addMapping(suffixHint, StreamTableModel::SuffixHintColumn, "text");
 
     comboQuality->setModel(model);
 
 
     formLayout->addRow("Ladda ner till:", editFileName);
+    formLayout->addRow("", suffixHint);
     formLayout->addRow("Kvalitet:", comboQuality);
     formLayout->addRow("", editStreamUrl);
     formLayout->addRow(checkSubtitles, editSubFileName);

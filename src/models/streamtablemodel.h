@@ -21,6 +21,7 @@ public:
         QualityColumn = 0,
         UrlColumn,
         SubtitlesColumn,
+        SuffixHintColumn,
         COLUMN_COUNT
     };
     

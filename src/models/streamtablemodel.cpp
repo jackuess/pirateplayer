@@ -23,6 +23,7 @@ StreamTableModel::StreamTableModel(QIODevice *xmlData, QObject *parent) :
             row << (quality == "" ? QString::fromUtf8("Okänd") : quality);
             row << streams.item(i).toElement().text();
             row << attributes.namedItem("subtitles").toAttr().value();
+            row << attributes.namedItem("suffix-hint").toAttr().value();
 
             streamList.append(row);
         }
@@ -36,8 +37,18 @@ QVariant StreamTableModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid())
         return QVariant();
 
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
-        return QVariant(streamList[index.row()][index.column()]);
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
+        switch (index.column()) {
+        case QualityColumn:
+        case UrlColumn:
+        case SubtitlesColumn:
+            return QVariant(streamList[index.row()][index.column()]);
+        case SuffixHintColumn:
+            QString suffixHint = streamList[index.row()][index.column()];
+            if (suffixHint != "")
+                return QVariant(QString::fromUtf8("Denna video bör ges filändelsen \".") + suffixHint + "\".");
+        }
+    }
 
     return QVariant();
 }
