@@ -2,3 +2,8 @@ Makefile
 build/
 *.pro.user
 qrc_resources.cpp
+Makefile.Debug
+Makefile.Release
+object_script.pritateplayer.Debug
+object_script.pirateplayer.Debug
+object_script.pirateplayer.Release

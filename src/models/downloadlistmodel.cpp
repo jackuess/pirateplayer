@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QtAlgorithms>
 #include <QColor>
+#include <QDir>
 
 QStringList DownloadListModel::headers = QStringList() << "Status" << "Filnamn" << QString::fromUtf8("Förlopp");
 QStringList DownloadListModel::statusText = QStringList() << "Inte startad" << "Laddar ned" << QString::fromUtf8("Färdig") << "Fel uppstod" << "Avbruten";
@@ -42,7 +43,7 @@ QVariant DownloadListModel::data(const QModelIndex &index, int role) const {
         case StatusColumn:
             return QVariant(DownloadListModel::statusText[item->getStatus()]);
         case FileNameColumn:
-            return QVariant(item->getFileName());
+            return QVariant(QDir::toNativeSeparators(item->getFileName()));
         case ProgressColumn:
             return QVariant(item->getProgress());
         }

@@ -177,7 +177,7 @@ void MainWindow::tabChanged(int index) {
 
 void MainWindow::readUserSettings() {
     userSettings["player_cmd"] = settings.value("Location/player_cmd", "ffplay \"%0\"");
-    userSettings["start_dir"] = settings.value("Location/start_dir", QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
+    userSettings["start_dir"] = settings.value("Location/start_dir", QDir::toNativeSeparators(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
     ui->editPlayer->setText(userSettings["player_cmd"].toString());
     ui->editStartDir->setText(userSettings["start_dir"].toString());
 }

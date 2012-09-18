@@ -152,13 +152,13 @@ void SaveStreamDialog::checkOverWrite() {
     messageBox.setDefaultButton(QMessageBox::Cancel);
 
     if (QFile::exists(getFileName())) {
-        messageBox.setText("Filen " + getFileName() + " finns sedan tidigare.");
+        messageBox.setText("Filen " + QDir::toNativeSeparators(getFileName()) + " finns sedan tidigare.");
         int ret = messageBox.exec();
         if (ret == QMessageBox::Cancel)
             return;
     }
     if (downloadSubs() && QFile::exists(getSubFileName())) {
-        messageBox.setText("Filen " + getSubFileName() + " finns sedan tidigare.");
+        messageBox.setText("Filen " + QDir::toNativeSeparators(getSubFileName()) + " finns sedan tidigare.");
         int ret = messageBox.exec();
         if (ret == QMessageBox::Cancel)
             return;

@@ -43,6 +43,7 @@ private slots:
     void enableSubmit();
     void play();
     void checkOverWrite();
+
 };
 
 #endif // SAVESTREAMDIALOG_H
