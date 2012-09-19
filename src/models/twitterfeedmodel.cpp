@@ -5,6 +5,7 @@
 #include <QNetworkReply>
 #include <QtAlgorithms>
 #include <QDebug>
+#include <QRegExp>
 
 TwitterFeedModel::TwitterFeedModel(QNetworkAccessManager *nam, QObject *parent) :
     QAbstractTableModel(parent)
@@ -58,7 +59,7 @@ void TwitterFeedModel::feedDownloaded() {
     for(int i = 0; i<tweetList.count(); i++) {
         QHash<QString,QString> s = QHash<QString,QString>();
 
-        s.insert("text", tweetList.item(i).namedItem("description").toElement().text().remove(0, offset));
+        s.insert("text", tweetList.item(i).namedItem("description").toElement().text().remove(0, offset).replace(QRegExp("(https?://\\S+)"), "<a href=\"\\1\">\\1</a>"));
         s.insert("pubdate", tweetList.item(i).namedItem("pubDate").toElement().text());
         s.insert("link", tweetList.item(i).namedItem("link").toElement().text());
 

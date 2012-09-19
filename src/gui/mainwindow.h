@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "messagelabel.h"
 #include "../models/downloadlistmodel.h"
 #include "../models/streamtablemodel.h"
 #include "../models/twitterfeedmodel.h"
@@ -30,29 +31,29 @@ public:
     };
     
 private:
-    void pushMessage(QString msg, int type = 0);
     void getStreams(QString url);
     void setupTwitter();
     void readUserSettings();
     void writeUserSettings();
 
+    static bool versionNumberGreater(QString leftHand, QString rightHand);
+
     Ui::MainWindow *ui;
     DownloadListModel *downloadStack;
     PirateNetworkAccessManager *qnam;
-    QNetworkReply *getStreamsReply;
     QDataWidgetMapper *twitterWidgetMapper;
     QSettings settings;
     QHash<QString,QVariant> userSettings;
+    QHash<QNetworkReply*,MessageLabel*> messages;
+    QString applicationVersion;
 
 private slots:
     void getStreamsFinished();
-    void deleteLastMessage();
     void adressTabChanged(int index);
     void tabChanged(int index);
     void linkClicked(QUrl url);
     void fetch();
     void enableTwitterButtons(int currentIndex);
-    void openCurrentTweet();
     void resetUserSettings();
 };
 

@@ -115,21 +115,15 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="tweetText">
+            <widget class="QLabel" name="tweetText">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>1</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
              <property name="text">
-              <string>Laddar...</string>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
+              <string>Laddar nyheter...</string>
              </property>
             </widget>
            </item>

@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    applicationVersion = ((QApplication*)parent)->applicationVersion();
+
     qnam = new PirateNetworkAccessManager(this);
     downloadStack = new DownloadListModel(this, qnam);
     userSettings = QHash<QString,QVariant>();
@@ -70,49 +72,39 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::pushMessage(QString msg, int type) {
-    QLabel *l = new QLabel(this);
-    l->setText(msg);
-
-    QString css = "border-radius: 5px; border-width: 2px; border-style: solid; padding: 2px; ";
-    switch (type) {
-    case Info:
-        css += "background-color: #eea; border-color: #cc9;";
-        break;
-    case Error:
-        css += "background-color: #eaa; border-color: #c99; ";
-        break;
-    }
-    l->setStyleSheet(css);
-
-    ((QVBoxLayout*)ui->groupMessages->layout())->insertWidget(0, l);
-
-    QTimer::singleShot(3000, this, SLOT(deleteLastMessage()));
-}
-
-void MainWindow::deleteLastMessage() {
-    QVBoxLayout *layout = (QVBoxLayout*)ui->groupMessages->layout();
-    delete layout->itemAt(layout->count()-1)->widget();
-}
-
 void MainWindow::getStreams(QString url) {
     QUrl urlGetStreams = QUrl("http://pirateplay.se/api/get_streams.xml");
     urlGetStreams.addQueryItem("url", url);
-    getStreamsReply = qnam->get(QNetworkRequest(urlGetStreams));
+    QNetworkReply *getStreamsReply = qnam->get(QNetworkRequest(urlGetStreams));
     connect(getStreamsReply, SIGNAL(finished()), this, SLOT(getStreamsFinished()));
 
-    pushMessage(QString::fromUtf8("Hämtar strömmar..."), Info);
+    MessageLabel *msg = new MessageLabel(url, this);
+    ((QVBoxLayout*)ui->groupMessages->layout())->insertWidget(0, msg);
+    msg->setState(MessageLabel::Fetching);
+    messages[getStreamsReply] = msg;
 }
 
 void MainWindow::getStreamsFinished() {
+    QNetworkReply *getStreamsReply = (QNetworkReply*)QObject::sender();
     StreamTableModel *streamList = new StreamTableModel(getStreamsReply, this);
+    MessageLabel *msg = messages[getStreamsReply];
 
     if (streamList->rowCount() < 1) {
-        pushMessage(QString::fromUtf8("Inga strömmar funna!"), Error);
+        msg->setState(MessageLabel::NoStreamsFound);
+        msg->deleteLaterThanLater();
+        return;
+    }
+    else if (versionNumberGreater(streamList->data(streamList->index(0, StreamTableModel::VersionColumn), Qt::DisplayRole).toString(),
+                                    applicationVersion)) {
+        msg->setState(MessageLabel::IncompatibleStreams);
         return;
     }
 
-    SaveStreamDialog *streamDialog = new SaveStreamDialog(streamList, userSettings, this);
+    QString streamTitle = msg->getContext();
+    delete msg;
+    messages.remove(getStreamsReply);
+
+    SaveStreamDialog *streamDialog = new SaveStreamDialog(streamList, userSettings, streamTitle, this);
     if (streamDialog->exec() == QDialog::Accepted) {
         downloadStack->addDownload(streamDialog->getUrl(), streamDialog->getFileName());
         if(streamDialog->downloadSubs())
@@ -153,6 +145,8 @@ void MainWindow::setupTwitter() {
     filterModel->setFilterRegExp(QRegExp("^[^@]"));
     filterModel->setFilterKeyColumn(0);
 
+    ui->tweetText->setOpenExternalLinks(true);
+
     twitterWidgetMapper = new QDataWidgetMapper(this);
     twitterWidgetMapper->setModel(filterModel);
     twitterWidgetMapper->addMapping(ui->tweetText, 0, "text");
@@ -162,11 +156,6 @@ void MainWindow::setupTwitter() {
     connect(twitterWidgetMapper, SIGNAL(currentIndexChanged(int)), this, SLOT(enableTwitterButtons(int)));
     connect(ui->buttonPrevTweet, SIGNAL(clicked()), twitterWidgetMapper, SLOT(toPrevious()));
     connect(ui->buttonNextTweet, SIGNAL(clicked()), twitterWidgetMapper, SLOT(toNext()));
-    connect(ui->tweetText, SIGNAL(clicked()), this, SLOT(openCurrentTweet()));
-}
-
-void MainWindow::openCurrentTweet() {
-    QDesktopServices::openUrl(QUrl(twitterWidgetMapper->model()->data(twitterWidgetMapper->model()->index(twitterWidgetMapper->currentIndex(), 2)).toString()));
 }
 
 void MainWindow::tabChanged(int index) {
@@ -193,4 +182,19 @@ void MainWindow::resetUserSettings() {
     settings.remove("Location/player_cmd");
     settings.remove("Location/start_dir");
     readUserSettings();
+}
+
+bool MainWindow::versionNumberGreater(QString leftHand, QString rightHand) {
+    QStringList leftHandList = leftHand.split('.');
+    QStringList rightHandList = rightHand.split('.');
+
+    for (int i=0; i<leftHandList.count(); i++) {
+        if (i == rightHandList.count() ||
+            leftHandList.at(i).toInt() > rightHandList.at(i).toInt())
+            return true;
+        else if (leftHandList.at(i).toInt() < rightHandList.at(i).toInt())
+            return false;
+    }
+
+    return false;
 }

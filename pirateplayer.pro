@@ -28,7 +28,8 @@ SOURCES += src/main.cpp\
     src/models/downloadlistmodel.cpp \
     src/models/twitterfeedmodel.cpp \
     src/models/streamtablemodel.cpp \
-    src/gui/downloadtablewidget.cpp
+    src/gui/downloadtablewidget.cpp \
+    src/gui/messagelabel.cpp
 
 HEADERS  += src/gui/mainwindow.h \
     src/gui/downloaddelegate.h \
@@ -43,7 +44,8 @@ HEADERS  += src/gui/mainwindow.h \
     src/models/downloadlistmodel.h \
     src/models/twitterfeedmodel.h \
     src/models/streamtablemodel.h \
-    src/gui/downloadtablewidget.h
+    src/gui/downloadtablewidget.h \
+    src/gui/messagelabel.h
 
 FORMS    += src/gui/mainwindow.ui
 

@@ -22,6 +22,7 @@ public:
         UrlColumn,
         SubtitlesColumn,
         SuffixHintColumn,
+        VersionColumn,
         COLUMN_COUNT
     };
     

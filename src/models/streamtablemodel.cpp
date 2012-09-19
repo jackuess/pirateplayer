@@ -19,11 +19,13 @@ StreamTableModel::StreamTableModel(QIODevice *xmlData, QObject *parent) :
             QStringList row;
             QDomNamedNodeMap attributes = streams.item(i).attributes();
             QString quality = attributes.namedItem("quality").toAttr().value();
+            QString version = attributes.namedItem("required-player-version").toAttr().value();
 
             row << (quality == "" ? QString::fromUtf8("Okänd") : quality);
             row << streams.item(i).toElement().text();
             row << attributes.namedItem("subtitles").toAttr().value();
             row << attributes.namedItem("suffix-hint").toAttr().value();
+            row << (version == "" ? "1" : version);
 
             streamList.append(row);
         }
@@ -42,6 +44,7 @@ QVariant StreamTableModel::data(const QModelIndex &index, int role) const {
         case QualityColumn:
         case UrlColumn:
         case SubtitlesColumn:
+        case VersionColumn:
             return QVariant(streamList[index.row()][index.column()]);
         case SuffixHintColumn:
             QString suffixHint = streamList[index.row()][index.column()];

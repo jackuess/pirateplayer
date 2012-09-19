@@ -14,7 +14,7 @@ class SaveStreamDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SaveStreamDialog(StreamTableModel *model, QHash<QString, QVariant> settings, QWidget *parent = 0);
+    explicit SaveStreamDialog(StreamTableModel *model, QHash<QString, QVariant> settings, QString streamTitle = "", QWidget *parent = 0);
     ~SaveStreamDialog();
 
     QString getFileName();

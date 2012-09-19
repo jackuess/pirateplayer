@@ -15,7 +15,7 @@
 #include <QMessageBox>
 #include <QLabel>
 
-SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVariant> settings, QWidget *parent):
+SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVariant> settings, QString streamTitle, QWidget *parent):
     QDialog(parent)
 {
     userSettings = settings;
@@ -91,7 +91,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVaria
     mainLayout->addLayout(buttonLayout);
 
     setLayout(mainLayout);
-    setWindowTitle(QString::fromUtf8("Spara ström"));
+    setWindowTitle(QString::fromUtf8("Spara ström - ") + streamTitle);
     setMinimumWidth(500);
 }
 
