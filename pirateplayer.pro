@@ -14,6 +14,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pirateplayer
 TEMPLATE = app
 
+use_avconv {
+  DEFINES += USE_AVCONV
+}
 
 SOURCES += src/main.cpp\
     src/gui/mainwindow.cpp \

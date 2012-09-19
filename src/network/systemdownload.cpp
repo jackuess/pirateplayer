@@ -2,7 +2,6 @@
 
 #include <QDebug>
 
-QString SystemDownload::FFMPEG_CMD = QString("ffmpeg -i '%1' -vcodec copy -acodec copy -y '%2'");
 QRegExp SystemDownload::rxDuration = QRegExp("Duration:\\s(\\d\\d):(\\d\\d):(\\d\\d)");
 QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d\\d):(\\d\\d):(\\d\\d)");
 
@@ -26,7 +25,13 @@ void SystemDownload::downloadToFile(QString fileName) {
     arguments << fileName;
 
     program = new QProcess(this);
+
+#ifdef USE_AVCONV
+    program->start("avconv", arguments);
+#else
     program->start("ffmpeg", arguments);
+#endif
+
     connect(program, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onFinished(int,QProcess::ExitStatus)));
     connect(program, SIGNAL(readyReadStandardError()), this, SLOT(capDuration()));
 }
