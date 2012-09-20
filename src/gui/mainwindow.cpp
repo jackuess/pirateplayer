@@ -20,12 +20,17 @@
 #include <QRegExp>
 #include <QClipboard>
 
+#include <QMessageBox>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
 
     qDebug() << qgetenv("PATH");
+    QMessageBox msgBox;
+    msgBox.setText(QProcessEnvironment::systemEnvironment().value("PATH"));
+     msgBox.exec();
 
     qnam = new PirateNetworkAccessManager(this);
     downloadStack = new DownloadListModel(this, qnam);
