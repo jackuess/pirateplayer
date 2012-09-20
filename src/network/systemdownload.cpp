@@ -14,13 +14,33 @@ SystemDownload::SystemDownload(QObject *parent, QUrl u)
 void SystemDownload::downloadToFile(QString fileName) {
     AbstractDownload::downloadToFile(fileName);
     QStringList arguments;
+    QStringList extra = QStringList();
+
+    QString vcodec = "copy";
+    QString acodec = "copy";
+#ifdef UBUNTU_12_04
+    QString ffmpegName = "avconv";
+#else
+    QString ffmpegName = "ffmpeg";
+#endif
 
     if (url.scheme() == "mms")
         url.setScheme("mmsh"); //Ffmpeg needs this
+    else if(url.toString().indexOf(".m3u8") > -1) {
 
-    arguments << "-i" << url.toString() << "-vcodec" << "copy" << "-acodec" << "copy" << "-y";
-    if (url.toString().indexOf(".m3u8") > -1)
-        arguments << "-absf" << "aac_adtstoasc"; //Ffmpeg needs this for HLS-downloads
+#ifdef UBUNTU_12_04
+        acodec = "aac"
+        extra << "-bsf" << "aac_adtstoasc" << "-strict" << "experimental" << "-ab" << "325k";
+#else
+        extra << "-absf" << "aac_adtstoasc";
+#endif
+
+    }
+
+    arguments << "-i" << url.toString() << "-vcodec" << vcodec << "-acodec" << acodec << "-y";
+    arguments.append(extra);
+//    if (url.toString().indexOf(".m3u8") > -1)
+//        arguments << "-absf" << "aac_adtstoasc"; //Ffmpeg needs this for HLS-downloads
 
     arguments << fileName;
 
@@ -29,7 +49,7 @@ void SystemDownload::downloadToFile(QString fileName) {
 #ifdef USE_AVCONV
     program->start("avconv", arguments);
 #else
-    program->start("ffmpeg", arguments);
+    program->start(ffmpegName, arguments);
 #endif
 
     connect(program, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onFinished(int,QProcess::ExitStatus)));

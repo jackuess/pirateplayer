@@ -17,6 +17,10 @@ int main(int argc, char *argv[])
     qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qtTranslator);
 
+//#ifdef Q_WS_MAC
+    qputenv("PATH", qgetenv("PATH") + ";/usr/local/bin");
+//#endif
+
     MainWindow w;
     w.setWindowTitle("Pirateplayer v" + a.applicationVersion());
     w.show();

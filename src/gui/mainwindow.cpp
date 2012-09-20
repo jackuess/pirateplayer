@@ -1,3 +1,5 @@
+#include <QProcess>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -22,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    applicationVersion = ((QApplication*)parent)->applicationVersion();
+
+    qDebug() << qgetenv("PATH");
 
     qnam = new PirateNetworkAccessManager(this);
     downloadStack = new DownloadListModel(this, qnam);
