@@ -4,7 +4,12 @@
 #include <QCoreApplication>
 
 QRegExp SystemDownload::rxDuration = QRegExp("Duration:\\s(\\d\\d):(\\d\\d):(\\d\\d)");
+
+#ifndef UBUNTU_12_04
 QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d\\d):(\\d\\d):(\\d\\d)");
+#else
+QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d+)");
+#endif
 
 SystemDownload::SystemDownload(QObject *parent, QUrl u)
     :AbstractDownload(parent, u)
@@ -16,45 +21,32 @@ void SystemDownload::downloadToFile(QString fileName) {
     AbstractDownload::downloadToFile(fileName);
     QStringList arguments;
     QStringList extra = QStringList();
-
     QString vcodec = "copy";
     QString acodec = "copy";
+
 #ifdef UBUNTU_12_04
     QString ffmpegName = "avconv";
-#elif Q_WS_MAC
+#elif defined Q_WS_MAC
     QString ffmpegName = QCoreApplication::applicationDirPath() + "/ffmpeg";
 #else
     QString ffmpegName = "ffmpeg";
 #endif
-    qDebug() << QCoreApplication::applicationDirPath();
 
     if (url.scheme() == "mms")
         url.setScheme("mmsh"); //Ffmpeg needs this
     else if(url.toString().indexOf(".m3u8") > -1) {
-
 #ifdef UBUNTU_12_04
-        acodec = "aac"
+        acodec = "aac";
         extra << "-bsf" << "aac_adtstoasc" << "-strict" << "experimental" << "-ab" << "325k";
 #else
         extra << "-absf" << "aac_adtstoasc";
 #endif
-
     }
 
-    arguments << "-i" << url.toString() << "-vcodec" << vcodec << "-acodec" << acodec << "-y";
-    arguments.append(extra);
-//    if (url.toString().indexOf(".m3u8") > -1)
-//        arguments << "-absf" << "aac_adtstoasc"; //Ffmpeg needs this for HLS-downloads
-
-    arguments << fileName;
+    arguments << "-i" << url.toString() << "-vcodec" << vcodec << "-acodec" << acodec << "-y" << extra << fileName;
 
     program = new QProcess(this);
-
-#ifdef USE_AVCONV
-    program->start("avconv", arguments);
-#else
     program->start(ffmpegName, arguments);
-#endif
 
     connect(program, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onFinished(int,QProcess::ExitStatus)));
     connect(program, SIGNAL(readyReadStandardError()), this, SLOT(capDuration()));
@@ -94,7 +86,12 @@ void SystemDownload::capCurrentTime() {
     int pos = rxCurrTime.lastIndexIn(stdErrBuffer);
     if (pos > -1) {
         QTime nullTime = QTime(0, 0, 0);
+#ifndef UBUNTU_12_04
         QTime currTime = QTime(rxCurrTime.cap(1).toInt(), rxCurrTime.cap(2).toInt(), rxCurrTime.cap(3).toInt());
+#else
+        QTime currTime = nullTime.addSecs(rxCurrTime.cap(1).toInt());
+        qDebug() << rxCurrTime.cap(1) << currTime;
+#endif
         downloadProgress = (int)((double)currTime.secsTo(nullTime) / (double)duration.secsTo(nullTime) * 100);
         stdErrBuffer = "";
         emit progress();

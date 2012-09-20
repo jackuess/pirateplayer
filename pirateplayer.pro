@@ -14,13 +14,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pirateplayer
 TEMPLATE = app
 
-ubuntu12_04 {
-  DEFINES += USE_AVCONV
-  DEFINES += "HLS_CMD=\"avconv -i %0 -acodec aac -strict experimental -ab 325k -vcodec copy -bsf aac_adtstoasc \""
-  message("Ubuntu")
-}
-else {
-   message("Not")
+ubuntu_12_04 {
+  DEFINES += UBUNTU_12_04
+  message("Ubuntu 12.04 enabled")
 }
 
 SOURCES += src/main.cpp\

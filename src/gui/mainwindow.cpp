@@ -164,7 +164,11 @@ void MainWindow::tabChanged(int index) {
 }
 
 void MainWindow::readUserSettings() {
+#ifndef UBUNTU_12_04
     userSettings["player_cmd"] = settings.value("Location/player_cmd", "ffplay \"%0\"");
+#else
+    userSettings["player_cmd"] = settings.value("Location/player_cmd", "avplay \"%0\"");
+#endif
     userSettings["start_dir"] = settings.value("Location/start_dir", QDir::toNativeSeparators(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
     ui->editPlayer->setText(userSettings["player_cmd"].toString());
     ui->editStartDir->setText(userSettings["start_dir"].toString());
