@@ -1,6 +1,7 @@
 #include "systemdownload.h"
 
 #include <QDebug>
+#include <QCoreApplication>
 
 QRegExp SystemDownload::rxDuration = QRegExp("Duration:\\s(\\d\\d):(\\d\\d):(\\d\\d)");
 QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d\\d):(\\d\\d):(\\d\\d)");
@@ -20,9 +21,12 @@ void SystemDownload::downloadToFile(QString fileName) {
     QString acodec = "copy";
 #ifdef UBUNTU_12_04
     QString ffmpegName = "avconv";
+#elif Q_WS_MAC
+    QString ffmpegName = QCoreApplication::applicationDirPath() + "/ffmpeg";
 #else
     QString ffmpegName = "ffmpeg";
 #endif
+    qDebug() << QCoreApplication::applicationDirPath();
 
     if (url.scheme() == "mms")
         url.setScheme("mmsh"); //Ffmpeg needs this
