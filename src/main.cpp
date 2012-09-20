@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     a.installTranslator(&qtTranslator);
 
 //#ifdef Q_WS_MAC
-    qputenv("PATH", qgetenv("PATH") + ":/usr/local/bin");
+//    qputenv("PATH", qgetenv("PATH") + ":/usr/local/bin");
 //#endif
 
     MainWindow w;
