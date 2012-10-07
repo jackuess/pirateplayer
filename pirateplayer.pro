@@ -8,6 +8,7 @@ QT       += core gui
 QT       += network
 QT       += xml
 QT       += webkit
+QT       += declarative
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -33,7 +34,10 @@ SOURCES += src/main.cpp\
     src/models/twitterfeedmodel.cpp \
     src/models/streamtablemodel.cpp \
     src/gui/downloadtablewidget.cpp \
-    src/gui/messagelabel.cpp
+    src/gui/messagelabel.cpp \
+    src/gui/addon.cpp \
+    src/extra/archiveextractor.cpp \
+    src/network/tidynetworkreply.cpp
 
 HEADERS  += src/gui/mainwindow.h \
     src/gui/downloaddelegate.h \
@@ -49,7 +53,10 @@ HEADERS  += src/gui/mainwindow.h \
     src/models/twitterfeedmodel.h \
     src/models/streamtablemodel.h \
     src/gui/downloadtablewidget.h \
-    src/gui/messagelabel.h
+    src/gui/messagelabel.h \
+    src/gui/addon.h \
+    src/extra/archiveextractor.h \
+    src/network/tidynetworkreply.h
 
 FORMS    += src/gui/mainwindow.ui
 
@@ -67,7 +74,7 @@ win32 {
     RC_FILE = pirateplayer.rc
 }
 unix {
-    LIBS += -L/usr/lib/ -lrtmp
+    LIBS += -L/usr/lib/ -lrtmp -larchive -ltidy
     INCLUDEPATH += /usr/include
     DEPENDPATH += /usr/include
 

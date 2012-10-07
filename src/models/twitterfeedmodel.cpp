@@ -43,7 +43,7 @@ void TwitterFeedModel::setScreenName(QString name) {
     screenName = name;
     QUrl url = QUrl("http://twitter.com/statuses/user_timeline.rss");
     url.addQueryItem("screen_name", screenName);
-    url.addQueryItem("count", "10");
+    url.addQueryItem("count", "200");
 
     feed = network->get(QNetworkRequest(url));
     connect(feed, SIGNAL(finished()), this, SLOT(feedDownloaded()));

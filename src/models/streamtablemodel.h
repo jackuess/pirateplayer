@@ -4,18 +4,21 @@
 #include <QAbstractTableModel>
 #include <QList>
 #include <QStringList>
-#include <QIODevice>
+#include <QNetworkReply>
 
 class StreamTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit StreamTableModel(QIODevice *xmlData, QObject *parent = 0);
+    explicit StreamTableModel(QNetworkReply *xmlData, QObject *parent = 0);
 
     QVariant data(const QModelIndex &index, int role) const;
     int rowCount(const QModelIndex &parent) const;
     int rowCount() const;
     int columnCount(const QModelIndex &parent) const;
+
+    QVariantMap metaData();
+    void setMetaData(const QVariantMap &newData);
 
     enum Column {
         QualityColumn = 0,
@@ -27,11 +30,16 @@ public:
     };
     
 signals:
-    
-public slots:
+    void finished();
+    void noStreamsFound();
 
 private:
     QList<QStringList> streamList;
+    QNetworkReply *dataDevice;
+    QVariantMap private_metaData;
+
+private slots:
+    void onData();
     
 };
 

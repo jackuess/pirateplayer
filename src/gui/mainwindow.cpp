@@ -7,6 +7,7 @@
 #include "../network/download.h"
 #include "../network/systemdownload.h"
 #include "savestreamdialog.h"
+#include "addon.h"
 
 #include "qdebug.h"
 #include <QNetworkRequest>
@@ -23,7 +24,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-{qnam = new PirateNetworkAccessManager(this);
+{
+    qnam = new PirateNetworkAccessManager(this);
     downloadStack = new DownloadListModel(this, qnam);
     userSettings = QHash<QString,QVariant>();
 
@@ -52,8 +54,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->groupMessages->setLayout(new QVBoxLayout());
 
-    setupTwitter();
     readUserSettings();
+    setupTwitter();
+
+    QNetworkReply *addonReply = qnam->get(QNetworkRequest(QUrl("http://pirateplay.se:8080/static/pirateplayer_addons/list")));
+    connect(addonReply, SIGNAL(finished()), SLOT(setupAddons()));
 
     resize(settings.value("MainWindow/size", QSize(900, 580)).toSize());
     move(settings.value("MainWindow/pos", QPoint(200, 200)).toPoint());
@@ -62,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if (ui->tabWidget->currentIndex() == 1)
+    if (ui->tabWidget->currentWidget() == ui->settingsTab)
         writeUserSettings();
 
     settings.setValue("MainWindow/size", size());
@@ -71,46 +76,52 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::getStreams(QString url) {
+void MainWindow::getStreams(QString url, QVariantMap metaData) {
+    ui->tabWidget->setCurrentIndex(0);
     QUrl urlGetStreams = QUrl("http://pirateplay.se/api/get_streams.xml");
     urlGetStreams.addQueryItem("url", url);
-    QNetworkReply *getStreamsReply = qnam->get(QNetworkRequest(urlGetStreams));
-    connect(getStreamsReply, SIGNAL(finished()), this, SLOT(getStreamsFinished()));
+    QNetworkRequest req(urlGetStreams);
+    QNetworkReply *getStreamsReply = qnam->get(req);
+    StreamTableModel *streamList = new StreamTableModel(getStreamsReply, this);
+    streamList->setMetaData(metaData);
+
+    connect(streamList, SIGNAL(finished()), SLOT(streamsFound()));
+    connect(streamList, SIGNAL(noStreamsFound()), SLOT(noStreamsFound()));
 
     MessageLabel *msg = new MessageLabel(url, this);
     ((QVBoxLayout*)ui->groupMessages->layout())->insertWidget(0, msg);
     msg->setState(MessageLabel::Fetching);
-    messages[getStreamsReply] = msg;
+    messages[streamList] = msg;
 }
 
-void MainWindow::getStreamsFinished() {
-    QNetworkReply *getStreamsReply = (QNetworkReply*)QObject::sender();
-    StreamTableModel *streamList = new StreamTableModel(getStreamsReply, this);
-    MessageLabel *msg = messages[getStreamsReply];
+void MainWindow::streamsFound() {
+    StreamTableModel *streams = (StreamTableModel*)QObject::sender();
+    MessageLabel *msg = messages[streams];
+    QString streamTitle = msg->getContext();
 
-    if (streamList->rowCount() < 1) {
-        msg->setState(MessageLabel::NoStreamsFound);
-        msg->deleteLaterThanLater();
-        return;
-    }
-    else if (versionNumberGreater(streamList->data(streamList->index(0, StreamTableModel::VersionColumn), Qt::DisplayRole).toString(),
-                                    applicationVersion)) {
+    if (versionNumberGreater(streams->data(streams->index(0, StreamTableModel::VersionColumn), Qt::DisplayRole).toString(),
+                             QCoreApplication::instance()->applicationVersion())) {
         msg->setState(MessageLabel::IncompatibleStreams);
         return;
     }
 
-    QString streamTitle = msg->getContext();
     delete msg;
-    messages.remove(getStreamsReply);
+    messages.remove(streams);
 
-    SaveStreamDialog *streamDialog = new SaveStreamDialog(streamList, userSettings, streamTitle, this);
+    SaveStreamDialog *streamDialog = new SaveStreamDialog(streams, userSettings, streamTitle, this);
     if (streamDialog->exec() == QDialog::Accepted) {
         downloadStack->addDownload(streamDialog->getUrl(), streamDialog->getFileName());
         if(streamDialog->downloadSubs())
             downloadStack->addDownload(streamDialog->getSubUrl(), streamDialog->getSubFileName());
     }
+}
 
-    getStreamsReply->deleteLater();
+void MainWindow::noStreamsFound() {
+    StreamTableModel *streams = (StreamTableModel*)QObject::sender();
+    MessageLabel *msg = messages[streams];
+
+    msg->setState(MessageLabel::NoStreamsFound);
+    msg->deleteLaterThanLater();
 }
 
 void MainWindow::adressTabChanged(int index) {
@@ -158,9 +169,8 @@ void MainWindow::setupTwitter() {
 }
 
 void MainWindow::tabChanged(int index) {
-    if (index != 1) {
+    if (ui->tabWidget->indexOf(ui->settingsTab) != index)
         writeUserSettings();
-    }
 }
 
 void MainWindow::readUserSettings() {
@@ -170,20 +180,26 @@ void MainWindow::readUserSettings() {
     userSettings["player_cmd"] = settings.value("Location/player_cmd", "avplay \"%0\"");
 #endif
     userSettings["start_dir"] = settings.value("Location/start_dir", QDir::toNativeSeparators(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
+    userSettings["filename_template"] = settings.value("Location/filename_template", "%name_-_%title");
+
     ui->editPlayer->setText(userSettings["player_cmd"].toString());
     ui->editStartDir->setText(userSettings["start_dir"].toString());
+    ui->editFilenameTemplate->setText(userSettings["filename_template"].toString());
 }
 
 void MainWindow::writeUserSettings() {
     settings.setValue("Location/player_cmd", ui->editPlayer->text());
     settings.setValue("Location/start_dir", ui->editStartDir->text());
+    settings.setValue("Location/filename_template", ui->editFilenameTemplate->text());
     userSettings["player_cmd"] = settings.value("Location/player_cmd");
     userSettings["start_dir"] = settings.value("Location/start_dir");
+    userSettings["filename_template"] = settings.value("Location/filename_template");
 }
 
 void MainWindow::resetUserSettings() {
     settings.remove("Location/player_cmd");
     settings.remove("Location/start_dir");
+    settings.remove("Location/filename_template");
     readUserSettings();
 }
 
@@ -200,4 +216,18 @@ bool MainWindow::versionNumberGreater(QString leftHand, QString rightHand) {
     }
 
     return false;
+}
+
+void MainWindow::setupAddons() {
+    QNetworkReply *reply = (QNetworkReply*)QObject::sender();
+    QStringList addons = ((QString)reply->readAll()).split("\n", QString::KeepEmptyParts);
+    for (int i = 0; i < addons.count(); i++) {
+        Addon *a = new Addon(addons.at(i), this->qnam, &this->settings, this, ui->tabWidget);
+        connect(a, SIGNAL(titleSet(QString)), SLOT(setAddonTitle(QString)));
+        ui->tabWidget->insertTab(1, a, "");
+    }
+}
+
+void MainWindow::setAddonTitle(QString newTitle) {
+    ui->tabWidget->setTabText(ui->tabWidget->indexOf((QWidget*)QObject::sender()), newTitle);
 }

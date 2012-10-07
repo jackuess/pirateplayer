@@ -14,11 +14,12 @@
 #include <QProcess>
 #include <QMessageBox>
 #include <QLabel>
+#include <QStringBuilder>
 
-SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVariant> settings, QString streamTitle, QWidget *parent):
+SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString, QVariant> &settings, const QString &streamTitle, QWidget *parent):
     QDialog(parent)
 {
-    userSettings = settings;
+    this->settings = settings;
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QHBoxLayout *buttonLayout = new QHBoxLayout();
@@ -26,11 +27,11 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVaria
 
     QDataWidgetMapper *dataMapper = new QDataWidgetMapper(this);
 
-    editFileName = new FilePathEdit(settings["start_dir"].toString(), this);
+    editFileName = new FilePathEdit(this);
     QLabel *suffixHint = new QLabel(this);
     checkSubtitles = new QCheckBox("Ladda ner undertexter till:", this);
     checkSubtitles->hide();
-    editSubFileName = new FilePathEdit(settings["start_dir"].toString(), this);
+    editSubFileName = new FilePathEdit(this);
     editSubFileName->setEnabled(false);
     editSubFileName->hide();
     comboQuality = new QComboBox(this);
@@ -64,6 +65,28 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVaria
     connect(editSubFileName, SIGNAL(pathValid(bool)), this, SLOT(enableSubmit()));
     connect(buttonPlay, SIGNAL(clicked()), this, SLOT(play()));
 
+    QString filenameTemplate = settings.value("filename_template").toString();
+    const QStringList templateVars = QStringList() << "title" << "name" << "time" << "season" << "description";
+    for (int i=0; i<templateVars.count(); i++)
+        filenameTemplate.replace("%" % templateVars.at(i), "%" % QString::number(i));
+    QString fileName = filenameTemplate;
+    QVariantMap metaData = model->metaData();
+    for (int i=0; i<templateVars.count(); i++)
+        fileName = fileName.arg(metaData.value(templateVars.at(i), "").toString());
+    QString nullFileName = filenameTemplate;
+    for (int i=0; i<templateVars.count(); i++)
+        nullFileName = nullFileName.arg("");
+    if (fileName != nullFileName) {
+        QString suffix = model->data(model->index(0, StreamTableModel::SuffixHintColumn), Qt::UserRole).toString();
+        suffix = !suffix.isEmpty() ? '.' % suffix : suffix;
+        editFileName->setFilePath(settings["start_dir"].toString() % fileName % suffix);
+        editSubFileName->setFilePath(settings["start_dir"].toString() % fileName);
+    }
+    else {
+        editFileName->setFilePath(settings["start_dir"].toString());
+        editSubFileName->setFilePath(settings["start_dir"].toString());
+    }
+
     dataMapper->setModel(model);
     dataMapper->setCurrentIndex(comboQuality->currentIndex());
     dataMapper->addMapping(editStreamUrl, StreamTableModel::UrlColumn);
@@ -71,7 +94,6 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, QHash<QString,QVaria
     dataMapper->addMapping(suffixHint, StreamTableModel::SuffixHintColumn, "text");
 
     comboQuality->setModel(model);
-
 
     formLayout->addRow("Ladda ner till:", editFileName);
     formLayout->addRow("", suffixHint);
@@ -139,7 +161,7 @@ void SaveStreamDialog::play() {
     bool ok = 0;
     QString cmdTemplate = QInputDialog::getText(this, tr("Ange uppspelningskommando"),
                                             QString::fromUtf8("Uppspelningskommando:\n    %0 ersätts med videoaddress.\n    %1 ersätts med undertextaddress."), QLineEdit::Normal,
-                                            userSettings["player_cmd"].toString(), &ok);
+                                            settings["player_cmd"].toString(), &ok);
 
     if (ok && !cmdTemplate.isEmpty())
         cmd->start(cmdTemplate.arg(editStreamUrl->text(), editSubUrl->text()));

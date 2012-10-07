@@ -8,10 +8,9 @@
 
 QStringList FilePathEdit::filter = QStringList() << "Alla filer (*.*)" << "Flashvideo (*.flv)" << "Untertexter (*.srt)";
 
-FilePathEdit::FilePathEdit(QString dir, QWidget *parent) :
+FilePathEdit::FilePathEdit(QWidget *parent) :
     QWidget(parent)
 {
-    defaultDir = dir;
     layout = new QHBoxLayout(this);
     editPath = new QLineEdit(this);
     buttonBrowse = new QPushButton(QString::fromUtf8("Bläddra"), this);
@@ -22,12 +21,6 @@ FilePathEdit::FilePathEdit(QString dir, QWidget *parent) :
     layout->addWidget(editPath);
     layout->addWidget(buttonBrowse);
     layout->setContentsMargins(0, 0, 0, 0);
-
-    QTimer::singleShot(0, this, SLOT(setToDefault()));
-}
-
-void FilePathEdit::setToDefault() {
-    setFilePath(defaultDir);
 }
 
 QString FilePathEdit::filePath() {
@@ -39,7 +32,7 @@ bool FilePathEdit::isValid() {
     return !info.isDir();
 }
 
-void FilePathEdit::setFilePath(QString newFilePath) {
+void FilePathEdit::setFilePath(const QString &newFilePath) {
     editPath->setText(QDir::toNativeSeparators(newFilePath));
 }
 

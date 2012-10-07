@@ -24,19 +24,20 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    static bool versionNumberGreater(QString leftHand, QString rightHand);
 
     enum Messages {
         Info = 0,
         Error
     };
-    
+
+public slots:
+    void getStreams(QString url, QVariantMap metaData = QVariantMap());
+
 private:
-    void getStreams(QString url);
     void setupTwitter();
     void readUserSettings();
     void writeUserSettings();
-
-    static bool versionNumberGreater(QString leftHand, QString rightHand);
 
     Ui::MainWindow *ui;
     DownloadListModel *downloadStack;
@@ -44,17 +45,19 @@ private:
     QDataWidgetMapper *twitterWidgetMapper;
     QSettings settings;
     QHash<QString,QVariant> userSettings;
-    QHash<QNetworkReply*,MessageLabel*> messages;
-    QString applicationVersion;
+    QHash<QObject*,MessageLabel*> messages;
 
 private slots:
-    void getStreamsFinished();
+    void streamsFound();
+    void noStreamsFound();
     void adressTabChanged(int index);
     void tabChanged(int index);
     void linkClicked(QUrl url);
     void fetch();
     void enableTwitterButtons(int currentIndex);
     void resetUserSettings();
+    void setAddonTitle(QString newTitle);
+    void setupAddons();
 };
 
 #endif // MAINWINDOW_H

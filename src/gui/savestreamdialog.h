@@ -14,7 +14,7 @@ class SaveStreamDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SaveStreamDialog(StreamTableModel *model, QHash<QString, QVariant> settings, QString streamTitle = "", QWidget *parent = 0);
+    explicit SaveStreamDialog(StreamTableModel *model, const QHash<QString, QVariant> &settings, const QString &streamTitle = "", QWidget *parent = 0);
     ~SaveStreamDialog();
 
     QString getFileName();
@@ -36,7 +36,7 @@ private:
     QLineEdit *editStreamUrl;
     QLineEdit *editSubUrl;
     QPushButton *buttonSubmit;
-    QHash<QString,QVariant> userSettings;
+    QHash<QString,QVariant> settings;
 
 private slots:
     void comboActivated(int index);

@@ -3,11 +3,16 @@
 #include <QDebug>
 #include <QDomDocument>
 
-StreamTableModel::StreamTableModel(QIODevice *xmlData, QObject *parent) :
+StreamTableModel::StreamTableModel(QNetworkReply *xmlData, QObject *parent) :
     QAbstractTableModel(parent)
 {
+    this->dataDevice = xmlData;
+    connect(this->dataDevice, SIGNAL(finished()), SLOT(onData()));
+}
+
+void StreamTableModel::onData() {
     QDomDocument doc;
-    doc.setContent(xmlData);
+    doc.setContent(this->dataDevice);
 
     QDomNodeList streams = doc.elementsByTagName("stream");
     int lastRow = streams.count()-1;
@@ -32,7 +37,29 @@ StreamTableModel::StreamTableModel(QIODevice *xmlData, QObject *parent) :
 
         endInsertRows();
         emit dataChanged(createIndex(0, 0), createIndex(lastRow, COLUMN_COUNT-1));
+        emit finished();
     }
+    else {
+        emit noStreamsFound();
+    }
+
+    this->dataDevice->deleteLater();
+}
+
+QVariantMap StreamTableModel::metaData() {
+    return this->private_metaData;
+}
+
+void StreamTableModel::setMetaData(const QVariantMap &newData) {
+    this->private_metaData = newData;
+    QVariantMap tmpMap;
+    QVariantMap::const_iterator i;
+    for (i = this->private_metaData.constBegin(); i != this->private_metaData.constEnd(); ++i) {
+        tmpMap[i.key()] =  i.value().toString().replace('/', '-')
+                                                .replace(':', '-')
+                                                .replace('?', "");
+    }
+    this->private_metaData.unite(tmpMap);
 }
 
 QVariant StreamTableModel::data(const QModelIndex &index, int role) const {
@@ -52,6 +79,8 @@ QVariant StreamTableModel::data(const QModelIndex &index, int role) const {
                 return QVariant(QString::fromUtf8("Denna video bör ges filändelsen \".") + suffixHint + "\".");
         }
     }
+    else if (role == Qt::UserRole && index.column() == SuffixHintColumn)
+        return QVariant(streamList[index.row()][index.column()]);
 
     return QVariant();
 }

@@ -11,10 +11,10 @@ class FilePathEdit : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FilePathEdit(QString dir = QDesktopServices::storageLocation(QDesktopServices::HomeLocation), QWidget *parent = 0);
+    explicit FilePathEdit(QWidget *parent = 0);
 
     QString filePath();
-    void setFilePath(QString newFilePath);
+    void setFilePath(const QString &newFilePath);
     bool isValid();
 
     enum DIALOG_FILTER {
@@ -33,14 +33,12 @@ private:
     QHBoxLayout *layout;
     QLineEdit *editPath;
     QPushButton *buttonBrowse;
-    QString defaultDir;
 
     static QStringList filter;
     static QString extFromFilter(QString f);
 
 private slots:
     void pathChanged(QString newPath);
-    void setToDefault();
     void browse();
 };
 
