@@ -37,20 +37,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->buttonFetch, SIGNAL(clicked()), this, SLOT(fetch()));
     connect(ui->editAdress, SIGNAL(returnPressed()), this, SLOT(fetch()));
-    connect(ui->adressTabWidget, SIGNAL(currentChanged(int)), this, SLOT(adressTabChanged(int)));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
-    connect(ui->webView, SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
     connect(ui->buttonResetSettings, SIGNAL(clicked()), this, SLOT(resetUserSettings()));
 
     DownloadTableWidget *downloadTable = new DownloadTableWidget(this);
     downloadTable->setModel(downloadStack);
     ui->groupDownloads->layout()->addWidget(downloadTable);
-
-    ui->webView->hide();
-    ui->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    ui->webView->settings()->globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-    ui->webView->settings()->setUserStyleSheetUrl(QUrl("data:text/css;charset=utf-8;base64,LnYwXzN7ZGlzcGxheTogbm9uZTt9")); // ".v0_3{display: none;}"
-    ui->webView->load(QUrl("http://pirateplay.se/playbrowser/browser.html"));
 
     ui->groupMessages->setLayout(new QVBoxLayout());
 
@@ -122,13 +114,6 @@ void MainWindow::noStreamsFound() {
 
     msg->setState(MessageLabel::NoStreamsFound);
     msg->deleteLaterThanLater();
-}
-
-void MainWindow::adressTabChanged(int index) {
-    if (index == 0)
-        ui->webView->hide();
-    else
-        ui->webView->show();
 }
 
 void MainWindow::fetch() {

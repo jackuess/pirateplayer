@@ -35,64 +35,30 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QTabWidget" name="adressTabWidget">
-          <property name="currentIndex">
-           <number>0</number>
+         <widget class="QGroupBox" name="adressGroupBox">
+          <property name="title">
+           <string>Ange address</string>
           </property>
-          <widget class="QWidget" name="tab">
-           <attribute name="title">
-            <string>Ange address</string>
-           </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLineEdit" name="editAdress">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="buttonFetch">
-              <property name="text">
-               <string>Hämta</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_2">
-           <attribute name="title">
-            <string>Bläddra</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <widget class="QWebView" name="webView">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>400</height>
-               </size>
-              </property>
-              <property name="url">
-               <url>
-                <string>about:blank</string>
-               </url>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="editAdress">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="buttonFetch">
+             <property name="text">
+              <string>Hämta</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupMessages">
-          <property name="title">
-           <string/>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <widget class="QFrame" name="groupMessages"/>
         </item>
         <item>
          <widget class="QGroupBox" name="groupDownloads">
@@ -148,7 +114,7 @@
        <zorder>groupNews</zorder>
        <zorder>groupMessages</zorder>
        <zorder>groupDownloads</zorder>
-       <zorder>adressTabWidget</zorder>
+       <zorder>adressGroupBox</zorder>
       </widget>
       <widget class="QWidget" name="settingsTab">
        <attribute name="title">
@@ -239,13 +205,6 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

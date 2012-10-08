@@ -2,6 +2,7 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QLibraryInfo>
+#include <QDebug>
 
 #include "gui/mainwindow.h"
 

@@ -50,7 +50,6 @@ private:
 private slots:
     void streamsFound();
     void noStreamsFound();
-    void adressTabChanged(int index);
     void tabChanged(int index);
     void linkClicked(QUrl url);
     void fetch();

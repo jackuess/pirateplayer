@@ -5,7 +5,6 @@
 #include <QIODevice>
 #include <QNetworkReply>
 
-
 #include "archive.h"
 #include "archive_entry.h"
 
@@ -19,13 +18,11 @@ signals:
     void finished();
 
 public slots:
-    void extractToDir(const char *archivePath, const char *outDir);
     void extractToDir(QByteArray *data, const QString &outDir = "");
     void extractToDir(QIODevice *data, const QString &outDir = "");
     void extractToDir(QNetworkReply *data, const QString &outDir = "");
 
 private slots:
-    void extractToDirLocal(const QString archivePath = "", const QString &outDir = "");
     void extractToDirQBA(QByteArray *data, const QString &outDir = "");
     void extractToDirQIO(QIODevice *data, const QString &outDir = "");
 

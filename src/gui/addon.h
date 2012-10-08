@@ -1,6 +1,10 @@
 #ifndef ADDON_H
 #define ADDON_H
 
+
+#include "windows.h"
+#include "winbase.h"
+
 #include "mainwindow.h"
 
 #include <QWidget>

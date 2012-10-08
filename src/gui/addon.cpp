@@ -1,3 +1,7 @@
+
+#include "windows.h"
+#include "winbase.h"
+
 #include "addon.h"
 
 #include <QUrl>
@@ -14,6 +18,7 @@
 #include <QFileInfoList>
 #include <QtDeclarative>
 #include <QLabel>
+#include <QDir>
 
 #include "../extra/archiveextractor.h"
 #include "../network/piratenetworkaccessmanager.h"
@@ -24,7 +29,7 @@ Addon::Addon(const QString &name, QNetworkAccessManager *nam, QSettings *setting
     this->nam = nam;
     this->settings = settingsObj;
     this->name = name;
-    this->dir = QString("%1/addons/%2").arg(QDesktopServices::storageLocation(QDesktopServices::DataLocation), name);
+    this->dir = QDir::fromNativeSeparators(QString("%1/addons/%2").arg(QDesktopServices::storageLocation(QDesktopServices::DataLocation), name));
     qDebug() << "Setting addon directory:" << this->dir;
     this->mainWindow = mainWindow;
 
@@ -79,7 +84,9 @@ void Addon::load() {
     QDeclarativeContext *rootContext = engine->rootContext();
 
     engine->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
-    rootContext->setContextProperty("cwd", this->dir);
+
+    QString cwd = !this->dir.startsWith('/') ? this->dir = "/" + this->dir : this->dir;
+    rootContext->setContextProperty("cwd", cwd);
     rootContext->setContextProperty("mainWindow", this->mainWindow);
 
     view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
