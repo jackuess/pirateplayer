@@ -67,18 +67,14 @@ MOC_DIR = build/moc/
 UI_DIR = build/ui/
 
 win32 {
-    #INCLUDEPATH += /usr/include
     INCLUDEPATH += "C:/Users/chucky/include"
     INCLUDEPATH += "C:/Users/chucky/src/tidy-html5/include"
-    #INCLUDEPATH += "C:/MinGW/include"
     INCLUDEPATH += "C:/Program Files/libarchive/include"
-    #LIBS += -L"/usr/lib"
+
     LIBS += -L"C:/Program Files/rtmpdump-git" -lrtmp -lws2_32
     LIBS += -L"C:/Users/chucky/src/tidy-html5/src/.libs" -ltidy
-    #LIBS += -L"C:/MinGW/lib"
-    LIBS += -L"C:/Program Files/libarchive/lib"
-    #LIBS += -lkernel32 -luser32 -lpsapi
-    LIBS += -larchive
+    LIBS += -L"C:/Program Files/libarchive/lib" -larchive
+
     RC_FILE = pirateplayer.rc
 }
 unix {

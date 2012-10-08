@@ -1,7 +1,3 @@
-
-#include "windows.h"
-#include "winbase.h"
-
 #include "addon.h"
 
 #include <QUrl>

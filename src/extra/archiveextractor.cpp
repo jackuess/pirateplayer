@@ -1,10 +1,6 @@
 #include <QDebug>
 #include <QIODevice>
 
-
-#include "windows.h"
-#include "winbase.h"
-
 #include "time.h"
 
 #include "archiveextractor.h"
