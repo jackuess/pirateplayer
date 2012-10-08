@@ -34,17 +34,8 @@ Section "Pirateplayer (obligatorisk)"
   File "build\target\*.dll"
   File "LICENSE"
 
-  #SetOutPath $INSTDIR\phonon_backend
-  #File "build\target\phonon_backend\*.*"
-
-  #SetOutPath $INSTDIR\plugins
-  #File "build\target\plugins\*.*"
-
-  SetOutPath $INSTDIR\iconengines
-  File "build\target\iconengines\*.*"
-
-  SetOutPath $INSTDIR\imageformats
-  File "build\target\imageformats\*.*"
+  SetOutPath $INSTDIR\QtDesktop
+  File /r "build\target\QtDesktop\*"
   
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\Pirateplayer "Install_Dir" "$INSTDIR"
@@ -81,20 +72,13 @@ Section "Uninstall"
   Delete $INSTDIR\*.exe
   Delete $INSTDIR\LICENSE
   Delete "$INSTDIR\*.dll"
-  #Delete "$INSTDIR\phonon_backend\*.*"
-  #Delete "$INSTDIR\plugins\*.*"
-  Delete "$INSTDIR\imageformats\*.*"
-  Delete "$INSTDIR\iconengines\*.*"
+  RMDir /r "$INSTDIR\QtDesktop"
 
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\Pirateplayer\*.*"
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\Pirateplayer"
-  #RMDir "$INSTDIR\phonon_backend"
-  #RMDir "$INSTDIR\plugins"
-  RMDir "$INSTDIR\imageformats"
-  RMDir "$INSTDIR\iconengines"
   RMDir "$INSTDIR"
 
 SectionEnd
