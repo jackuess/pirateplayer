@@ -79,8 +79,9 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
     if (fileName != nullFileName) {
         QString suffix = model->data(model->index(0, StreamTableModel::SuffixHintColumn), Qt::UserRole).toString();
         suffix = !suffix.isEmpty() ? '.' % suffix : suffix;
-        editFileName->setFilePath(settings["start_dir"].toString() % fileName % suffix);
-        editSubFileName->setFilePath(settings["start_dir"].toString() % fileName);
+        bool addSlash = !settings["start_dir"].toString().endsWith(QDir::separator());
+        editFileName->setFilePath(settings["start_dir"].toString() % (addSlash ? (QString)QDir::separator() : "") % fileName % suffix);
+        editSubFileName->setFilePath(settings["start_dir"].toString() % (addSlash ? (QString)QDir::separator() : "") % fileName);
     }
     else {
         editFileName->setFilePath(settings["start_dir"].toString());
