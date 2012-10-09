@@ -68,7 +68,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
     QString filenameTemplate = settings.value("filename_template").toString();
     const QStringList templateVars = QStringList() << "title" << "name" << "time" << "season" << "description";
     for (int i=0; i<templateVars.count(); i++)
-        filenameTemplate.replace("%" % templateVars.at(i), "%" % QString::number(i));
+        filenameTemplate.replace("%" % templateVars.at(i) % "%", "%" % QString::number(i));
     QString fileName = filenameTemplate;
     QVariantMap metaData = model->metaData();
     for (int i=0; i<templateVars.count(); i++)

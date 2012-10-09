@@ -167,7 +167,7 @@
           <item row="4" column="1">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Variabler: %title, %name, %season, %time&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>Variabler: %title%, %name%, %season%, %time%, %description%.</string>
             </property>
            </widget>
           </item>

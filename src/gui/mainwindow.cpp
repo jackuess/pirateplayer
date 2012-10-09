@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     readUserSettings();
     setupTwitter();
 
-    QNetworkReply *addonReply = qnam->get(QNetworkRequest(QUrl("http://pirateplay.se:8080/static/pirateplayer_addons/list")));
+    QNetworkReply *addonReply = qnam->get(QNetworkRequest(QUrl("http://pirateplay.se/static/pirateplayer_addons/list")));
     connect(addonReply, SIGNAL(finished()), SLOT(setupAddons()));
 
     resize(settings.value("MainWindow/size", QSize(900, 580)).toSize());
@@ -165,7 +165,7 @@ void MainWindow::readUserSettings() {
     userSettings["player_cmd"] = settings.value("Location/player_cmd", "avplay \"%0\"");
 #endif
     userSettings["start_dir"] = settings.value("Location/start_dir", QDir::toNativeSeparators(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
-    userSettings["filename_template"] = settings.value("Location/filename_template", "%name_-_%title");
+    userSettings["filename_template"] = settings.value("Location/filename_template", "%name%_-_%title%");
 
     ui->editPlayer->setText(userSettings["player_cmd"].toString());
     ui->editStartDir->setText(userSettings["start_dir"].toString());

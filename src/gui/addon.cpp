@@ -29,7 +29,7 @@ Addon::Addon(const QString &name, QNetworkAccessManager *nam, QSettings *setting
     qDebug() << "Setting addon directory:" << this->dir;
     this->mainWindow = mainWindow;
 
-    QNetworkReply *reply = nam->get(QNetworkRequest(QUrl(QString("http://pirateplay.se:8080/static/pirateplayer_addons/%1/package_info").arg(name))));
+    QNetworkReply *reply = nam->get(QNetworkRequest(QUrl(QString("http://pirateplay.se/static/pirateplayer_addons/%1/package_info").arg(name))));
     connect(reply, SIGNAL(finished()), SLOT(checkForUpdate()));
 
     setLayout(new QVBoxLayout(this));
@@ -55,7 +55,7 @@ void Addon::checkForUpdate() {
 }
 
 void Addon::download() {
-    QNetworkReply *reply = nam->get(QNetworkRequest(QUrl(QString("http://pirateplay.se:8080/static/pirateplayer_addons/%1/package.tar.gz").arg(name))));
+    QNetworkReply *reply = nam->get(QNetworkRequest(QUrl(QString("http://pirateplay.se/static/pirateplayer_addons/%1/package.tar.gz").arg(name))));
     connect(reply, SIGNAL(finished()), SLOT(upgrade()));
 }
 
