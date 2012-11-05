@@ -45,7 +45,7 @@ void TwitterFeedModel::setScreenName(QString name) {
 
     this->screenName = name;
 
-    url.setUrl("https://api.twitter.com/1/statuses/user_timeline.rss");
+    url.setUrl("http://api.twitter.com/1/statuses/user_timeline.rss");
     url.addQueryItem("screen_name", this->screenName);
     url.addQueryItem("count", "200");
 
