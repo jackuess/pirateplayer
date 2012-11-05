@@ -1,6 +1,6 @@
 Makefile
 build/
-*.pro.user
+*.pro.user*
 qrc_resources.cpp
 Makefile.Debug
 Makefile.Release

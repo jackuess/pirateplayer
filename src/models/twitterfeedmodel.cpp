@@ -40,12 +40,18 @@ QVariant TwitterFeedModel::data(const QModelIndex &index, int role) const {
 }
 
 void TwitterFeedModel::setScreenName(QString name) {
-    screenName = name;
-    QUrl url = QUrl("http://twitter.com/statuses/user_timeline.rss");
-    url.addQueryItem("screen_name", screenName);
+    QUrl url;
+    QNetworkRequest req;
+
+    this->screenName = name;
+
+    url.setUrl("https://api.twitter.com/1/statuses/user_timeline.rss");
+    url.addQueryItem("screen_name", this->screenName);
     url.addQueryItem("count", "200");
 
-    feed = network->get(QNetworkRequest(url));
+    req.setUrl(url);
+
+    feed = network->get(req);
     connect(feed, SIGNAL(finished()), this, SLOT(feedDownloaded()));
 }
 
@@ -55,18 +61,20 @@ void TwitterFeedModel::feedDownloaded() {
     doc.setContent(feed);
     QDomNodeList tweetList = doc.elementsByTagName("item");
 
-    beginInsertRows(QModelIndex(), 0, tweetList.count()-1);
-    for(int i = 0; i<tweetList.count(); i++) {
-        QHash<QString,QString> s = QHash<QString,QString>();
+    if (tweetList.count() > 0) {
+        beginInsertRows(QModelIndex(), 0, tweetList.count()-1);
+        for(int i = 0; i<tweetList.count(); i++) {
+            QHash<QString,QString> s = QHash<QString,QString>();
 
-        s.insert("text", tweetList.item(i).namedItem("description").toElement().text().remove(0, offset).replace(QRegExp("(https?://\\S+)"), "<a href=\"\\1\">\\1</a>"));
-        s.insert("pubdate", tweetList.item(i).namedItem("pubDate").toElement().text());
-        s.insert("link", tweetList.item(i).namedItem("link").toElement().text());
+            s.insert("text", tweetList.item(i).namedItem("description").toElement().text().remove(0, offset).replace(QRegExp("(https?://\\S+)"), "<a href=\"\\1\">\\1</a>"));
+            s.insert("pubdate", tweetList.item(i).namedItem("pubDate").toElement().text());
+            s.insert("link", tweetList.item(i).namedItem("link").toElement().text());
 
-        tweets.append(s);
+            tweets.append(s);
+        }
+        endInsertRows();
+        emit dataChanged(createIndex(0, 0), createIndex(tweetList.count(), 2));
     }
-    endInsertRows();
-    emit dataChanged(createIndex(0, 0), createIndex(tweetList.count(), 2));
 
     feed->deleteLater();
 }
