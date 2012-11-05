@@ -13,7 +13,6 @@
 #include <QDebug>
 #include <QProcess>
 #include <QMessageBox>
-#include <QLabel>
 #include <QStringBuilder>
 
 SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString, QVariant> &settings, const QString &streamTitle, QWidget *parent):
@@ -40,6 +39,8 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
     editSubUrl = new QLineEdit(this);
     editSubUrl->hide();
     editSubUrl->setEnabled(false);
+    fileNameInfo = new QLabel("Ange ett giltigt filnamn att ladda ner till", this);
+    fileNameInfo->setForegroundRole(QPalette::BrightText);
 
     QFrame *line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);
@@ -102,6 +103,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
     formLayout->addRow("", editStreamUrl);
     formLayout->addRow(checkSubtitles, editSubFileName);
     formLayout->addRow("", editSubUrl);
+    formLayout->addRow("", fileNameInfo);
 
     buttonLayout->addWidget(checkEdit);
     buttonLayout->addStretch(1);
@@ -150,10 +152,14 @@ void SaveStreamDialog::comboActivated(int index = 0) {
 }
 
 void SaveStreamDialog::enableSubmit() {
+    bool enable;
     if (checkSubtitles->isChecked())
-        buttonSubmit->setEnabled(editFileName->isValid() && editSubFileName->isValid());
+        enable = editFileName->isValid() && editSubFileName->isValid();
     else
-        buttonSubmit->setEnabled(editFileName->isValid());
+        enable = editFileName->isValid();
+
+    buttonSubmit->setEnabled(enable);
+    fileNameInfo->setVisible(!enable);
 }
 
 void SaveStreamDialog::play() {

@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QLabel>
 
 class SaveStreamDialog : public QDialog
 {
@@ -37,6 +38,7 @@ private:
     QLineEdit *editSubUrl;
     QPushButton *buttonSubmit;
     QHash<QString,QVariant> settings;
+    QLabel *fileNameInfo;
 
 private slots:
     void comboActivated(int index);
