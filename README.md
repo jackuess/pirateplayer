@@ -4,7 +4,9 @@ Pirateplayer
 Build instructions
 -------------------
 
-Pirateplayer depends upon [Qt4](http://qt.digia.com/), [librtmp](http://rtmpdump.mplayerhq.hu/), [libarchive](http://libarchive.github.com/), [libtidy-html5](http://github.com/w3c/tidy-html5), [Ffmpeg](http://ffmpeg.org/) and the [Pirateplay.se API](http://pirateplay.se/api/manual.html).
+Pirateplayer depends upon [Qt4](http://qt.digia.com/), [Qt Desktop Components](http://qt-project.org/wiki/QtDesktopComponents), 
+[librtmp](http://rtmpdump.mplayerhq.hu/), 
+[libarchive](http://libarchive.github.com/), [libtidy-html5](http://github.com/w3c/tidy-html5), [Ffmpeg](http://ffmpeg.org/) and the [Pirateplay.se API](http://pirateplay.se/api/manual.html).
 
 ### Unix/Linux:
 
