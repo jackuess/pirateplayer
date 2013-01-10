@@ -63,7 +63,7 @@ void RtmpSession::run() {
             RTMP_UpdateBufferMS(rtmp);
         }
 
-        if (rtmp->m_read.timestamp > 0)
+        if (rtmp->m_read.timestamp > 0 && duration > 0)
             emit downloadProgress(size, 1000*duration * (size / rtmp->m_read.timestamp));
         //QTimer::singleShot( 0, this, SIGNAL(readyRead()) );
         emit readyRead();
