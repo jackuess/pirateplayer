@@ -28,6 +28,7 @@ cleanup_sockets()
 PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl, RtmpResume resumeData) :
     QNetworkReply(parent)
 {
+    started = false;
     rtmpBufferTime = DEF_BUFTIME;
 
     init_sockets();
@@ -55,6 +56,7 @@ PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl, RtmpRes
                     rtmp->m_read.nInitialFrameSize = resumeData.nInitialFrameSize;
                 }
                 rtmpSession = new RtmpSession(this, rtmp, buffer);
+                started = true;
                 connect(rtmpSession, SIGNAL(downloadProgress(qint64,qint64)), this, SIGNAL(downloadProgress(qint64,qint64)));
                 connect(rtmpSession, SIGNAL(readyRead()), this, SIGNAL(readyRead()));
                 connect(rtmpSession, SIGNAL(finished()), this, SIGNAL(finished()));
@@ -65,12 +67,14 @@ PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl, RtmpRes
 }
 
 PirateNetworkReply::~PirateNetworkReply() {
-    if (rtmpSession->isRunning()) {
-        rtmpSession->abort();
-        emit readyRead();
-        rtmpSession->wait();
+    if (started) {
+        if (rtmpSession->isRunning()) {
+            rtmpSession->abort();
+            emit readyRead();
+            rtmpSession->wait();
+        }
+        delete rtmpSession;
     }
-    delete rtmpSession;
     delete buffer;
     RTMP_Free(rtmp);
 }
@@ -107,7 +111,7 @@ qint64 PirateNetworkReply::bytesAvailable() const {
 }
 
 void PirateNetworkReply::abort() {
-    if (rtmpSession->isRunning()) {
+    if (started && rtmpSession->isRunning()) {
         rtmpSession->abort();
         emit readyRead();
         //read(bytesAvailable());

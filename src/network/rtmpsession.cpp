@@ -65,14 +65,17 @@ void RtmpSession::run() {
 
         if (rtmp->m_read.timestamp > 0 && duration > 0)
             emit downloadProgress(size, 1000*duration * (size / rtmp->m_read.timestamp));
+        else
+            emit downloadProgress(size, 0);
         //QTimer::singleShot( 0, this, SIGNAL(readyRead()) );
-        emit readyRead();
+        if (nRead > 0)
+            emit readyRead();
 
         if (RTMP_IsTimedout(rtmp)) {
             qDebug() << "Trying to reconnect";
             RTMP_ToggleStream(rtmp);
         }
-    } while (!toAbort && nRead > -1 && RTMP_IsConnected(rtmp));
+    } while (!toAbort && nRead > 0 && RTMP_IsConnected(rtmp));
 
     if (!toAbort)
         emit finished();

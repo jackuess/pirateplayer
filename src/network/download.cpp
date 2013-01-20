@@ -18,7 +18,10 @@ void Download::downloadToFile(QString outFileName)
 {
     AbstractDownload::downloadToFile(outFileName);
 
-    reply = nam->get(QNetworkRequest(url));
+    QNetworkRequest req;
+    req.setUrl(url);
+
+    reply = nam->get(req);
 
     outFile = new QFile(this->outFileName, this);
     outFile->open(QIODevice::WriteOnly);
@@ -36,7 +39,11 @@ void Download::abort() {
 }
 
 void Download::onProgress(qint64 recieved, qint64 total) {
-    downloadProgress = (int)((double)recieved/(double)total*100);
+    if (total > 0)
+        downloadProgress = (int)((double)recieved/(double)total*100);
+    else
+        downloadProgress = -1;
+    bytesRecieved = recieved;
     emit progress();
 }
 
@@ -53,6 +60,7 @@ void Download::onFinished() {
 }
 
 void Download::onNetworkError(QNetworkReply::NetworkError e) {
+    qDebug() << reply->errorString();
     delete reply;
     status = AbstractDownload::Error;
     emit statusChanged();

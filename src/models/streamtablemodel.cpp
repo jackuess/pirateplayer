@@ -11,35 +11,39 @@ StreamTableModel::StreamTableModel(QNetworkReply *xmlData, QObject *parent) :
 }
 
 void StreamTableModel::onData() {
-    QDomDocument doc;
-    doc.setContent(this->dataDevice);
+    if (this->dataDevice->error() == QNetworkReply::NoError) {
+        QDomDocument doc;
+        doc.setContent(this->dataDevice);
 
-    QDomNodeList streams = doc.elementsByTagName("stream");
-    int lastRow = streams.count()-1;
+        QDomNodeList streams = doc.elementsByTagName("stream");
+        int lastRow = streams.count()-1;
 
-    if (lastRow > -1) {
-        beginInsertRows(QModelIndex(), 0, lastRow);
+        if (lastRow > -1) {
+            beginInsertRows(QModelIndex(), 0, lastRow);
 
-        for(int i = 0; i<=lastRow; i++) {
-            QStringList row;
-            QDomNamedNodeMap attributes = streams.item(i).attributes();
-            QString quality = attributes.namedItem("quality").toAttr().value();
-            QString version = attributes.namedItem("required-player-version").toAttr().value();
+            for(int i = 0; i<=lastRow; i++) {
+                QStringList row;
+                QDomNamedNodeMap attributes = streams.item(i).attributes();
+                QString quality = attributes.namedItem("quality").toAttr().value();
+                QString version = attributes.namedItem("required-player-version").toAttr().value();
 
-            row << (quality == "" ? QString::fromUtf8("Okänd") : quality);
-            row << streams.item(i).toElement().text();
-            row << attributes.namedItem("subtitles").toAttr().value();
-            row << attributes.namedItem("suffix-hint").toAttr().value();
-            row << (version == "" ? "1" : version);
+                row << (quality == "" ? QString::fromUtf8("Okänd") : quality);
+                row << streams.item(i).toElement().text();
+                row << attributes.namedItem("subtitles").toAttr().value();
+                row << attributes.namedItem("suffix-hint").toAttr().value();
+                row << (version == "" ? "1" : version);
 
-            streamList.append(row);
+                streamList.append(row);
+            }
+
+            endInsertRows();
+            emit dataChanged(createIndex(0, 0), createIndex(lastRow, COLUMN_COUNT-1));
+            emit finished();
         }
-
-        endInsertRows();
-        emit dataChanged(createIndex(0, 0), createIndex(lastRow, COLUMN_COUNT-1));
-        emit finished();
-    }
-    else {
+        else {
+            emit noStreamsFound();
+        }
+    } else {
         emit noStreamsFound();
     }
 

@@ -8,7 +8,7 @@
 #include <QColor>
 #include <QDir>
 
-QStringList DownloadListModel::headers = QStringList() << "Status" << "Filnamn" << QString::fromUtf8("Förlopp");
+QStringList DownloadListModel::headers = QStringList() << "Status" << "Filnamn" << QString::fromUtf8("Förlopp") << "Nerladdade (MB)";
 QStringList DownloadListModel::statusText = QStringList() << "Inte startad" << "Laddar ned" << QString::fromUtf8("Färdig") << "Fel uppstod" << "Avbruten";
 int DownloadListModel::statusColor[5] = {Qt::black, Qt::darkBlue, Qt::darkGreen, Qt::red, Qt::darkRed};
 
@@ -31,13 +31,13 @@ int DownloadListModel::columnCount(const QModelIndex &parent) const {
 
 QVariant DownloadListModel::data(const QModelIndex &index, int role) const {
     AbstractDownload *item = downloads[index.row()];
+    int progress;
 
     if (!index.isValid())
         return QVariant();
 
     if (role == Qt::UserRole && index.column() == 0)
         return QVariant(item->getStatus());
-
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case StatusColumn:
@@ -45,7 +45,13 @@ QVariant DownloadListModel::data(const QModelIndex &index, int role) const {
         case FileNameColumn:
             return QVariant(QDir::toNativeSeparators(item->getFileName()));
         case ProgressColumn:
-            return QVariant(item->getProgress());
+            progress = item->getProgress();
+            if (progress > -1)
+                return QVariant(progress);
+            else
+                return QVariant(QString::fromUtf8("Okänt"));
+        case DownloadedSizeColumn:
+            return QVariant(item->getBytesRecieved() / 1048576);
         }
     }
 
@@ -94,7 +100,10 @@ bool DownloadListModel::abortDownload(int row) {
 }
 
 void DownloadListModel::onProgress() {
-    QModelIndex index = createIndex(downloads.indexOf((Download*)QObject::sender()), ProgressColumn, 0);
+    int row = downloads.indexOf((Download*)QObject::sender());
+    QModelIndex index = createIndex(row, ProgressColumn, 0);
+    emit dataChanged(index, index);
+    index = createIndex(row, DownloadedSizeColumn, 0);
     emit dataChanged(index, index);
 }
 

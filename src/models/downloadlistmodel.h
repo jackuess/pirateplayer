@@ -28,7 +28,8 @@ class DownloadListModel : public QAbstractTableModel
             StatusColumn = 0,
             FileNameColumn,
             ProgressColumn,
-            COLUMN_COUNT = 3
+            DownloadedSizeColumn,
+            COLUMN_COUNT = 4
         };
 
  private:

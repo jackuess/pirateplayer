@@ -41,6 +41,7 @@ private:
     RTMP * rtmp;
     ring_buffer *buffer;
     uint32_t rtmpBufferTime;
+    bool started;
 };
 
 #endif // PIRATENETWORKREPLY_H

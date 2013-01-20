@@ -6,7 +6,7 @@
 QRegExp SystemDownload::rxDuration = QRegExp("Duration:\\s(\\d\\d):(\\d\\d):(\\d\\d)");
 
 #ifndef UBUNTU_12_04
-QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d\\d):(\\d\\d):(\\d\\d)");
+QRegExp SystemDownload::rxCurrTime = QRegExp("size=\\s*(\\d+)kB\\stime=(\\d\\d):(\\d\\d):(\\d\\d)");
 #else
 QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d+)");
 #endif
@@ -87,12 +87,15 @@ void SystemDownload::capCurrentTime() {
     if (pos > -1) {
         QTime nullTime = QTime(0, 0, 0);
 #ifndef UBUNTU_12_04
-        QTime currTime = QTime(rxCurrTime.cap(1).toInt(), rxCurrTime.cap(2).toInt(), rxCurrTime.cap(3).toInt());
+        int kBytes = rxCurrTime.cap(1).toInt();
+        QTime currTime = QTime(rxCurrTime.cap(2).toInt(), rxCurrTime.cap(3).toInt(), rxCurrTime.cap(4).toInt());
 #else
+        int kBytes = 0;
         QTime currTime = nullTime.addSecs(rxCurrTime.cap(1).toInt());
         qDebug() << rxCurrTime.cap(1) << currTime;
 #endif
         downloadProgress = (int)((double)currTime.secsTo(nullTime) / (double)duration.secsTo(nullTime) * 100);
+        bytesRecieved = kBytes * 1024;
         stdErrBuffer = "";
         emit progress();
     }
