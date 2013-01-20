@@ -6,8 +6,8 @@
 TidyNetworkReply::TidyNetworkReply(const QNetworkRequest &req, QObject *parent) :
     QNetworkReply(parent)
 {
-    output = {0};
-    errbuf = {0};
+    output = TidyBuffer();
+    errbuf = TidyBuffer();
     tdoc = tidyCreate();
 
     offset = 0;
