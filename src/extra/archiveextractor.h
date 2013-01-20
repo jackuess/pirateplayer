@@ -8,6 +8,10 @@
 #include "archive.h"
 #include "archive_entry.h"
 
+#ifdef __APPLE__
+  define off64_t off_t
+#endif
+
 class ArchiveExtractor : public QObject
 {
     Q_OBJECT
