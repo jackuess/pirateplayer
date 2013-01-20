@@ -208,6 +208,10 @@ void MainWindow::setupAddons() {
     if (reply->error() == QNetworkReply::NoError) {
         QStringList addons = ((QString)reply->readAll()).split("\n", QString::KeepEmptyParts);
         for (int i = 0; i < addons.count(); i++) {
+            #ifdef Q_WS_MAC
+            if (addons.at(i) == "browse")
+                continue;
+            #endif
             Addon *a = new Addon(addons.at(i), this->qnam, &this->settings, this, ui->tabWidget);
             connect(a, SIGNAL(titleSet(QString)), SLOT(setAddonTitle(QString)));
             ui->tabWidget->insertTab(1, a, "");
