@@ -9,7 +9,7 @@
 #include "archive_entry.h"
 
 #ifdef Q_WS_MAC
-  typedef off64_t off_t;
+  #define off64_t off_t
 #endif
 
 class ArchiveExtractor : public QObject
