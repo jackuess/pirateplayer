@@ -8,7 +8,7 @@
 #include "archive.h"
 #include "archive_entry.h"
 
-#ifdef __APPLE__
+#ifdef Q_WS_MAC
   typedef off64_t off_t;
 #endif
 
