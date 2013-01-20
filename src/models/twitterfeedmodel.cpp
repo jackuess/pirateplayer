@@ -55,6 +55,16 @@ void TwitterFeedModel::setScreenName(QString name) {
     connect(feed, SIGNAL(finished()), this, SLOT(feedDownloaded()));
 }
 
+QHash<QString,QString> TwitterFeedModel::createTweet(const QString &text, const QString &link, const QString &pubdate) {
+    QHash<QString,QString> s = QHash<QString,QString>();
+
+    s.insert("text", text);
+    s.insert("pubdate", link);
+    s.insert("link", pubdate);
+
+    return s;
+}
+
 void TwitterFeedModel::feedDownloaded() {
     int offset = screenName.length() + 2;
     QDomDocument doc;
@@ -64,16 +74,17 @@ void TwitterFeedModel::feedDownloaded() {
     if (tweetList.count() > 0) {
         beginInsertRows(QModelIndex(), 0, tweetList.count()-1);
         for(int i = 0; i<tweetList.count(); i++) {
-            QHash<QString,QString> s = QHash<QString,QString>();
-
-            s.insert("text", tweetList.item(i).namedItem("description").toElement().text().remove(0, offset).replace(QRegExp("(https?://\\S+)"), "<a href=\"\\1\">\\1</a>"));
-            s.insert("pubdate", tweetList.item(i).namedItem("pubDate").toElement().text());
-            s.insert("link", tweetList.item(i).namedItem("link").toElement().text());
-
-            tweets.append(s);
+            tweets.append(createTweet(tweetList.item(i).namedItem("description").toElement().text().remove(0, offset).replace(QRegExp("(https?://\\S+)"), "<a href=\"\\1\">\\1</a>"),
+                                      tweetList.item(i).namedItem("pubDate").toElement().text(),
+                                      tweetList.item(i).namedItem("link").toElement().text()));
         }
         endInsertRows();
         emit dataChanged(createIndex(0, 0), createIndex(tweetList.count(), 2));
+    } else {
+        beginInsertRows(QModelIndex(), 0, 0);
+        tweets.append(createTweet("Inga nyheter funna", "", ""));
+        endInsertRows();
+        emit dataChanged(createIndex(0, 0), createIndex(1, 2));
     }
 
     feed->deleteLater();

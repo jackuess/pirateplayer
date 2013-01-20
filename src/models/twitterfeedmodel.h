@@ -32,6 +32,8 @@ private slots:
     void feedDownloaded();
 
 private:
+    QHash<QString,QString> createTweet(const QString &text, const QString &link, const QString &pubdate);
+
     QList<QHash<QString,QString> > tweets;
     QNetworkAccessManager *network;
     QNetworkReply *feed;

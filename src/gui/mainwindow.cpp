@@ -205,11 +205,13 @@ bool MainWindow::versionNumberGreater(QString leftHand, QString rightHand) {
 
 void MainWindow::setupAddons() {
     QNetworkReply *reply = (QNetworkReply*)QObject::sender();
-    QStringList addons = ((QString)reply->readAll()).split("\n", QString::KeepEmptyParts);
-    for (int i = 0; i < addons.count(); i++) {
-        Addon *a = new Addon(addons.at(i), this->qnam, &this->settings, this, ui->tabWidget);
-        connect(a, SIGNAL(titleSet(QString)), SLOT(setAddonTitle(QString)));
-        ui->tabWidget->insertTab(1, a, "");
+    if (reply->error() == QNetworkReply::NoError) {
+        QStringList addons = ((QString)reply->readAll()).split("\n", QString::KeepEmptyParts);
+        for (int i = 0; i < addons.count(); i++) {
+            Addon *a = new Addon(addons.at(i), this->qnam, &this->settings, this, ui->tabWidget);
+            connect(a, SIGNAL(titleSet(QString)), SLOT(setAddonTitle(QString)));
+            ui->tabWidget->insertTab(1, a, "");
+        }
     }
 }
 
