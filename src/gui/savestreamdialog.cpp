@@ -28,7 +28,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
 
     editFileName = new FilePathEdit(this);
     QLabel *suffixHint = new QLabel(this);
-    checkSubtitles = new QCheckBox("Ladda ner undertexter till:", this);
+    checkSubtitles = new QCheckBox("Ladda ner undertexter till (filnamn):", this);
     checkSubtitles->hide();
     editSubFileName = new FilePathEdit(this);
     editSubFileName->setEnabled(false);
@@ -97,7 +97,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
 
     comboQuality->setModel(model);
 
-    formLayout->addRow("Ladda ner till:", editFileName);
+    formLayout->addRow("Filnamn:", editFileName);
     formLayout->addRow("", suffixHint);
     formLayout->addRow("Kvalitet:", comboQuality);
     formLayout->addRow("", editStreamUrl);
