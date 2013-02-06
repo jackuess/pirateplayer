@@ -6,8 +6,8 @@
 TidyNetworkReply::TidyNetworkReply(const QNetworkRequest &req, QObject *parent) :
     QNetworkReply(parent)
 {
-    output = TidyBuffer();
-    errbuf = TidyBuffer();
+    output = {0};
+    errbuf = {0};
     tdoc = tidyCreate();
 
     offset = 0;
@@ -15,16 +15,29 @@ TidyNetworkReply::TidyNetworkReply(const QNetworkRequest &req, QObject *parent) 
     nam = new QNetworkAccessManager();
     reply = nam->get(req);
     connect(reply, SIGNAL(finished()), this, SLOT(tidyUp()));
+    this->setRequest(req);
 }
 
 TidyNetworkReply::~TidyNetworkReply() {
     delete nam;
-    tidyBufFree( &output );
-    tidyBufFree( &errbuf );
-    tidyRelease( tdoc );
+    if (!this->attribute(QNetworkRequest::RedirectionTargetAttribute).isValid()) {
+        tidyBufFree( &output );
+        tidyBufFree( &errbuf );
+        tidyRelease( tdoc );
+    }
 }
 
 void TidyNetworkReply::tidyUp() {
+    QUrl redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+    if (redirect.isValid()) {
+        redirect.setScheme("tidy");
+        setAttribute(QNetworkRequest::RedirectionTargetAttribute, QVariant(redirect));
+
+        emit finished();
+        reply->deleteLater();
+        return;
+    }
+
     int rc = -1;
     Bool ok;
 
@@ -46,17 +59,19 @@ void TidyNetworkReply::tidyUp() {
     if ( rc >= 0 )
         rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
 
-    if ( rc >= 0 )
-    {
-        if ( rc > 0 )
+    if ( rc >= 0 ) {
+        if ( rc > 0 ) {
             ;//printf( "\nDiagnostics:\n\n%s", errbuf.bp );
+        }
+    } else {
+            ;//printf( "A severe error (%d) occurred.\n", rc );
     }
-    else
-        ;//printf( "A severe error (%d) occurred.\n", rc );
 
     open(ReadOnly);
     emit readyRead();
     emit finished();
+
+    reply->deleteLater();
     //QTimer::singleShot(0, this, SIGNAL(readyRead()));
     //QTimer::singleShot(0, this, SIGNAL(finished()));
 }
@@ -73,6 +88,14 @@ qint64 TidyNetworkReply::readData(char *data, qint64 maxSize) {
     qint64 number = qMin(maxSize, output.size - offset);
     memcpy(data, output.bp + offset, number);
     offset += number;
+
+//    qDebug() << this->request().url().toString();
+//    if (this->request().url().toString().contains("kanal9")) {
+//        QFile tmp("/home/chucky/tmp.html");
+//        tmp.open(QIODevice::WriteOnly | QIODevice::Append);
+//        tmp.write(data);
+//        tmp.close();
+//    }
 
     return number;
 }
