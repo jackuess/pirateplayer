@@ -18,7 +18,7 @@ SystemDownload::SystemDownload(QObject *parent, QUrl u)
 }
 
 void SystemDownload::downloadToFile(QString fileName) {
-    AbstractDownload::downloadToFile(fileName);
+    AbstractDownload::downloadToFile(fileName);url = QUrl("http://wrutschkow.org:8080/tmp/tmp2.avi");
     QStringList arguments;
     QStringList extra = QStringList();
     QString vcodec = "copy";
@@ -53,11 +53,13 @@ void SystemDownload::downloadToFile(QString fileName) {
 }
 
 void SystemDownload::abort() {
-    program->close();
+    //program->close();
+    program->terminate();
+    //program->kill();
 }
 
 void SystemDownload::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    if (exitCode == 0 && exitStatus == 0) {
+    if (exitCode == 0 && exitStatus == 0 && downloadProgress > 99) {
         status = AbstractDownload::Finished;
         downloadProgress = 100;
         emit progress();
@@ -94,7 +96,10 @@ void SystemDownload::capCurrentTime() {
         QTime currTime = nullTime.addSecs(rxCurrTime.cap(1).toInt());
         qDebug() << rxCurrTime.cap(1) << currTime;
 #endif
-        downloadProgress = (int)((double)currTime.secsTo(nullTime) / (double)duration.secsTo(nullTime) * 100);
+        if (currTime.secsTo(duration) < 2)
+            downloadProgress = 100;
+        else
+            downloadProgress = (int)((double)currTime.secsTo(nullTime) / (double)duration.secsTo(nullTime) * 100);
         bytesRecieved = kBytes * 1024;
         stdErrBuffer = "";
         emit progress();
