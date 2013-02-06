@@ -141,10 +141,13 @@ void MainWindow::setupTwitter() {
     filterModel->setFilterKeyColumn(0);
 
     ui->tweetText->setOpenExternalLinks(true);
+    ui->tweetDate->setOpenExternalLinks(true);
+    ui->tweetDate->setStyleSheet(QString("color: %0").arg(QPalette().color(QPalette::Dark).name()));
 
     twitterWidgetMapper = new QDataWidgetMapper(this);
     twitterWidgetMapper->setModel(filterModel);
     twitterWidgetMapper->addMapping(ui->tweetText, 0, "text");
+    twitterWidgetMapper->addMapping(ui->tweetDate, 1, "text");
     twitterWidgetMapper->toFirst();
     connect(filterModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), twitterWidgetMapper, SLOT(toFirst()));
     enableTwitterButtons(0);

@@ -79,8 +79,15 @@
           <property name="title">
            <string>Nyheter</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="2">
+            <widget class="QPushButton" name="buttonNextTweet">
+             <property name="text">
+              <string>Nästa</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
             <widget class="QLabel" name="tweetText">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -89,21 +96,21 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Laddar nyheter...</string>
+              <string/>
              </property>
             </widget>
            </item>
-           <item>
+           <item row="0" column="1">
             <widget class="QPushButton" name="buttonPrevTweet">
              <property name="text">
               <string>Föregående</string>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QPushButton" name="buttonNextTweet">
+           <item row="1" column="0">
+            <widget class="QLabel" name="tweetDate">
              <property name="text">
-              <string>Nästa</string>
+              <string/>
              </property>
             </widget>
            </item>

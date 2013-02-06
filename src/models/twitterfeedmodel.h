@@ -6,6 +6,7 @@
 #include <QNetworkReply>
 #include <QList>
 #include <QHash>
+#include <QDateTime>
 
 class TwitterFeedModel : public QAbstractTableModel
 {
@@ -33,6 +34,7 @@ private slots:
 
 private:
     QHash<QString,QString> createTweet(const QString &text, const QString &link, const QString &pubdate);
+    QString relativeTime(const QDateTime &term1, const QDateTime &term2);
 
     QList<QHash<QString,QString> > tweets;
     QNetworkAccessManager *network;
