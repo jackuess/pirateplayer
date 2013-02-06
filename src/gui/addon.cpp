@@ -84,14 +84,14 @@ void Addon::upgrade() {
     }
 }
 
-void Addon::loadingError() {
-    emit titleSet(QString::fromUtf8("Tilägg utan titel"));
-    QLabel *lbl = new QLabel(QString::fromUtf8("<center>Ett fel uppstod tyvärr när tillägget laddades.</center>"), this);
+void Addon::loadingError(const QString &msg) {
+    emit titleSet(QString::fromUtf8("Tillägg: ") + this->name);
+    QLabel *lbl = new QLabel(QString::fromUtf8("<center>Ett fel uppstod tyvärr när tillägget laddades: <em>%0</em></center>").arg(msg), this);
     ((QVBoxLayout*)layout())->addWidget(lbl, 1);
 }
 
 void Addon::load() {
-    QString mainQml = this->dir + "/main.qml";
+    QString mainQml = this->dir + "/min.qml";
 
     if (QFile::exists(mainQml)) {
         declarativeView = new QDeclarativeView(this);
@@ -109,7 +109,7 @@ void Addon::load() {
         declarativeView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
         declarativeView->setStyleSheet("background-color:transparent;");
         declarativeView->setSource(QUrl::fromLocalFile(mainQml));
-    } else { loadingError(); }
+    } else { loadingError(QString::fromUtf8("main.qml ej funnen.")); }
 }
 
 void Addon::onViewStatusChange(QDeclarativeView::Status status) {
@@ -119,11 +119,11 @@ void Addon::onViewStatusChange(QDeclarativeView::Status status) {
         if (title.isValid())
             emit titleSet(title.toString());
         else
-            emit titleSet(QString::fromUtf8("Tilägg utan titel"));
+            emit titleSet(QString::fromUtf8("Tillägg: ") + this->name);
 
         ((QVBoxLayout*)layout())->addWidget(declarativeView, 1);
     } else if (status == QDeclarativeView::Error) {
-        loadingError();
+        loadingError("QML fel.");
     }
 }
 

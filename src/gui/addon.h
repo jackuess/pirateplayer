@@ -23,7 +23,7 @@ signals:
 private:
     void download();
     static bool removeDir(const QString &dirName);
-    void loadingError();
+    void loadingError(const QString &msg);
 
     QNetworkAccessManager *nam;
     QSettings *settings;
