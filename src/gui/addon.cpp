@@ -91,7 +91,7 @@ void Addon::loadingError(const QString &msg) {
 }
 
 void Addon::load() {
-    QString mainQml = this->dir + "/min.qml";
+    QString mainQml = this->dir + "/main.qml";
 
     if (QFile::exists(mainQml)) {
         declarativeView = new QDeclarativeView(this);
@@ -99,6 +99,7 @@ void Addon::load() {
         QDeclarativeContext *rootContext = engine->rootContext();
 
         engine->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
+        engine->setImportPathList(engine->importPathList() << (this->dir + "/imports"));
 
         QString cwd = !this->dir.startsWith('/') ? this->dir = "/" + this->dir : this->dir;
         rootContext->setContextProperty("cwd", cwd);
