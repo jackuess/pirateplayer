@@ -12,7 +12,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileInfoList>
-#include <QtDeclarative>
 #include <QLabel>
 #include <QDir>
 
@@ -28,6 +27,8 @@ Addon::Addon(const QString &name, QNetworkAccessManager *nam, QSettings *setting
     this->dir = QDir::fromNativeSeparators(QString("%1/addons/%2").arg(QDesktopServices::storageLocation(QDesktopServices::DataLocation), name));
     qDebug() << "Setting addon directory:" << this->dir;
     this->mainWindow = mainWindow;
+
+    emit titleSet("Laddar tillägg");
 
     QNetworkReply *reply = nam->get(QNetworkRequest(QUrl(QString("http://pirateplay.se/static/pirateplayer_addons/%1/package_info").arg(name))));
     connect(reply, SIGNAL(finished()), SLOT(checkForUpdate()));
@@ -83,12 +84,18 @@ void Addon::upgrade() {
     }
 }
 
+void Addon::loadingError() {
+    emit titleSet(QString::fromUtf8("Tilägg utan titel"));
+    QLabel *lbl = new QLabel(QString::fromUtf8("<center>Ett fel uppstod tyvärr när tillägget laddades.</center>"), this);
+    ((QVBoxLayout*)layout())->addWidget(lbl, 1);
+}
+
 void Addon::load() {
     QString mainQml = this->dir + "/main.qml";
 
     if (QFile::exists(mainQml)) {
-        QDeclarativeView *view = new QDeclarativeView(this);
-        QDeclarativeEngine *engine = view->engine();
+        declarativeView = new QDeclarativeView(this);
+        QDeclarativeEngine *engine = declarativeView->engine();
         QDeclarativeContext *rootContext = engine->rootContext();
 
         engine->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
@@ -97,14 +104,26 @@ void Addon::load() {
         rootContext->setContextProperty("cwd", cwd);
         rootContext->setContextProperty("mainWindow", this->mainWindow);
 
-        view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-        view->setStyleSheet("background-color:transparent;");
-        view->setSource(QUrl::fromLocalFile(mainQml));
+        connect(declarativeView, SIGNAL(statusChanged(QDeclarativeView::Status)), SLOT(onViewStatusChange(QDeclarativeView::Status)));
 
-        QObject *rootItem = view->rootObject();
-        emit titleSet(rootItem->property("title").toString());
+        declarativeView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
+        declarativeView->setStyleSheet("background-color:transparent;");
+        declarativeView->setSource(QUrl::fromLocalFile(mainQml));
+    } else { loadingError(); }
+}
 
-        ((QVBoxLayout*)layout())->addWidget(view, 1);
+void Addon::onViewStatusChange(QDeclarativeView::Status status) {
+    if (status == QDeclarativeView::Ready) {
+        QObject *rootItem = declarativeView->rootObject();
+        QVariant title = rootItem->property("title");
+        if (title.isValid())
+            emit titleSet(title.toString());
+        else
+            emit titleSet(QString::fromUtf8("Tilägg utan titel"));
+
+        ((QVBoxLayout*)layout())->addWidget(declarativeView, 1);
+    } else if (status == QDeclarativeView::Error) {
+        loadingError();
     }
 }
 

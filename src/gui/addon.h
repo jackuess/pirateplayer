@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QSettings>
+#include <QtDeclarative>
 #include <QDeclarativeNetworkAccessManagerFactory>
 
 class NetworkAccessManagerFactory;
@@ -22,6 +23,7 @@ signals:
 private:
     void download();
     static bool removeDir(const QString &dirName);
+    void loadingError();
 
     QNetworkAccessManager *nam;
     QSettings *settings;
@@ -29,11 +31,13 @@ private:
     QString dir;
     QByteArray pendingMd5;
     MainWindow *mainWindow;
+    QDeclarativeView *declarativeView;
 
 private slots:
     void checkForUpdate();
     void load();
     void upgrade();
+    void onViewStatusChange(QDeclarativeView::Status status);
 };
 
 class NetworkAccessManagerFactory : public QDeclarativeNetworkAccessManagerFactory
