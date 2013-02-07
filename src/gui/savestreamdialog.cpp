@@ -40,7 +40,9 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
     editSubUrl->hide();
     editSubUrl->setEnabled(false);
     fileNameInfo = new QLabel("Ange ett giltigt filnamn att ladda ner till", this);
-    fileNameInfo->setForegroundRole(QPalette::BrightText);
+    //fileNameInfo->setForegroundRole(QPalette::Dark);
+    fileNameInfo->setStyleSheet("border-radius: 5px; border-width: 2px; border-style: solid; padding: 2px; background-color: #eaa; border-color: #c99");
+    fileNameInfo->setAlignment(Qt::AlignRight);
 
     QFrame *line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);
@@ -103,7 +105,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
     formLayout->addRow("", editStreamUrl);
     formLayout->addRow(checkSubtitles, editSubFileName);
     formLayout->addRow("", editSubUrl);
-    formLayout->addRow("", fileNameInfo);
+    //formLayout->addRow("", fileNameInfo);
 
     buttonLayout->addWidget(checkEdit);
     buttonLayout->addStretch(1);
@@ -113,6 +115,7 @@ SaveStreamDialog::SaveStreamDialog(StreamTableModel *model, const QHash<QString,
 
     mainLayout->addLayout(formLayout);
     mainLayout->addWidget(line);
+    mainLayout->addWidget(fileNameInfo);
     mainLayout->addLayout(buttonLayout);
 
     setLayout(mainLayout);
