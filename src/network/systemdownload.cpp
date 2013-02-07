@@ -87,18 +87,15 @@ void SystemDownload::capDuration() {
 void SystemDownload::capCurrentTime() {
     stdErrBuffer += program->readAllStandardError();
     int pos = rxCurrTime.lastIndexIn(stdErrBuffer);
+
     if (pos > -1) {
         QTime nullTime = QTime(0, 0, 0);
-#ifndef UBUNTU_12_04
         int kBytes = rxCurrTime.cap(1).toInt();
         QTime currTime = QTime(rxCurrTime.cap(2).toInt(), rxCurrTime.cap(3).toInt(), rxCurrTime.cap(4).toInt());
-#else
-        int kBytes = 0;
-        QTime currTime = nullTime.addSecs(rxCurrTime.cap(1).toInt());
-        qDebug() << rxCurrTime.cap(1) << currTime;
-#endif
 
-        if (currTime.secsTo(duration) < 2)
+        if (duration.secsTo(nullTime) == 0)
+            downloadProgress = -1;
+        else if (currTime.secsTo(duration) < 2)
             downloadProgress = 100;
         else
             downloadProgress = (int)((double)currTime.secsTo(nullTime) / (double)duration.secsTo(nullTime) * 100);
