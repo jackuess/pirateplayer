@@ -54,8 +54,9 @@ void SystemDownload::downloadToFile(QString fileName) {
 
 void SystemDownload::abort() {
     //program->close();
-    program->terminate();
+    //program->terminate();
     //program->kill();
+    program->write("q");
 }
 
 void SystemDownload::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
@@ -64,7 +65,7 @@ void SystemDownload::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         downloadProgress = 100;
         emit progress();
     }
-    else if (exitCode != 0 && exitStatus == 0)//else if (exitCode == 0 && exitStatus != 0)
+    else if (exitCode == 0 && exitStatus == 0)//else if (exitCode == 0 && exitStatus != 0)
         status = AbstractDownload::Aborted;
     else
         status = AbstractDownload::Error;
