@@ -2,6 +2,7 @@ import QtQuick 1.1
 
 FocusScope {
     property alias text: input.text
+    property alias validator: input.validator
 
     height: 25
 

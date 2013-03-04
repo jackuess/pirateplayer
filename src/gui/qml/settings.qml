@@ -86,7 +86,7 @@ Window {
         FormRow { Label { text: "Variabler: %title%, %name%, %season%, %time%, %description%."; width: parent.width } label: "" }
         FormRow {
             label: "Pirateplay.se-bas"
-            visible: showDebugOptions.checked
+            visible: !mobile() && showDebugOptions.checked
             TextField {
                 id: pirateplaySeBase
                 width: parent.width

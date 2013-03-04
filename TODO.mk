@@ -1,11 +1,11 @@
 Innan release
 =============
  - Slipning Android GUI
- - Assimilation Git
  - Metainfo ackumulering
  - Städa Android includes
+ + Assimilation Git
  + Katalogstruktur (källkod/C++)
- + En QNAM
+ + Färre QNAMs
  + Öppna/Spara textfiler (från QML) - går det att öppna med "file://"? - Ja det gör det!
  + Testa nätverksdegradering
  + Felmeddelanden/varningar (överskrivning!)
@@ -39,6 +39,7 @@ Väntande
  - Snyggare meddelanderutor
  - Qt5 kompatiblitet
  - Kanal 9
+ - Uppdatera Readmen
 
 + Gjort
 / Påbörjat

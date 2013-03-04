@@ -31,11 +31,12 @@ MainWindow {
                 shortcut: "Ctrl+I"
                 onTriggered: {
                     var _settingsWindow = Qt.createComponent(Qt.resolvedUrl("settings.qml"));
-                    if (_settingsWindow.status == Component.Ready)
+                    if (_settingsWindow.status == Component.Ready) {
                         var settingsWindow = _settingsWindow.createObject(root);
+                        settingsWindow.Component.destruction.connect( function () { root.focus = true } );
+                    }
                     else if(_settingsWindow.status == Component.Error)
                         console.log(_settingsWindow.errorString());
-                    settingsWindow.Component.destruction.connect( function () { root.focus = true } );
                 }
             }
         }
