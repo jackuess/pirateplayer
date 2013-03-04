@@ -1,7 +1,7 @@
 #ifndef SYSTEMDOWNLOAD_H
 #define SYSTEMDOWNLOAD_H
 
-#include "abstractdownload.h"
+#include "downloadlistmodel.h"
 
 #include <QProcess>
 #include <QRegExp>
@@ -11,9 +11,14 @@ class SystemDownload : public AbstractDownload
 {
     Q_OBJECT
 public:
-    SystemDownload(QObject *parent, QUrl u);
-    void downloadToFile(QString fileName);
+    SystemDownload(QObject *parent);
+    ~SystemDownload();
+
     void abort();
+
+    static QString ffmpegPrefix();
+    static bool ffmpegIsInstalled();
+    static bool installFfmpeg();
 
 private:
     static QString FFMPEG_CMD;
@@ -23,7 +28,9 @@ private:
     QString stdErrBuffer;
     QTime duration;
 
-private slots:
+
+protected slots:
+    void startDownload();
     void capDuration();
     void capCurrentTime();
     void onFinished(int exitCode, QProcess::ExitStatus exitStatus);

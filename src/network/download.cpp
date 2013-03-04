@@ -1,11 +1,10 @@
 #include "download.h"
-#include "abstractdownload.h"
 
 #include <QNetworkRequest>
 #include <QDebug>
 
-Download::Download(QObject *parent, QNetworkAccessManager *n, QUrl u):
-    AbstractDownload(parent, u)
+Download::Download(QObject *parent, QNetworkAccessManager *n):
+    AbstractDownload(parent)
 {
     nam = n;
 }
@@ -14,16 +13,12 @@ Download::~Download() {
     ;
 }
 
-void Download::downloadToFile(QString outFileName)
-{
-    AbstractDownload::downloadToFile(outFileName);
+void Download::startDownload() {
+    AbstractDownload::startDownload();
 
-    QNetworkRequest req;
-    req.setUrl(url);
+    reply = nam->get(QNetworkRequest(_url));
 
-    reply = nam->get(req);
-
-    outFile = new QFile(this->outFileName, this);
+    outFile = new QFile(outFileName, this);
     outFile->open(QIODevice::WriteOnly);
 
     connect(reply, SIGNAL(finished()), this, SLOT(onFinished()));
@@ -33,9 +28,11 @@ void Download::downloadToFile(QString outFileName)
 }
 
 void Download::abort() {
-    reply->abort();
-    status = AbstractDownload::Aborted;
-    emit statusChanged();
+    if (status == DownloadListModel::Downloading) {
+        reply->abort();
+        status = DownloadListModel::Aborted;
+        emit statusChanged();
+    }
 }
 
 void Download::onProgress(qint64 recieved, qint64 total) {
@@ -51,8 +48,8 @@ void Download::onFinished() {
     outFile->close();
     reply->deleteLater();
 
-    if (status == AbstractDownload::Downloading) {
-        status = AbstractDownload::Finished;
+    if (status == DownloadListModel::Downloading) {
+        status = DownloadListModel::Finished;
         downloadProgress = 100;
         emit progress();
         emit statusChanged();
@@ -61,8 +58,8 @@ void Download::onFinished() {
 
 void Download::onNetworkError(QNetworkReply::NetworkError e) {
     qDebug() << reply->errorString();
-    delete reply;
-    status = AbstractDownload::Error;
+    reply->deleteLater();
+    status = DownloadListModel::Error;
     emit statusChanged();
 }
 

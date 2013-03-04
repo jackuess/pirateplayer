@@ -28,6 +28,8 @@ cleanup_sockets()
 PirateNetworkReply::PirateNetworkReply(QObject *parent, QString rtmpUrl, RtmpResume resumeData) :
     QNetworkReply(parent)
 {
+    //rtmpUrl = "rtmp://s19yjsredexfjd.cloudfront.net/cfx/st/FASE10-00835_.mp4";
+    //rtmpUrl = "rtmp://ss11i04.stream.ip-only.net/vod/ playpath=mp4:webbtv/noje/schulmanshow/1212/wt121220Schulmanshow718Wikingsson_h264";
     started = false;
     rtmpBufferTime = DEF_BUFTIME;
 

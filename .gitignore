@@ -6,3 +6,11 @@ Makefile.Debug
 Makefile.Release
 object_script.pirateplayer.Release
 object_script.pirateplayer.Debug
+backup
+android/assets/ffmpeg
+android/bin/*
+android/libs/*
+android/local.properties
+android/proguard-project.txt
+*.qmlproject.user
+src/gui/qml/deploy.sh

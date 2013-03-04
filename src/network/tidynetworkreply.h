@@ -1,6 +1,8 @@
 #ifndef TIDYNETWORKREPLY_H
 #define TIDYNETWORKREPLY_H
 
+typedef unsigned long           ulong;
+
 #include <tidy.h>
 #include <buffio.h>
 

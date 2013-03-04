@@ -1,7 +1,7 @@
 #include <QDebug>
 #include <QIODevice>
 
-#include "time.h"
+#include <time.h>
 
 #include "archiveextractor.h"
 

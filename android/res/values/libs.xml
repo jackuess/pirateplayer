@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <array name="bundled_libs_fixed">
+        <item>rtmp</item>
+        <item>tidy</item>
+        <!--<item>archive</item>-->
+    </array>
+    <array name="bundled_libs"/>
+    <array name="qt_libs">
+        <item>QtCore</item>
+        <item>QtGui</item>
+        <item>QtNetwork</item>
+        <item>QtScript</item>
+        <item>QtSql</item>
+        <item>QtXml</item>
+        <item>QtSvg</item>
+        <item>QtXmlPatterns</item>
+        <item>QtDeclarative</item>
+    </array>
+</resources>

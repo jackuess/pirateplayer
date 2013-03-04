@@ -5,8 +5,8 @@
 #include <QIODevice>
 #include <QNetworkReply>
 
-#include "archive.h"
-#include "archive_entry.h"
+#include <archive.h>
+#include <archive_entry.h>
 
 #ifdef Q_WS_MAC
   #define off64_t off_t

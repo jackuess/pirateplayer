@@ -2,73 +2,95 @@
 
 #include <QDebug>
 #include <QCoreApplication>
+#include <QDesktopServices>
+#include <QFile>
+#include <QFileInfo>
 
 QRegExp SystemDownload::rxDuration = QRegExp("Duration:\\s(\\d\\d):(\\d\\d):(\\d\\d)");
 
-#ifndef UBUNTU_12_04
 QRegExp SystemDownload::rxCurrTime = QRegExp("size=\\s*(\\d+)kB\\stime=(\\d\\d):(\\d\\d):(\\d\\d)");
-#else
-QRegExp SystemDownload::rxCurrTime = QRegExp("time=(\\d+)");
-#endif
 
-SystemDownload::SystemDownload(QObject *parent, QUrl u)
-    :AbstractDownload(parent, u)
+SystemDownload::SystemDownload(QObject *parent)
+    :AbstractDownload(parent)
 {
-    ;
+    program = new QProcess(this);
 }
 
-void SystemDownload::downloadToFile(QString fileName) {
-    AbstractDownload::downloadToFile(fileName);
+SystemDownload::~SystemDownload() {
+    if (program->state() == QProcess::Running) {
+        abort();
+        program->waitForFinished();
+    }
+}
+
+QString SystemDownload::ffmpegPrefix() {
+#if defined Q_WS_MAC
+    return QCoreApplication::applicationDirPath() + "/";
+#elif defined Q_OS_ANDROID
+    return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/";
+#else
+    return "";
+#endif
+}
+
+bool SystemDownload::ffmpegIsInstalled() {
+    int ret = QProcess::execute(ffmpegPrefix() + "ffmpeg -version");
+    return !ret;
+}
+
+bool SystemDownload::installFfmpeg() {
+#if defined Q_OS_ANDROID
+    QString ffmpegPath = ffmpegPrefix() + "ffmpeg";
+    if (QFile::copy("assets:/ffmpeg", ffmpegPath))
+        QFile::setPermissions(ffmpegPath, QFile::ExeOwner | QFile::ReadOwner);
+    return ffmpegIsInstalled();
+#else
+    return false;
+#endif
+}
+
+void SystemDownload::startDownload() {
+    AbstractDownload::startDownload();
+
+    QFileInfo file(outFileName);
     QStringList arguments;
     QStringList extra = QStringList();
-    QString vcodec = "copy";
-    QString acodec = "copy";
 
-#ifdef UBUNTU_12_04
-    QString ffmpegName = "avconv";
-#elif defined Q_WS_MAC
-    QString ffmpegName = QCoreApplication::applicationDirPath() + "/ffmpeg";
-#else
-    QString ffmpegName = "ffmpeg";
-#endif
-
-    if (url.scheme() == "mms")
-        url.setScheme("mmsh"); //Ffmpeg needs this
-    else if(url.toString().indexOf(".m3u8") > -1) {
-#ifdef UBUNTU_12_04
-        acodec = "aac";
-        extra << "-bsf" << "aac_adtstoasc" << "-strict" << "experimental" << "-ab" << "325k";
-#else
-        extra << "-absf" << "aac_adtstoasc";
-#endif
+    if (!ffmpegIsInstalled() && !installFfmpeg()) {
+        qWarning() << "Fmpeg not installed!\nAborting download.";
+        status = DownloadListModel::Error;
+        emit statusChanged();
+        return;
     }
 
-    arguments << "-i" << url.toString() << "-vcodec" << vcodec << "-acodec" << acodec << "-y" << extra << fileName;
+    if (_url.scheme() == "mms")
+        _url.setScheme("mmsh"); //Ffmpeg needs this
+    else if (file.suffix() == "mp4" && _url.toString().indexOf(".m3u8") > -1) {
+        extra << "-absf" << "aac_adtstoasc";
+    }
 
-    program = new QProcess(this);
-    program->start(ffmpegName, arguments);
+    arguments << "-i" << _url.toString() << "-vcodec" << "copy" << "-acodec" << "copy" << "-y" << extra << outFileName;
+
+    program->start(ffmpegPrefix() + "ffmpeg", arguments);
 
     connect(program, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onFinished(int,QProcess::ExitStatus)));
     connect(program, SIGNAL(readyReadStandardError()), this, SLOT(capDuration()));
 }
 
 void SystemDownload::abort() {
-    //program->close();
-    //program->terminate();
-    //program->kill();
     program->write("q");
 }
 
 void SystemDownload::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == 0 && downloadProgress > 99) {
-        status = AbstractDownload::Finished;
+        status = DownloadListModel::Finished;
         downloadProgress = 100;
         emit progress();
     }
     else if (exitCode == 0 && exitStatus == 0)//else if (exitCode == 0 && exitStatus != 0)
-        status = AbstractDownload::Aborted;
+        status = DownloadListModel::Aborted;
     else
-        status = AbstractDownload::Error;
+        status = DownloadListModel::Error;
 
     emit statusChanged();
 }
