@@ -1,6 +1,6 @@
 Innan release
 =============
- - Slipning Android GUI
+ / Slipning Android GUI
  - Metainfo ackumulering
  - Städa Android includes
  + Assimilation Git

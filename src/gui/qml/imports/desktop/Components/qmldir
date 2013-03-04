@@ -23,3 +23,4 @@ UserSettings 1.0 ../../_common/Components/UserSettings.qml
 MainWindow 1.0 MainWindow.qml
 TimerField 1.0 ../../_common/Components/TimerField.qml
 ToggleBox 1.0 ../../_common/Components/ToggleBox.qml
+AbstractMessage 1.0 ../../_common/Components/AbstractMessage.qml

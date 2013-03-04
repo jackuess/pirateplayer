@@ -12,7 +12,7 @@ Row {
 
     TextField {
         id: fileName
-        width: parent.width-browserButton.width-parent.spacing*2
+        width: parent.width-browserButton.width-parent.spacing
     }
 
     Button {
