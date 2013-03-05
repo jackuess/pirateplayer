@@ -42,9 +42,9 @@ void TempPlayer::startPlaying() {
 
 void TempPlayer::cleanUp() {
     QMessageBox msgBox;
-    QWidget *w = QApplication::activeWindow();
     msgBox.show();
 #ifdef Q_OS_ANDROID
+    QWidget *w = QApplication::activeWindow();
     msgBox.move(w->width()/2-msgBox.width(), w->height()/2-msgBox.height());
 #endif
     msgBox.setText(QString::fromUtf8("Uppspelning färdig!"));

@@ -83,10 +83,6 @@ OTHER_FILES += \
 
 RESOURCES += resources.qrc
 
-DESTDIR = build/target/
-OBJECTS_DIR = build/obj/
-MOC_DIR = build/moc/
-
 win32 {
     INCLUDEPATH += "C:/Users/chucky/include"
     INCLUDEPATH += "C:/Users/chucky/src/tidy-html5/include"
@@ -104,7 +100,7 @@ android {
     INCLUDEPATH += /home/chucky/src/tidy-html5-android/include
 
     INCLUDEPATH += -L/home/chucky/src/librtmp-2.4-android-armeabi-v7a/include
-    LIBS += /home/chucky/src/rtmpdump-master/librtmp/librtmp.so
+    LIBS += -L/home/chucky/src/rtmpdump-master/librtmp
 
     LIBS += -L/home/chucky/src/libarchive-3.1.2/libarchive
     INCLUDEPATH += /home/chucky/src/libarchive_include
@@ -116,12 +112,9 @@ android {
     LIBS += /home/chucky/src/libarchive-3.1.2/libarchive/libarchive.a
 } else {
     LIBS += -larchive
-    LIBS += -lrtmp
 }
 
 mac {
-    #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
-    #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     QT += opengl
     LIBS += -L/usr/lib -L/usr/local/lib
     INCLUDEPATH += /usr/local/include
@@ -129,7 +122,7 @@ mac {
     ICON = pirateplayer.icns
 }
 
-#LIBS += -lrtmp
+LIBS += -lrtmp
 LIBS += -ltidy
 
 # Please do not modify the following two lines. Required for deployment.

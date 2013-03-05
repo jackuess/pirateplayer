@@ -23,7 +23,9 @@ public:
     Q_INVOKABLE QString formatTweetTime(const QString &timeString) const;
     Q_INVOKABLE QString getHomeDir() const;
     Q_INVOKABLE bool mobile() const;
+    Q_INVOKABLE bool mac() const;
     Q_INVOKABLE static bool compatibleVersion(const QString &version);
+    Q_INVOKABLE QString applicationDirPath() const;
 
     Q_INVOKABLE bool pathIsDir(const QString &path) const;
     Q_INVOKABLE bool pathExists(const QString &path) const;

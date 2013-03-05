@@ -1,8 +1,10 @@
 Innan release
 =============
- / Slipning Android GUI
  - Metainfo ackumulering
- - Städa Android includes
+ + Mac Ffplay
+ + Varningar
+ + Städa Android includes
+ + Slipning Android GUI
  + Assimilation Git
  + Katalogstruktur (källkod/C++)
  + Färre QNAMs
@@ -40,6 +42,8 @@ Väntande
  - Qt5 kompatiblitet
  - Kanal 9
  - Uppdatera Readmen
+ - Animera toggle box
+ - Nyheter Android
 
 + Gjort
 / Påbörjat

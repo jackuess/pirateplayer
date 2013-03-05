@@ -47,7 +47,8 @@ void ArchiveExtractor::extractToDirQBA(QByteArray *data, const QString &outDir) 
 
     a = archive_read_new();
     archive_read_support_format_all(a);
-    archive_read_support_compression_all(a);
+    //archive_read_support_compression_all(a);
+    archive_read_support_filter_all(a);
     ext = archive_write_disk_new();
     archive_write_disk_set_options(ext, flags);
     archive_write_disk_set_standard_lookup(ext);
@@ -83,9 +84,9 @@ void ArchiveExtractor::extractToDirQBA(QByteArray *data, const QString &outDir) 
             exit(1);
     }
     archive_read_close(a);
-    archive_read_finish(a); //archive_read_free(a);
+    /*archive_read_finish(a);*/ archive_read_free(a);
     archive_write_close(ext);
-    archive_write_finish(ext); //archive_write_free(ext);
+    /*archive_write_finish(ext);*/ archive_write_free(ext);
 
     emit finished();
 }

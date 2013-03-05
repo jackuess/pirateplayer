@@ -75,10 +75,13 @@ Item {
         }
     }
 
+    Component.onDestruction: root.focus = true
+
     Loader {
         id: streamSelect
 
         anchors.fill: parent
+        //focus: true
 
         property variant streamsModel: streams
     }

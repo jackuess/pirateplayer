@@ -21,7 +21,7 @@ protected slots:
     void onProgress(qint64 recieved, qint64 total);
     void onFinished();
     void writeData();
-    void onNetworkError(QNetworkReply::NetworkError e);
+    void onNetworkError(QNetworkReply::NetworkError /*unused*/);
 
 private:
     QNetworkAccessManager *nam;

@@ -27,7 +27,7 @@ Column {
 
     Label {
         id: lbl
-        height: text !== "" ? implicitHeight : 0
+        height: text !== "" ? implicitHeight : 0; width: parent.width
     }
 
     Row {

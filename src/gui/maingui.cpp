@@ -24,6 +24,9 @@ MainGui::MainGui(QObject *parent) :
 #if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
     qmlViewer = new MyQmlApplicationViewer();
     qmlViewer->addLibraryPath(pkgDir + "/imports/android");
+#ifdef QT_DEBUG
+    settings.setValue("Debug/pirateplay_se_base", QVariant("http://pirateplay.se:8080"));
+#endif
 #else
     qmlViewer = new PirateplayerDesktopViewer(this);
     qmlViewer->addLibraryPath(pkgDir + "/imports/desktop");
@@ -44,17 +47,13 @@ MainGui::~MainGui() {
 
 void MainGui::setFont() {
 #ifdef Q_OS_ANDROID
-    QAndroidStyle androidStyle;
-    qApp->setPalette(androidStyle.standardPalette());
-    qApp->setStyle(&androidStyle);
-
     QFont globalFont = QFont("Roboto");
-    //globalFont.setPointSize(6);
+    globalFont.setPointSize(settings.value("MainWindow/font_point_size", QVariant(6)).toInt());
 #else
     QFont globalFont = qApp->font();
+    globalFont.setPointSize(settings.value("MainWindow/font_point_size", QVariant(globalFont.pointSize())).toInt());
 #endif
 
-    globalFont.setPointSize(settings.value("MainWindow/font_point_size", QVariant(globalFont.pointSize())).toInt());
     settings.setValue("MainWindow/font_point_size", QVariant(globalFont.pointSize()));
     qApp->setFont(globalFont);
 }
@@ -119,7 +118,7 @@ void MainGui::load() {
     QString mainQml = pkgDir + "/main.qml";
 
     if (QFile::exists(mainQml)) {
-        qmlViewer->open("file://" + mainQml);
+        qmlViewer->open(mainQml);
     } else { qDebug() << "main.qml ej funnen."; qApp->quit(); }
 }
 

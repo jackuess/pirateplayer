@@ -1,7 +1,11 @@
 import QtQuick 1.1
 
 Item {
-    property variant defaults: { "startDir": getHomeDir(), "playerCmd": "ffplay %0", "filenameTemplate": "%name%_-_%title%", "pirateplaySeBase": "http://pirateplay.se", "fontPointSize": getSetting("MainWindow/font_point_size") }
+    property variant defaults: { "startDir": getHomeDir(),
+                                 "playerCmd": (mac() ? applicationDirPath() + "/" : "") + "ffplay %0",
+                                 "filenameTemplate": "%name%_-_%title%",
+                                 "pirateplaySeBase": "http://pirateplay.se",
+                                 "fontPointSize": getSetting("MainWindow/font_point_size") }
 
     property string startDir: getSetting("Location/start_dir", defaults.startDir)
     property string playerCmd: getSetting("Location/player_cmd", defaults.playerCmd)

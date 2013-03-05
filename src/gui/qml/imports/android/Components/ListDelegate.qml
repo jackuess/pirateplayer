@@ -23,8 +23,7 @@ AbstractListDelegate {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: mouse.accepted = true
-        onPressed: {
+        onClicked: {
             mouse.accepted = true;
             listDelegate.state = "pressed";
             resetTimer.start();

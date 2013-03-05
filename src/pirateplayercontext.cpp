@@ -38,6 +38,7 @@ void PirateplayerContext::quit() {
 
 void PirateplayerContext::play(const QString &url, const QString &subsUrl) {
 #if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
+    Q_UNUSED(subsUrl)
     if (url.startsWith("rtmp")) {
         TempPlayer *tmpPlayer = new TempPlayer(&nam, this);
 #ifdef Q_OS_ANDROID
@@ -181,7 +182,10 @@ bool PirateplayerContext::removePath(const QString &path) const {
 }
 
 bool PirateplayerContext::pathIsWritable(const QString &path) const {
-    return QFileInfo(path).isWritable();
+    if (path == "")
+        return false;
+    QFileInfo file(path);
+    return QFileInfo(file.absolutePath()).isWritable();
 }
 
 void PirateplayerContext::writeToDisk(const QString &path, const QString &data) const {
@@ -208,6 +212,14 @@ bool PirateplayerContext::mobile() const {
 #endif
 }
 
+bool PirateplayerContext::mac() const {
+#ifdef Q_WS_MAC
+    return true;
+#else
+    return false;
+#endif
+}
+
 void PirateplayerContext::openUrl(const QString &url) {
 #ifdef Q_OS_ANDROID
         ////am start -a android.intent.action.VIEW -t video/flv -d file://
@@ -225,6 +237,10 @@ void PirateplayerContext::openUrl(const QString &url) {
 #else
         QDesktopServices::openUrl(QUrl(url));
 #endif
+}
+
+QString PirateplayerContext::applicationDirPath() const {
+    return QApplication::applicationDirPath();
 }
 
 #ifdef Q_OS_ANDROID

@@ -34,10 +34,12 @@ DownloadListModel::~DownloadListModel() {
 }
 
 int DownloadListModel::rowCount(const QModelIndex &parent) const {
+    Q_UNUSED(parent)
     return downloads.count();
 }
 
 int DownloadListModel::columnCount(const QModelIndex &parent) const {
+    Q_UNUSED(parent)
     return COLUMN_COUNT;
 }
 

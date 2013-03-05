@@ -7,6 +7,11 @@ Flickable {
     anchors.fill: parent
     contentHeight: column.height
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: forceActiveFocus()
+    }
+
     Column {
         property variant selectedStream: qualityBox.model.get(qualityBox.selectedIndex)
 

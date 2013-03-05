@@ -69,7 +69,7 @@ class AbstractDownload : public QObject
     Q_OBJECT
 
 public:
-    explicit AbstractDownload(QObject *parent = 0) { downloadProgress = 0; bytesRecieved = 0; status = DownloadListModel::NotStarted; }
+    explicit AbstractDownload(QObject *parent = 0):QObject(parent) { downloadProgress = 0; bytesRecieved = 0; status = DownloadListModel::NotStarted; }
 
     void downloadToFile(const QUrl &url, const QString &fileName, const qint64 &delay = 0, const qint64 &duration = 0) {
         outFileName = fileName;

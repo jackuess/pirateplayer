@@ -56,7 +56,7 @@ void Download::onFinished() {
     }
 }
 
-void Download::onNetworkError(QNetworkReply::NetworkError e) {
+void Download::onNetworkError(QNetworkReply::NetworkError) {
     qDebug() << reply->errorString();
     reply->deleteLater();
     status = DownloadListModel::Error;

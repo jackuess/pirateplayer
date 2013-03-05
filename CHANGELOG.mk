@@ -1,5 +1,5 @@
-Version 0.5 (2013-03-)
-======================
+Version 0.5 (2013-03-XX)
+========================
 - Stöd för Android
 - Tidsinställda nedladdningar
 - Helt skriptat GUI
@@ -7,6 +7,7 @@ Version 0.5 (2013-03-)
 - Autonom suffixhantering
 - Ställbar teckenstorlek
 - Helskärmsläge
+- Ffplay stöd för Mac
 
 Version 0.4.6 (2013-02-07)
 ==========================

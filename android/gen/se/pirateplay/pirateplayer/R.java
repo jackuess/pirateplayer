@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package se.pirateplay.Pirateplayer;
+package se.pirateplay.pirateplayer;
 
 public final class R {
     public static final class array {

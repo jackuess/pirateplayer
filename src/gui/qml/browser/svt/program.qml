@@ -43,8 +43,9 @@ BarredListView {
         imgSource: model.thumb.startsWith("http://") ? model.thumb : "http://svtplay.se" + model.thumb
         text: model.text.slim()
         onClicked: {
+            var base = (model.link.startsWith("http") ? "" : "http://svtplay.se");
             go( Qt.resolvedUrl("../pirateplay.qml"),
-               { url: "http://svtplay.se" + model.link },
+               { url: base + model.link },
                model.index);
         }
     }

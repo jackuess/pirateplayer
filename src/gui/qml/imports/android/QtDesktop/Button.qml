@@ -8,11 +8,10 @@ Rectangle {
 
     signal clicked
 
+    border { color: "#444"; width: 1 }
     clip: true
-
-    color: "#444"
-
-    height: 30; width: label.width + 20
+    color: "#333"
+    height: 35; width: label.width + 20
 
     states: [
         State {
@@ -33,12 +32,6 @@ Rectangle {
 
         anchors.horizontalCenter: parent.horizontalCenter; anchors.verticalCenter: parent.verticalCenter
         color: "white"
-    }
-
-    Rectangle {
-        anchors.bottom: parent.bottom
-        width: parent.width; height: 2
-        color: "#333"
     }
 
     MouseArea {

@@ -1,17 +1,18 @@
 import QtQuick 1.1
 
-FocusScope {
+Item {
     property alias text: input.text
     property alias validator: input.validator
 
     height: 25
+
+    Component.onDestruction: root.forceActiveFocus()
 
     TextInput {
         id: input
 
         anchors.bottom: parent.bottom
         anchors.margins: 3
-        focus: true
         width: parent.width
         color: "white"
     }

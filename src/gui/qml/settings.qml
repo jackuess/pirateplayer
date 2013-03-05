@@ -4,6 +4,7 @@ import Components 1.0
 
 Window {
     id: settingsWindow
+    anchors.fill: parent
     focus: true
     title: "Inställningar"
     modality: Qt.WindowModal
@@ -54,6 +55,7 @@ Window {
 
         FormRow {
             label: "Uppspelningskommando"
+            visible: !mobile()
 
             TextField {
                 id: playerCmd

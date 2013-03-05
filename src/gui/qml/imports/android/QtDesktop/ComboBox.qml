@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Components 1.0
+import QtDesktop 0.1
 
 Item {
     property variant model
@@ -8,10 +9,6 @@ Item {
 
     id: comboBox
     implicitWidth: label.implicitWidth+btn.width; height: 20
-
-    Component.onCompleted: {
-        drop.createObject(root, { });
-    }
 
     Label {
         id: label
@@ -44,43 +41,57 @@ Item {
 
     MouseArea {
         width: parent.childrenRect.width; height: parent.childrenRect.height
-        onClicked: comboBox.expanded = !comboBox.expanded;
+        onClicked: drop.createObject(root)
     }
 
     Component {
         id: drop
 
-        Rectangle {
-            id: dropRect
+        Window {
+            id: _drop
+            anchors.fill: parent
 
-            property int delegateHeight: comboBox.height
+            color: "transparent"
 
-            anchors.centerIn: root
-            border { width: 2; color: "#333" }
-            width: comboBox.expanded ? root.width-50 : 0
-            height: comboBox.expanded ? model.count*(delegateHeight+spacing-1)+list.anchors.margins : 0
-            color: "#444"
-            opacity: comboBox.expanded ? 1 : 0
+            Rectangle {
+                property int delegateHeight: comboBox.height
 
-            ListView {
-                id: list
-                anchors.fill: parent
-                anchors.margins: 20
-                spacing: 20
-                model: comboBox.model
+                id: dropRect
+                anchors.centerIn: parent
+                border { width: 2; color: "#333" }
+                width: root.width-50
+                height: model.count*(delegateHeight+list.spacing-1)+list.anchors.margins
+                color: "#444"
 
-                onCurrentIndexChanged: comboBox.selectedIndex = currentIndex
+                focus: true
 
-                delegate: CheckBox {
-                    checked: model.index == list.currentIndex
-                    width: dropRect.width; height: delegateHeight
-                    text: model.text
+                ListView {
+                    id: list
+                    anchors.fill: parent
+                    anchors.margins: 20
+                    spacing: 20
+                    model: comboBox.model
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            list.currentIndex = model.index;
-                            comboBox.expanded = false;
+                    onCurrentIndexChanged: comboBox.selectedIndex = currentIndex
+                    currentIndex: comboBox.selectedIndex
+
+                    delegate: CheckBox {
+                        checked: model.index == list.currentIndex
+                        width: dropRect.width; height: dropRect.delegateHeight
+                        text: model.text
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                mouse.accepted = true;
+                                list.currentIndex = model.index;
+                                destructionTimer.start();
+                            }
+                            Timer {
+                                id: destructionTimer
+                                interval: 100; running: false; repeat: false
+                                onTriggered: { _drop.destroy(); }
+                            }
                         }
                     }
                 }
