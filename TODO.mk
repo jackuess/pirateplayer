@@ -1,5 +1,6 @@
 Innan release
 =============
+ - Default inställningar första uppstart
  + Ta bort debug-base inställning
  + Metainfo ackumulering
  + Mac Ffplay

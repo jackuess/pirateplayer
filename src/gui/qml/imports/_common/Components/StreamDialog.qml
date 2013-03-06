@@ -55,7 +55,9 @@ Flickable {
                         newFileName = newFileName.replace(/%season%/g, programMetaInfo.season);
                         newFileName = newFileName.replace(/%time%/g, programMetaInfo.time);
                         newFileName = newFileName.replace(/%description%/g, programMetaInfo.description);
-                        return userSettings.startDir + nativeSeparator() + newFileName + "." + streamsModel.get(0).suffixHint;
+                        newFileName = userSettings.startDir + "/" + newFileName + "." + streamsModel.get(0).suffixHint;
+                        newFileName = pathToNativeSeparators(newFileName);
+                        return newFileName;
                     }
                 }
             }

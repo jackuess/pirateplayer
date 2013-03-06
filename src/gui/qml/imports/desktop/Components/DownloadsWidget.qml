@@ -15,7 +15,7 @@ Item {
         anchors { left: parent.left; right: actionButtons.left; top: parent.top; bottom: parent.bottom; margins: 5 }
 
         onCurrentIndexChanged: {
-            currentItemStatus = table.currentIndex > 0 ? model.get(table.currentIndex)["statusCol"] : -1
+            currentItemStatus = anythingSelected ? model.get(currentIndex)["statusCol"] : -1
         }
 
         TableColumn{ role: "statusCol" ; title: "Status" }

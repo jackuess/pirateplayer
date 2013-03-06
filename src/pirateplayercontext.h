@@ -30,6 +30,8 @@ public:
 
     Q_INVOKABLE bool pathIsDir(const QString &path) const;
     Q_INVOKABLE bool pathExists(const QString &path) const;
+    Q_INVOKABLE QString pathToNativeSeparators(const QString &path) const;
+    Q_INVOKABLE QString pathFromNativeSeparators(const QString &path) const;
     Q_INVOKABLE QString baseName(const QString &path) const;
     Q_INVOKABLE QString suffix(const QString &path) const;
     Q_INVOKABLE QString absDir(const QString &path) const;

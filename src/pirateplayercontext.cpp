@@ -125,6 +125,14 @@ bool PirateplayerContext::pathExists(const QString &path) const {
     return info.exists();
 }
 
+QString PirateplayerContext::pathFromNativeSeparators(const QString &path) const {
+    return QDir::fromNativeSeparators(path);
+}
+
+QString PirateplayerContext::pathToNativeSeparators(const QString &path) const{
+    return QDir::toNativeSeparators(path);
+}
+
 QString PirateplayerContext::baseName(const QString &path) const {
     QFileInfo info(path);
     return info.baseName();
