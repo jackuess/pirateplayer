@@ -8,7 +8,7 @@ Item {
 
     XmlListModel {
         id: streams
-        source: userSettings.pirateplaySeBase + "/api/get_streams.xml?url=" + currentArgs.url
+        source: ppBase() + "/api/get_streams.xml?url=" + currentArgs.url
         query: "/streams/stream"
         onStatusChanged: {
             if (status === XmlListModel.Ready) {
@@ -69,7 +69,7 @@ Item {
             height: childrenRect.height
 
             Label {
-                text: "Pirateplayer kan inte ladda ner denna typ av strömmar.<br />En <a href=\"" + userSettings.pirateplaySeBase + "/hds_guide.html\">guide</a> finns på Pirateplay.se till hur man laddar ner HDS-strömmar manuellt."
+                text: "Pirateplayer kan inte ladda ner denna typ av strömmar.<br />En <a href=\"" + ppBase() + "/hds_guide.html\">guide</a> finns på Pirateplay.se till hur man laddar ner HDS-strömmar manuellt."
                 onLinkActivated: Qt.openUrlExternally(link)
             }
         }

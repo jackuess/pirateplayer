@@ -48,11 +48,8 @@ BarredListView {
         imgSource: "http://svtplay.se" + model.thumb
         onClicked: {
             go( Qt.resolvedUrl("../pirateplay.qml"),
-               { url: "http://svtplay.se" + model.link, title: model.title, name: model.channel },
+               { url: "http://svtplay.se" + model.link, programTitle: model.title, programName: model.channel },
                model.index);
-//            ViewBrowser.piratePlay( "http://svtplay.se" + model.link,
-//                                  { title: model.title,
-//                                    name: model.channel } );
         }
     }
 

@@ -45,7 +45,7 @@ BarredListView {
         onClicked: {
             var base = (model.link.startsWith("http") ? "" : "http://svtplay.se");
             go( Qt.resolvedUrl("../pirateplay.qml"),
-               { url: base + model.link },
+               { url: base + model.link, programTitle: model.text.slim(), programName: currentArgs.programName },
                model.index);
         }
     }

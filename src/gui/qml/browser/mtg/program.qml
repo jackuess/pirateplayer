@@ -36,9 +36,9 @@ BarredListView {
         onClicked: {
             go( Qt.resolvedUrl("../pirateplay.qml"),
                { url: "http://www.tv" + currentArgs.n + "play.se" + model.link,
-                   title: model.epNo,
-                   name: model.title.slim(),
-                   time: model.time },
+                   programTitle: "avsnitt " + model.epNo,
+                   programName: model.title.slim(),
+                   programTime: model.time },
                model.index);
         }
     }

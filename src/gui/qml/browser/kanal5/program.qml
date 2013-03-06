@@ -35,10 +35,10 @@ BarredListView {
         onClicked: {
             go( Qt.resolvedUrl("../pirateplay.qml"),
                { url: "http://kanal5play.se" + model.link,
-                   title: model.title.slim(),
-                   name: currentArgs.programName,
-                   season: currentArgs.season,
-                   description: model.description.slim() },
+                   programTitle: model.title.slim(),
+                   programName: currentArgs.programName,
+                   programSeason: currentArgs.programSeason,
+                   programDescription: model.description.slim() },
                model.index );
         }
     }

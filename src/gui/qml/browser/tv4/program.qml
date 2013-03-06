@@ -70,9 +70,9 @@ Item {
             onClicked: {
                 go( Qt.resolvedUrl("../pirateplay.qml"),
                    { url: "http://tv4play.se" + model.link,
-                       title: model.text.slim(),
-                       name: currentArgs.programName,
-                       time: model.date},
+                       programTitle: model.text.slim(),
+                       programName: currentArgs.programName,
+                       programTime: model.date},
                    model.index );
             }
         }
