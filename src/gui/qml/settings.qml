@@ -23,7 +23,6 @@ Window {
     Binding { target: userSettings; property: "startDir"; value: startDir.path }
     Binding { target: userSettings; property: "playerCmd"; value: playerCmd.text }
     Binding { target: userSettings; property: "filenameTemplate"; value: filenameTemplate.text }
-    Binding { target: userSettings; property: "pirateplaySeBase"; value: pirateplaySeBase.text }
     Binding { target: userSettings; property: "fontPointSize"; value: fontPointSize.text }
 
     FormLayout {
@@ -87,15 +86,6 @@ Window {
         }
         FormRow { Label { text: "Variabler: %title%, %name%, %season%, %time%, %description%."; width: parent.width } label: "" }
         FormRow {
-            label: "Pirateplay.se-bas"
-            visible: !mobile() && showDebugOptions.checked
-            TextField {
-                id: pirateplaySeBase
-                width: parent.width
-                text: userSettings.pirateplaySeBase
-            }
-        }
-        FormRow {
             id: actionButtons
             label: ""
             layoutDirection: Qt.RightToLeft
@@ -104,7 +94,6 @@ Window {
 
             Button { height: 25; text: "Stäng"; onClicked: settingsWindow.close() }
             Button { height: 25; text: "Standardinställningar"; onClicked: userSettings.reset() }
-            CheckBox { id: showDebugOptions; text: "Visa utvecklaralternativ"; visible: !mobile() }
         }
     }
 }
