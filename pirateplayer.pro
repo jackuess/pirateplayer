@@ -90,7 +90,12 @@ win32 {
 
     LIBS += -L"C:/Program Files/rtmpdump-git" -lws2_32
     LIBS += -L"C:/Users/chucky/src/tidy-html5/src/.libs"
-    #LIBS += -L"C:/Program Files/libarchive/lib" -larchive
+    LIBS += -L"C:/Program Files/libarchive/lib"
+
+    DESTDIR = build/target/
+    OBJECTS_DIR = build/obj/
+    MOC_DIR = build/moc/
+    UI_DIR = build/ui/
 
     RC_FILE = pirateplayer.rc
 }
