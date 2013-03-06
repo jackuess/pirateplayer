@@ -10,7 +10,7 @@ Pirateplayer depends upon [Qt4](http://qt.digia.com/), [Qt Desktop Components](h
 
 ### Unix/Linux:
 
-1. Run 'qmake' (optionally 'qmake PREFIX=yourdir' for custom prefix [default: /usr/local/]). To build for a system with avconv istead of ffmpeg add 'CONFIG+=use_avconv' to the qmake command.
+1. Run 'qmake' (optionally 'qmake PREFIX=yourdir' for custom prefix [default: /usr/local/]).
 2. Run 'make'.
 3. Optionally run 'make clean' to remove files created during compilation.
 4. Run 'make install' as root to install and you're done! To uninstall: run 'make uninstall' as root.

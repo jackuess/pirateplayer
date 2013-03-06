@@ -44,11 +44,11 @@ int DownloadListModel::columnCount(const QModelIndex &parent) const {
 }
 
 QVariant DownloadListModel::data(const QModelIndex &index, int role) const {
-    AbstractDownload *item = downloads[index.row()];
-    int progress;
-
     if (!index.isValid())
         return QVariant();
+
+    AbstractDownload *item = downloads[index.row()];
+    int progress;
 
 //    if (role == Qt::UserRole && index.column() == 0)
 //        return QVariant(item->getStatus());

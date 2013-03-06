@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import QtDesktop 0.1
+import Pirateplayer 1.0
 
 Item {
     property alias model: table.model
@@ -9,17 +10,23 @@ Item {
         id: table
 
         property bool anythingSelected: currentIndex > -1
+        property int currentItemStatus: -1
 
         anchors { left: parent.left; right: actionButtons.left; top: parent.top; bottom: parent.bottom; margins: 5 }
 
+        onCurrentIndexChanged: {
+            currentItemStatus = table.currentIndex > 0 ? model.get(table.currentIndex)["statusCol"] : -1
+        }
+
         TableColumn{ role: "statusCol" ; title: "Status" }
-        TableColumn{ role: "fileName" ; title: "Filnamn" }
+        TableColumn{ id: fileNameCol; role: "fileName" ; title: "Filnamn" }
         TableColumn{ role: "progressCol" ; title: "Förlopp" }
         TableColumn{ role: "downloadedSize" ; title: "Nedladdade (MB)" }
 
         itemDelegate: Loader {
             property variant _itemValue: itemValue
             property variant _itemForeground: itemForeground
+            property bool _itemSelected: itemSelected
 
             sourceComponent: {
                 if (role == "progressCol")
@@ -45,6 +52,7 @@ Item {
                 color: _itemForeground
                 elide: Text.ElideRight
                 text: _itemValue
+                width: parent.width
             }
         }
     }
@@ -88,6 +96,11 @@ Item {
                 color: _itemForeground
                 elide: Text.ElideRight
                 text: status[_itemValue]
+                width: parent.width
+                onTextChanged: {
+                    if (_itemSelected)
+                        table.currentItemStatus = _itemValue
+                }
             }
         }
     }
