@@ -36,7 +36,7 @@ MainGui::MainGui(QObject *parent) :
 
     qmlRegisterType<DownloadListModel>("Pirateplayer", 1, 0, "DownloadList");
 
-    pirateplaySeBase = settings.value("Debug/pirateplay_se_base", "http://pirateplay.se").toString();
+    pirateplaySeBase = PirateplayerContext::ppBase();
 
     setFont();
 }

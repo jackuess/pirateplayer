@@ -1,6 +1,7 @@
 Innan release
 =============
- - Metainfo ackumulering
+ + Ta bort debug-base inställning
+ + Metainfo ackumulering
  + Mac Ffplay
  + Varningar
  + Städa Android includes

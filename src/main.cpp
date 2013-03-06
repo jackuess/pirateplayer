@@ -9,7 +9,7 @@
 #endif
 
 #include "gui/maingui.h"
-#include <QFileInfo>
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

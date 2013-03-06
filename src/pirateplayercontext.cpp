@@ -243,6 +243,16 @@ QString PirateplayerContext::applicationDirPath() const {
     return QApplication::applicationDirPath();
 }
 
+#define STRINGIZE2(s) #s
+#define STRINGIZE(s) STRINGIZE2(s)
+QString PirateplayerContext::ppBase() {
+#ifdef PPBASE
+    return QString("http://" STRINGIZE(PPBASE));
+#else
+    return QString("http://pirateplay.se");
+#endif
+}
+
 #ifdef Q_OS_ANDROID
 //JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
 Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
