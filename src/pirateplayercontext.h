@@ -16,7 +16,7 @@ public:
     QNetworkAccessManager* getNetworkAccessManager();
 
     Q_INVOKABLE void quit();
-    Q_INVOKABLE void play(const QString &url, const QString &subsUrl);
+    Q_INVOKABLE void play(const QString &url, const QString &subsUrl, const QString &playerCmd);
     Q_INVOKABLE QVariant getSetting(const QString key, const QVariant defaultValue = QVariant()) const;
     Q_INVOKABLE void setSetting(const QString key, const QVariant value = QVariant());
     Q_INVOKABLE QString applicationVersion() const;

@@ -36,9 +36,10 @@ void PirateplayerContext::quit() {
     QApplication::exit();
 }
 
-void PirateplayerContext::play(const QString &url, const QString &subsUrl) {
+void PirateplayerContext::play(const QString &url, const QString &subsUrl, const QString &playerCmd) {
 #if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
     Q_UNUSED(subsUrl)
+    Q_UNUSED(playerCmd)
     if (url.startsWith("rtmp")) {
         TempPlayer *tmpPlayer = new TempPlayer(&nam, this);
 #ifdef Q_OS_ANDROID
@@ -54,7 +55,7 @@ void PirateplayerContext::play(const QString &url, const QString &subsUrl) {
     bool ok = 0;
     QString cmdTemplate = QInputDialog::getText((QWidget*)this->parent(), tr("Ange uppspelningskommando"),
                                             QString::fromUtf8("Uppspelningskommando:\n    %0 ersätts med videoaddress.\n    %1 ersätts med undertextaddress."), QLineEdit::Normal,
-                                            settings.value("Location/player_cmd").toString(), &ok);
+                                            playerCmd, &ok);
 
     if (ok && !cmdTemplate.isEmpty())
         cmd->start(cmdTemplate.arg(url, subsUrl));

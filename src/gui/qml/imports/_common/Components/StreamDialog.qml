@@ -142,7 +142,7 @@ Flickable {
                     id: playBtn
                     text: "Spela upp"
 
-                    onClicked: play(column.selectedStream.url, column.selectedStream.subtitles)
+                    onClicked: play(column.selectedStream.url, column.selectedStream.subtitles, userSettings.playerCmd)
                 }
                 Button {
                     id: downloadBtn
