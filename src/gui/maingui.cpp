@@ -71,7 +71,7 @@ void MainGui::findPkg() {
             QByteArray md5Sum = pkgParams[1];
             QByteArray fileName = pkgParams[2].trimmed();
 
-            if (PirateplayerContext::compatibleVersion(ppVersion) && md5Sum == settings.value("MainWindow/gui_md5sum", "").toString())
+            if (PirateplayerContext::compatibleVersion(ppVersion) && md5Sum == settings.value("MainWindow/gui_md5sum", "").toString() && QDir(pkgDir).exists())
                 break;
             else if (PirateplayerContext::compatibleVersion(ppVersion)) {
                 pendingMd5Sum = md5Sum;
