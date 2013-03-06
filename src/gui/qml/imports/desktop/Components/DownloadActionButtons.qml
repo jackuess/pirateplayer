@@ -32,6 +32,6 @@ Column {
         width: parent.width
         text: "Öppna"
         enabled: table.anythingSelected
-        onClicked: Qt.openUrlExternally(downloadStack.get(table.currentIndex)["fileName"])
+        onClicked: Qt.openUrlExternally(pathFromNativeSeparators(downloadStack.get(table.currentIndex)["fileName"]))
     }
 }

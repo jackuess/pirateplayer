@@ -24,9 +24,6 @@ MainGui::MainGui(QObject *parent) :
 #if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
     qmlViewer = new MyQmlApplicationViewer();
     qmlViewer->addLibraryPath(pkgDir + "/imports/android");
-#ifdef QT_DEBUG
-    settings.setValue("Debug/pirateplay_se_base", QVariant("http://pirateplay.se:8080"));
-#endif
 #else
     qmlViewer = new PirateplayerDesktopViewer(this);
     qmlViewer->addLibraryPath(pkgDir + "/imports/desktop");
