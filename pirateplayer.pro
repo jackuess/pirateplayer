@@ -104,17 +104,15 @@ android {
     LIBS += -L/home/chucky/src/tidy-html5-android/libs/armeabi
     INCLUDEPATH += /home/chucky/src/tidy-html5-android/include
 
-    INCLUDEPATH += -L/home/chucky/src/librtmp-2.4-android-armeabi-v7a/include
+    INCLUDEPATH += /home/chucky/src/librtmp-2.4-android-armeabi-v7a/include
     LIBS += -L/home/chucky/src/rtmpdump-master/librtmp
 
-    LIBS += -L/home/chucky/src/libarchive-3.1.2/libarchive
+    LIBS += /home/chucky/src/libarchive-3.1.2/libarchive/libarchive.a
     INCLUDEPATH += /home/chucky/src/libarchive_include
 
     ffmpeg.files=/home/chucky/src/android-ffmpeg/ffmpeg/ffmpeg
     ffmpeg.path=/assets
     INSTALLS += ffmpeg
-
-    LIBS += /home/chucky/src/libarchive-3.1.2/libarchive/libarchive.a
 } else {
     LIBS += -larchive
 }

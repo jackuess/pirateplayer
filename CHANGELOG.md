@@ -1,13 +1,13 @@
-Version 0.5 (2013-03-XX)
-========================
-- Stöd för Android
-- Tidsinställda nedladdningar
-- Helt skriptat GUI
-- Möjlighet att ladda ner HLS-strömmar som [Transport Streams](http://en.wikipedia.org/wiki/MPEG_transport_stream)
-- Autonom suffixhantering
-- Ställbar teckenstorlek
-- Helskärmsläge
-- Ffplay stöd för Mac
+Version 0.5.0 (2013-03-XX)
+==========================
+- Stöd för Android.
+- Tidsinställda nedladdningar.
+- Helt skriptat GUI.
+- Möjlighet att ladda ner HLS-strömmar som [Transport Streams](http://en.wikipedia.org/wiki/MPEG_transport_stream).
+- Autonom suffixhantering.
+- Ställbar teckenstorlek.
+- Helskärmsläge.
+- Ffplay-stöd för Mac.
 
 Version 0.4.6 (2013-02-07)
 ==========================

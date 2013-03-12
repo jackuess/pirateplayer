@@ -69,7 +69,13 @@ void SystemDownload::startDownload() {
         extra << "-absf" << "aac_adtstoasc";
     }
 
-    arguments << "-i" << _url.toString() << "-vcodec" << "copy" << "-acodec" << "copy" << "-y" << extra << outFileName;
+#ifdef Q_OS_ANDROID
+    QByteArray fileName = outFileName.toUtf8();
+#else
+    QString fileName = outFileName;
+#endif
+
+    arguments << "-i" << _url.toString() << "-vcodec" << "copy" << "-acodec" << "copy" << "-y" << extra << fileName;
 
     program->start(ffmpegPrefix() + "ffmpeg", arguments);
 
@@ -96,7 +102,8 @@ void SystemDownload::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
 }
 
 void SystemDownload::capDuration() {
-    stdErrBuffer += program->readAllStandardError();
+    QByteArray stdErr = program->readAllStandardError();
+    stdErrBuffer += stdErr;
     int pos = rxDuration.lastIndexIn(stdErrBuffer);
     if (pos > -1) {
         duration = QTime(rxDuration.cap(1).toInt(), rxDuration.cap(2).toInt(), rxDuration.cap(3).toInt());
@@ -107,7 +114,8 @@ void SystemDownload::capDuration() {
 }
 
 void SystemDownload::capCurrentTime() {
-    stdErrBuffer += program->readAllStandardError();
+    QByteArray stdErr = program->readAllStandardError();
+    stdErrBuffer += stdErr;
     int pos = rxCurrTime.lastIndexIn(stdErrBuffer);
 
     if (pos > -1) {

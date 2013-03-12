@@ -23,13 +23,13 @@ public static org.kde.necessitas.ministro.IMinistroCallback asInterface(android.
 if ((obj==null)) {
 return null;
 }
-android.os.IInterface iin = (android.os.IInterface)obj.queryLocalInterface(DESCRIPTOR);
+android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
 if (((iin!=null)&&(iin instanceof org.kde.necessitas.ministro.IMinistroCallback))) {
 return ((org.kde.necessitas.ministro.IMinistroCallback)iin);
 }
 return new org.kde.necessitas.ministro.IMinistroCallback.Stub.Proxy(obj);
 }
-public android.os.IBinder asBinder()
+@Override public android.os.IBinder asBinder()
 {
 return this;
 }
@@ -65,7 +65,7 @@ Proxy(android.os.IBinder remote)
 {
 mRemote = remote;
 }
-public android.os.IBinder asBinder()
+@Override public android.os.IBinder asBinder()
 {
 return mRemote;
 }
@@ -94,7 +94,7 @@ return DESCRIPTOR;
 *
 * This parameter will contain additional fields which are used by the loader to start your application, so it must be passed to loader.
 */
-public void loaderReady(android.os.Bundle loaderParams) throws android.os.RemoteException
+@Override public void loaderReady(android.os.Bundle loaderParams) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 try {

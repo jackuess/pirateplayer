@@ -23,13 +23,13 @@ public static org.kde.necessitas.ministro.IMinistro asInterface(android.os.IBind
 if ((obj==null)) {
 return null;
 }
-android.os.IInterface iin = (android.os.IInterface)obj.queryLocalInterface(DESCRIPTOR);
+android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
 if (((iin!=null)&&(iin instanceof org.kde.necessitas.ministro.IMinistro))) {
 return ((org.kde.necessitas.ministro.IMinistro)iin);
 }
 return new org.kde.necessitas.ministro.IMinistro.Stub.Proxy(obj);
 }
-public android.os.IBinder asBinder()
+@Override public android.os.IBinder asBinder()
 {
 return this;
 }
@@ -68,7 +68,7 @@ Proxy(android.os.IBinder remote)
 {
 mRemote = remote;
 }
-public android.os.IBinder asBinder()
+@Override public android.os.IBinder asBinder()
 {
 return mRemote;
 }
@@ -91,7 +91,7 @@ return DESCRIPTOR;
 *                   "3rd.party.repositories"   StringArray      3rd party repositories, which should be downloaded by ministro, needs minimum.ministro.api >= 2
 *                   Check http://community.kde.org/Necessitas/Ministro for more details.
 */
-public void requestLoader(org.kde.necessitas.ministro.IMinistroCallback callback, android.os.Bundle parameters) throws android.os.RemoteException
+@Override public void requestLoader(org.kde.necessitas.ministro.IMinistroCallback callback, android.os.Bundle parameters) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 android.os.Parcel _reply = android.os.Parcel.obtain();

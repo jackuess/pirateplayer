@@ -1,6 +1,6 @@
 Innan release
 =============
- - Default inställningar första uppstart
+ + Defaultinställningar första uppstart
  + Ta bort debug-base inställning
  + Metainfo ackumulering
  + Mac Ffplay
@@ -35,7 +35,7 @@ Väntande
 ========
  - Konvertera undertexter
  - Favoriter
- - Tab order
+ / Tab order
  - Spara inställningsfönstrets position
  - Om-ruta
  - A-Ö-navigation för Android
@@ -46,6 +46,9 @@ Väntande
  - Uppdatera Readmen
  - Animera toggle box
  - Nyheter Android
+ - Visa logg (Ffmpeg)
+ - Progress textfärg
+ - Vertikala tabbar
 
 + Gjort
 / Påbörjat
