@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QCryptographicHash>
 #include <QApplication>
+#include <QMessageBox>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidStyle>
@@ -23,10 +24,8 @@ MainGui::MainGui(QObject *parent) :
 
 #if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
     qmlViewer = new MyQmlApplicationViewer();
-    qmlViewer->addLibraryPath(pkgDir + "/imports/android");
 #else
     qmlViewer = new PirateplayerDesktopViewer(this);
-    qmlViewer->addLibraryPath(pkgDir + "/imports/desktop");
 #endif
 
     nam = qmlViewer->getPpContext()->getNetworkAccessManager();
@@ -115,8 +114,20 @@ void MainGui::load() {
     QString mainQml = pkgDir + "/main.qml";
 
     if (QFile::exists(mainQml)) {
+#if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
+        qmlViewer->addLibraryPath(pkgDir + "/imports/android");
+#else
+        qmlViewer->addLibraryPath(pkgDir + "/imports/desktop");
+#endif
+
         qmlViewer->open(mainQml);
-    } else { qDebug() << "main.qml ej funnen."; qApp->quit(); }
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Pirateplayer kommer avslutas.");
+        msgBox.setInformativeText("main.qml ej funnen.");
+        msgBox.exec();
+        qApp->quit();
+    }
 }
 
 bool MainGui::removeDir(const QString &dirName) {
