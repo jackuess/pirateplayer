@@ -28,6 +28,7 @@ Item {
         anchors.right: fetchButton.left
         height: parent.height
         //text: "http://www.svtplay.se/video/1032053/del-9-av-12"
+        KeyNavigation.tab: fetchButton
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
@@ -44,7 +45,8 @@ Item {
         enabled: addressField.text != ""
         height: parent.height
         text: "Hämta"
+        KeyNavigation.tab: loader
 
-        onClicked: loader.go(Qt.resolvedUrl("pirateplay.qml?rnd=" + Math.random()), { url: addressField.text }, 0)
+        onClicked: loader.go(Qt.resolvedUrl("../../../browser/pirateplay.qml?rnd=" + Math.random()), { url: addressField.text }, 0)
     }
 }

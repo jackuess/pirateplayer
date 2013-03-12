@@ -50,11 +50,21 @@ Flickable {
                     }
                     width: parent.width
                     path: {
-                        var newFileName = userSettings.filenameTemplate.replace(/%title%/g, programMetaInfo.title);
-                        newFileName = newFileName.replace(/%name%/g, programMetaInfo.name);
-                        newFileName = newFileName.replace(/%season%/g, programMetaInfo.season);
-                        newFileName = newFileName.replace(/%time%/g, programMetaInfo.time);
-                        newFileName = newFileName.replace(/%description%/g, programMetaInfo.description);
+                        function replaceSpecialChars(s) {
+                            return s.replace(/[/\\?]/g, '_');
+                        }
+
+                        var title = replaceSpecialChars(programMetaInfo.title);
+                        var name = replaceSpecialChars(programMetaInfo.name);
+                        var season = replaceSpecialChars(programMetaInfo.season);
+                        var time = replaceSpecialChars(programMetaInfo.time);
+                        var description = replaceSpecialChars(programMetaInfo.description);
+
+                        var newFileName = userSettings.filenameTemplate.replace(/%title%/g, title);
+                        newFileName = newFileName.replace(/%name%/g, name);
+                        newFileName = newFileName.replace(/%season%/g, season);
+                        newFileName = newFileName.replace(/%time%/g, time);
+                        newFileName = newFileName.replace(/%description%/g, description);
                         newFileName = userSettings.startDir + "/" + newFileName + "." + streamsModel.get(0).suffixHint;
                         newFileName = pathToNativeSeparators(newFileName);
                         return newFileName;
