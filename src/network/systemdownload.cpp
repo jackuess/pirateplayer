@@ -120,7 +120,7 @@ void SystemDownload::capCurrentTime() {
 
     if (pos > -1) {
         QTime nullTime = QTime(0, 0, 0);
-        int kBytes = rxCurrTime.cap(1).toInt();
+        quint64 kBytes = rxCurrTime.cap(1).toLongLong();
         QTime currTime = QTime(rxCurrTime.cap(2).toInt(), rxCurrTime.cap(3).toInt(), rxCurrTime.cap(4).toInt());
 
         if (duration.secsTo(nullTime) == 0)

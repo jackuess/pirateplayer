@@ -96,7 +96,7 @@ QVariant DownloadListModel::headerData(int section, Qt::Orientation orientation,
         return QVariant();
 }
 
-void DownloadListModel::addDownload(const QUrl &url, const QString &outFileName, const qint64 &delay, const qint64 &duration) {
+void DownloadListModel::addDownload(const QUrl &url, const QString &outFileName, const quint64 &delay, const quint64 &duration) {
     AbstractDownload *d = createDownload(url);
     beginInsertRows(QModelIndex(), 0, 0);
     downloads.prepend(d);

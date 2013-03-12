@@ -27,7 +27,7 @@ public:
                         int role = Qt::DisplayRole) const;
     Q_INVOKABLE bool removeRow(int row);
     Q_INVOKABLE bool abortDownload(int row);
-    Q_INVOKABLE void addDownload(const QUrl &url, const QString &outFileName, const qint64 &delay = 0, const qint64 &duration = 0);
+    Q_INVOKABLE void addDownload(const QUrl &url, const QString &outFileName, const quint64 &delay = 0, const quint64 &duration = 0);
     Q_INVOKABLE QVariantMap get(int idx) const;
 
     enum Column {
@@ -71,7 +71,7 @@ class AbstractDownload : public QObject
 public:
     explicit AbstractDownload(QObject *parent = 0):QObject(parent) { downloadProgress = 0; bytesRecieved = 0; status = DownloadListModel::NotStarted; }
 
-    void downloadToFile(const QUrl &url, const QString &fileName, const qint64 &delay = 0, const qint64 &duration = 0) {
+    void downloadToFile(const QUrl &url, const QString &fileName, const quint64 &delay = 0, const quint64 &duration = 0) {
         outFileName = fileName;
         _url = url;
         _duration = duration;
@@ -81,7 +81,7 @@ public:
     QString getUrl() { return _url.toString(); }
     QString getFileName() { return outFileName; }
     int getProgress() { return downloadProgress; }
-    int getBytesRecieved() { return bytesRecieved; }
+    quint64 getBytesRecieved() { return bytesRecieved; }
     DownloadListModel::Status getStatus() { return status; }
 
 signals:
@@ -101,11 +101,11 @@ protected slots:
     }
 
 protected:
-    qint64 _duration;
+    quint64 _duration;
     QString outFileName;
     QUrl _url;
     int downloadProgress;
-    int bytesRecieved;
+    quint64 bytesRecieved;
     DownloadListModel::Status status;
 };
 
