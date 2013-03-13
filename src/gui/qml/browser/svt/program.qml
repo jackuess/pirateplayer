@@ -35,7 +35,8 @@ BarredListView {
         }
         XmlRole {
             name: "thumb"
-            query: "div//img/@src/string()"
+            //query: "div//img/@src/string()"
+            query: "div//noscript/img/@src/string()"
         }
     }
 
