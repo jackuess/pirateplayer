@@ -7,7 +7,8 @@ Version 0.5.0 (2013-03-XX)
 - Autonom suffixhantering.
 - Ställbar teckenstorlek.
 - Helskärmsläge.
-- Ffplay-stöd för Mac.
+- Buggfix: Visning av nedladdade Megabytes för stora filer.
+- Buggfix, Mac: Ffplay.
 
 Version 0.4.6 (2013-02-07)
 ==========================

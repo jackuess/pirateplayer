@@ -30,6 +30,7 @@ Innan release
  + Suffixförslag
  + Välj katalog-dialog
  + Version
+ + Snyggare meddelanderutor
 
 Väntande
 ========
@@ -40,15 +41,14 @@ Väntande
  - Om-ruta
  - A-Ö-navigation för Android
  - Nedladdningsåtgärder för Android
- - Snyggare meddelanderutor
  - Qt5 kompatiblitet
- - Kanal 9
  - Uppdatera Readmen
  - Animera toggle box
  - Nyheter Android
  - Visa logg (Ffmpeg)
  - Progress textfärg
- - Vertikala tabbar
+ + Vertikala tabbar
+ + Kanal 9
 
 + Gjort
 / Påbörjat

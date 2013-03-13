@@ -26,7 +26,8 @@ BarredListView {
 
         onClicked: {
             go( Qt.resolvedUrl("program.qml"),
-               { url: "tidy://www.kanal5play.se" + model.link,
+               { url: "tidy://www.kanal" + currentArgs.n + "play.se" + model.link,
+                   n: currentArgs.n,
                    programSeason: parseInt(model.text.slim().replace("Säsong ", "")),
                    programName: currentArgs.programName },
                model.index );

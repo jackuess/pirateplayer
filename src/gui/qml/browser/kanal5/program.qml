@@ -34,7 +34,7 @@ BarredListView {
 
         onClicked: {
             go( Qt.resolvedUrl("../pirateplay.qml"),
-               { url: "http://kanal5play.se" + model.link,
+               { url: "http://kanal" + currentArgs.n + "play.se" + model.link,
                    programTitle: model.title.slim(),
                    programName: currentArgs.programName,
                    programSeason: currentArgs.programSeason,

@@ -5,7 +5,7 @@ import "../../common.js" as Common
 
 AzListView {
     model: XmlListModel {
-        source: "tidy://www.kanal5play.se/program"
+        source: "tidy://www.kanal" + currentArgs.n + "play.se/program"
         query: "//div[@class=\"logo\" and descendant::img]"
 
         XmlRole {
@@ -27,7 +27,8 @@ AzListView {
 
         onClicked: {
             go( Qt.resolvedUrl("season.qml"),
-               { url: "tidy://www.kanal5play.se" + model.link,
+               { url: "tidy://www.kanal" + currentArgs.n + "play.se" + model.link,
+                   n: currentArgs.n,
                    programName: model.text.slim() },
                model.index );
         }

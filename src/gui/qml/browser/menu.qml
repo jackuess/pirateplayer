@@ -30,6 +30,7 @@ BarredListView {
             title: "Kanal 5-play"
             url: "kanal5/a-z.qml"
             logo: "http://images2.wikia.nocookie.net/__cb20091126112949/logopedia/images/1/14/Kanal_5.svg"
+            n: 5
         }
         ListElement {
             title: "TV6-play"
@@ -49,6 +50,12 @@ BarredListView {
 //            logo: "http://www.kanal9play.se/themes/kanal9/images/logo.png"
 //        }
         ListElement {
+            title: "Kanal 9-play"
+            url: "kanal5/a-z.qml"
+            logo: "http://www.vibo.se/media/kanal9.se.png"
+            n: 9
+        }
+        ListElement {
             title: "Aftonbladet-TV"
             url: "aftonbladet/a-z.qml"
             logo: "http://www.tv14.net/wp-content/uploads/2010/10/Aftonbladet.jpg"
@@ -60,7 +67,7 @@ BarredListView {
         imgSource: model.logo
         onClicked: {
             go( Qt.resolvedUrl(model.url),
-               model.url == "mtg/a-z.qml" ? { n: model.n } : {},
+               typeof model.n === "undefined" ? {} : { n: model.n },
                model.index);
         }
     }
