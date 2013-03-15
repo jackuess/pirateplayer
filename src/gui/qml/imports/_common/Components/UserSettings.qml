@@ -2,7 +2,7 @@ import QtQuick 1.1
 
 Item {
     property variant defaults: { "startDir": getHomeDir(),
-                                 "playerCmd": (mac() ? applicationDirPath() + "/" : "") + "ffplay %0",
+                                 "playerCmd": (mac() ? applicationDirPath() + "/" : "") + "ffplay \"%0\"",
                                  "filenameTemplate": "%name%_-_%title%",
                                  "fontPointSize": getSetting("MainWindow/font_point_size") }
 
