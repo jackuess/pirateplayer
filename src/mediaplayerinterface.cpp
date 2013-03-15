@@ -18,6 +18,8 @@ void MediaPlayerInterface::setNam(QNetworkAccessManager *newNam) {
 #if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
     delete nam;
     nam = newNam;
+#else
+    Q_UNUSED( newNam )
 #endif
 }
 
@@ -46,11 +48,11 @@ void MediaPlayerInterface::play(const QString &url, const QString &subsUrl, cons
 }
 
 void MediaPlayerInterface::playNative() {
-//#ifdef Q_OS_MAC
-//    playUsingCmd("open -a \"QuickTime Player\" \"%0\"");
-//#else
+#ifdef Q_OS_MAC
+    playUsingCmd("open -a \"QuickTime Player\" \"%0\"");
+#else
     QDesktopServices::openUrl(QUrl(_url));
-//#endif
+#endif
 }
 
 void MediaPlayerInterface::playTemp() {
