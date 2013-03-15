@@ -3,15 +3,15 @@
 
 #include <QObject>
 #include <QTemporaryFile>
+#include <QNetworkAccessManager>
 
 #include "download.h"
-#include "piratenetworkaccessmanager.h"
 
 class TempPlayer : public QObject
 {
     Q_OBJECT
 public:
-    explicit TempPlayer(PirateNetworkAccessManager *existingNam = 0, QObject *parent = 0);
+    explicit TempPlayer(QNetworkAccessManager *existingNam = 0, QObject *parent = 0);
 
     void play(const QString &url);
     void setTempDir(const QString &newDir);
@@ -20,7 +20,8 @@ private slots:
     void startPlaying();
 
 private:
-    PirateNetworkAccessManager *nam;
+    //PirateNetworkAccessManager *nam;
+    QNetworkAccessManager *nam;
     QString tempDir;
     Download *dl;
     QTemporaryFile tmpFile;

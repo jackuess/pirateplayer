@@ -29,6 +29,7 @@ SOURCES += src/network/download.cpp \
         src/extra/archiveextractor.cpp \
         src/pirateplayercontext.cpp \
         src/main.cpp\
+    src/mediaplayerinterface.cpp
 
 HEADERS  += src/network/download.h \
         src/network/systemdownload.h \
@@ -44,6 +45,7 @@ HEADERS  += src/network/download.h \
         src/gui/maingui.h \
         src/extra/archiveextractor.h \
         src/pirateplayercontext.h \
+    src/mediaplayerinterface.h
 
 OTHER_FILES += \
     android/AndroidManifest.xml \

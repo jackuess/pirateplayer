@@ -6,6 +6,7 @@
 #include <QDateTime>
 
 #include "network/piratenetworkaccessmanager.h"
+#include "mediaplayerinterface.h"
 
 class PirateplayerContext : public QObject
 {
@@ -53,6 +54,7 @@ private:
     QSettings settings;
     QString relativeTime(const QDateTime &term1, const QDateTime &term2) const;
     PirateNetworkAccessManager nam;
+    MediaPlayerInterface mediaPlayer;
 };
 
 #endif // PIRATEPLAYERCONTEXT_H

@@ -25,7 +25,10 @@ static QString externalFilesDir;
 PirateplayerContext::PirateplayerContext(QObject *parent) :
     QObject(parent)
 {
-    ;
+mediaPlayer.setNam(&nam);
+#ifdef Q_OS_ANDROID
+    mediaPlayer.setTempDir(getHomeDir());
+#endif
 }
 
 QNetworkAccessManager* PirateplayerContext::getNetworkAccessManager() {
@@ -37,29 +40,7 @@ void PirateplayerContext::quit() {
 }
 
 void PirateplayerContext::play(const QString &url, const QString &subsUrl, const QString &playerCmd) {
-#if defined( Q_OS_ANDROID ) || defined( EMULATE_ANDROID )
-    Q_UNUSED(subsUrl)
-    Q_UNUSED(playerCmd)
-    if (url.startsWith("rtmp")) {
-        TempPlayer *tmpPlayer = new TempPlayer(&nam, this);
-#ifdef Q_OS_ANDROID
-        tmpPlayer->setTempDir(getHomeDir());
-#endif
-        tmpPlayer->play(url);
-    }
-    else
-        QDesktopServices::openUrl(QUrl(url));
-#else
-    QProcess *cmd = new QProcess(this);
-
-    bool ok = 0;
-    QString cmdTemplate = QInputDialog::getText((QWidget*)this->parent(), tr("Ange uppspelningskommando"),
-                                            QString::fromUtf8("Uppspelningskommando:\n    %0 ersätts med videoaddress.\n    %1 ersätts med undertextaddress."), QLineEdit::Normal,
-                                            playerCmd, &ok);
-
-    if (ok && !cmdTemplate.isEmpty())
-        cmd->start(cmdTemplate.arg(url, subsUrl));
-#endif
+    mediaPlayer.play(url, subsUrl, playerCmd);
 }
 
 QVariant PirateplayerContext::getSetting(const QString key, const QVariant defaultValue) const {

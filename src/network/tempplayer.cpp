@@ -1,13 +1,15 @@
 #include "tempplayer.h"
 
 #include "../pirateplayercontext.h"
+#include "piratenetworkaccessmanager.h"
 
 #include <QDir>
 #include <QDebug>
 #include <QMessageBox>
 #include <QApplication>
+#include <QDesktopWidget>
 
-TempPlayer::TempPlayer(PirateNetworkAccessManager *existingNam, QObject *parent) :
+TempPlayer::TempPlayer(QNetworkAccessManager *existingNam, QObject *parent) :
     QObject(parent)
 {
     if (existingNam == 0)
@@ -43,11 +45,11 @@ void TempPlayer::startPlaying() {
 void TempPlayer::cleanUp() {
     QMessageBox msgBox;
     msgBox.show();
-#ifdef Q_OS_ANDROID
-    QWidget *w = QApplication::activeWindow();
-    msgBox.move(w->width()/2-msgBox.width(), w->height()/2-msgBox.height());
-#endif
     msgBox.setText(QString::fromUtf8("Uppspelning färdig!"));
+#ifdef Q_OS_ANDROID
+    QWidget *w = QApplication::desktop();
+    msgBox.move(w->width()/2-msgBox.width()/2, w->height()/2-msgBox.height()/2);
+#endif
     msgBox.exec();
 
     dl->abort();
