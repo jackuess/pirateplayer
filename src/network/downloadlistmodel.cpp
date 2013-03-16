@@ -96,12 +96,17 @@ QVariant DownloadListModel::headerData(int section, Qt::Orientation orientation,
         return QVariant();
 }
 
-void DownloadListModel::addDownload(const QUrl &url, const QString &outFileName, const quint64 &delay, const quint64 &duration) {
-    AbstractDownload *d = createDownload(url);
+void DownloadListModel::addDownload(const QString &url, const QString &outFileName, const quint64 &delay, const quint64 &duration) {
+
+    QUrl _url(url);
+    if (_url.host().contains("youtube.com"))
+        _url = QUrl::fromEncoded(url.toAscii());
+
+    AbstractDownload *d = createDownload(_url);
     beginInsertRows(QModelIndex(), 0, 0);
     downloads.prepend(d);
     emit countChanged(downloads.count());
-    d->downloadToFile(url, outFileName, delay, duration);
+    d->downloadToFile(_url, outFileName, delay, duration);
     endInsertRows();
     connect(d, SIGNAL(progress()), this, SLOT(onProgress()));
     connect(d, SIGNAL(statusChanged()), this, SLOT(onStatusChanged()));

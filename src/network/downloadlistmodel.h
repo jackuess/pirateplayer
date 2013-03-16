@@ -27,7 +27,7 @@ public:
                         int role = Qt::DisplayRole) const;
     Q_INVOKABLE bool removeRow(int row);
     Q_INVOKABLE bool abortDownload(int row);
-    Q_INVOKABLE void addDownload(const QUrl &url, const QString &outFileName, const quint64 &delay = 0, const quint64 &duration = 0);
+    Q_INVOKABLE void addDownload(const QString &url, const QString &outFileName, const quint64 &delay = 0, const quint64 &duration = 0);
     Q_INVOKABLE QVariantMap get(int idx) const;
 
     enum Column {
