@@ -31,6 +31,7 @@ Innan release
  + Välj katalog-dialog
  + Version
  + Snyggare meddelanderutor
+ - Infoga adresser från klippbordet
 
 Väntande
 ========
@@ -41,12 +42,14 @@ Väntande
  - Om-ruta
  - A-Ö-navigation för Android
  - Nedladdningsåtgärder för Android
- - Qt5 kompatiblitet
+ / Qt5 kompatiblitet
  - Uppdatera Readmen
  - Animera toggle box
  - Nyheter Android
  - Visa logg (Ffmpeg)
  - Progress textfärg
+ - Kanal 5 thumbnails
+ - Kontrollera service med regexp.
  + Vertikala tabbar
  + Kanal 9
 

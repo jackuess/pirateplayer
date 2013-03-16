@@ -1,5 +1,7 @@
 import QtQuick 1.1
 import QtDesktop 0.1
+import Pirateplayer 1.0
+import "../../../common.js" as Common
 
 Item {
     id: bar
@@ -29,6 +31,12 @@ Item {
         height: parent.height
         //text: "http://www.svtplay.se/video/1032053/del-9-av-12"
         KeyNavigation.tab: fetchButton
+
+        Component.onCompleted: {
+            var clip = getClipboardText();
+            if (clip.startsWith("http://"))
+                text = clip;
+        }
 
         Text {
             anchors.verticalCenter: parent.verticalCenter

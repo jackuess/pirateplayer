@@ -11,6 +11,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QApplication>
+#include <QClipboard>
 
 #include "network/tempplayer.h"
 
@@ -37,6 +38,10 @@ QNetworkAccessManager* PirateplayerContext::getNetworkAccessManager() {
 
 void PirateplayerContext::quit() {
     QApplication::exit();
+}
+
+QString PirateplayerContext::getClipboardText() const {
+    return QApplication::clipboard()->text();
 }
 
 void PirateplayerContext::play(const QString &url, const QString &subsUrl, const QString &playerCmd) {

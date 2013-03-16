@@ -1,4 +1,4 @@
-#ifndef PIRATEPLAYERCONTEXT_H
+    #ifndef PIRATEPLAYERCONTEXT_H
 #define PIRATEPLAYERCONTEXT_H
 
 #include <QObject>
@@ -28,6 +28,7 @@ public:
     Q_INVOKABLE static bool compatibleVersion(const QString &version);
     Q_INVOKABLE QString applicationDirPath() const;
     Q_INVOKABLE static QString ppBase();
+    Q_INVOKABLE QString getClipboardText() const;
 
     Q_INVOKABLE bool pathIsDir(const QString &path) const;
     Q_INVOKABLE bool pathExists(const QString &path) const;
