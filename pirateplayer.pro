@@ -6,14 +6,13 @@
 
 QT       += core gui declarative network
 
+CONFIG += mobility
+MOBILITY =
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = pirateplayer
 TEMPLATE = app
-
-CONFIG += mobility
-MOBILITY = 
-
 
 SOURCES += src/network/download.cpp \
         src/network/systemdownload.cpp \
@@ -103,6 +102,7 @@ win32 {
 }
 
 android {
+
     LIBS += -L/home/chucky/src/tidy-html5-android/libs/armeabi
     INCLUDEPATH += /home/chucky/src/tidy-html5-android/include
 
@@ -170,4 +170,6 @@ LIBS += -ltidy
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
-qtcAddDeployment()
+android {
+    qtcAddDeployment()
+}
