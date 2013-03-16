@@ -127,6 +127,44 @@ mac {
     ICON = pirateplayer.icns
 }
 
+unix {
+    isEmpty(PREFIX):PREFIX = /usr/local
+    DATADIR = $$PREFIX/share
+
+   target.path = $$PREFIX/bin
+
+   INSTALLS += target \
+       desktop \
+       iconsvg \
+       icon16 \
+       icon32 \
+       icon48 \
+       icon64 \
+       icon128 \
+       icon256 \
+       icon512
+
+   desktop.path = $$DATADIR/applications
+   desktop.files += pirateplayer.desktop
+
+   iconsvg.path = $$DATADIR/icons/hicolor/scalable/apps
+   iconsvg.files += data/pirateplayer.svg
+   icon16.path = $$DATADIR/icons/hicolor/16x16/apps
+   icon16.files += data/16x16/pirateplayer.png
+   icon32.path = $$DATADIR/icons/hicolor/32x32/apps
+   icon32.files += data/32x32/pirateplayer.png
+   icon48.path = $$DATADIR/icons/hicolor/48x48/apps
+   icon48.files += data/48x48/pirateplayer.png
+   icon64.path = $$DATADIR/icons/hicolor/64x64/apps
+   icon64.files += data/64x64/pirateplayer.png
+   icon128.path = $$DATADIR/icons/hicolor/128x128/apps
+   icon128.files += data/128x128/pirateplayer.png
+   icon256.path = $$DATADIR/icons/hicolor/256x256/apps
+   icon256.files += data/256x256/pirateplayer.png
+   icon512.path = $$DATADIR/icons/hicolor/512x512/apps
+   icon512.files += data/512x512/pirateplayer.png
+}
+
 LIBS += -lrtmp
 LIBS += -ltidy
 

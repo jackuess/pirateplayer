@@ -31,7 +31,7 @@ Innan release
  + Välj katalog-dialog
  + Version
  + Snyggare meddelanderutor
- - Infoga adresser från klippbordet
+ + Infoga adresser från klippbordet
 
 Väntande
 ========
