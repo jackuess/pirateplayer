@@ -14,3 +14,4 @@ android/local.properties
 android/proguard-project.txt
 *.qmlproject.user
 src/gui/qml/deploy.sh
+.DS_Store
