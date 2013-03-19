@@ -13,7 +13,7 @@ BarredListView {
         doc.onreadystatechange = function() {
             if (doc.readyState == XMLHttpRequest.DONE) {
                 status = XmlListModel.Ready;
-                programModel.xml = doc.responseText.replace("<![if !(lte IE 7)]>", "").replace("<![endif]>", "");
+                programModel.xml = "<root>" + doc.responseText.replace(/<![^>]*>/g, "").replace(/<\/?((img)|(input))[^>]+>/g, "").replace(/<\/noscript>\n<\/head>/, "</noscript>").replace(/<\/body>\n<\/html>/, "</body></body></html></html></html></html></html>").replace(/\s&\s/g, "&amp;").replace(/&/g, "").replace(/document.write\('[^']+'/g, "").replace(/&rdquo;/g, "").replace(/&hellip;/g, "...").replace(/&nbsp;/g, " ").replace(/&auml;/g, "ä").replace(/&Auml;/g, "Ä").replace(/&ouml;/g, "ö").replace(/&Ouml;/g, "Ö").replace(/&aring;/g, "å").replace(/&Aring;/g, "Å").replace(/&aacute;/g, "á").replace(/&eacute;/g, "é").replace(/&ndash;/g, "-") + "</root>";
             }
         }
         doc.open("GET", currentArgs.url);
@@ -35,13 +35,13 @@ BarredListView {
         }
         XmlRole {
             name: "thumb"
-            //query: "div//img/@src/string()"
-            query: "div//noscript/img/@src/string()"
+            query: "div//img/@src/string()"
+            //query: "div//noscript/img/@src/string()"
         }
     }
 
     delegate: ListDelegate {
-        imgSource: model.thumb.startsWith("http://") ? model.thumb : "http://svtplay.se" + model.thumb
+        //imgSource: model.thumb.startsWith("http://") ? model.thumb : "http://svtplay.se" + model.thumb
         text: model.text.slim()
         onClicked: {
             var base = (model.link.startsWith("http") ? "" : "http://svtplay.se");
