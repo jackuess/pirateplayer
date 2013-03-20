@@ -1,4 +1,4 @@
-Version 0.5.0 (2013-03-XX)
+Version 0.5.0 (2013-03-16)
 ==========================
 - Stöd för Android.
 - Tidsinställda nedladdningar.

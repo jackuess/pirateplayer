@@ -13,12 +13,12 @@ BarredListView {
         ListElement {
             title: "Rekommenderat"
             module: "program"
-            url: "tidy://www.svtplay.se/?tab=recommended&sida=3"
+            url: "http://www.svtplay.se/?tab=recommended&sida=3"
         }
         ListElement {
             title: "Senaste program"
             module: "program"
-            url: "tidy://www.svtplay.se/?tab=episodes&sida=3"
+            url: "http://www.svtplay.se/?tab=episodes&sida=3"
         }
         ListElement {
             title: "Kanaler (live)"
