@@ -15,3 +15,4 @@ android/proguard-project.txt
 *.qmlproject.user
 src/gui/qml/deploy.sh
 .DS_Store
+android/ant.properties
