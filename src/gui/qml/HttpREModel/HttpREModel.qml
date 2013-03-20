@@ -4,8 +4,8 @@ ListModel {
 	id: list
 	
 	property list<ReRole> roles
-	property string source
-	property string regExp
+    property string source: ""
+    property string regExp: ""
 	property string subQuery: "([A-Za-z]j)"
     property int status: XmlListModel.Loading
 	

@@ -10,7 +10,7 @@ BarredListView {
     model: HttpREModel {
         id: programModel
 
-        source: currentArgs.url
+        source: currentArgs.url ? currentArgs.url : ""
         regExp: "(<article class=\"svtUnit[^>]+>(.|\n)*?</article>)"
 
         roles: [

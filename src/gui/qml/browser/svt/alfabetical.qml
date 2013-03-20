@@ -28,7 +28,7 @@ AzListView {
         text: model.text
         onClicked: {
             go( Qt.resolvedUrl("program.qml"),
-               { url: "tidy://www.svtplay.se" + model.link + "?tab=episodes&sida=999",
+               { url: "http://www.svtplay.se" + model.link + "?tab=episodes&sida=999",
                    programName: model.text },
                model.index);
         }
