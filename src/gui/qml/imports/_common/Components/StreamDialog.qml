@@ -109,7 +109,7 @@ Flickable {
 
                 CheckBox {
                     id: saveSubs
-                    text: "Spara undertexter (till: " + (pathIsDir(fileName.text) ? "" : baseName(fileName.path)) + "." + suffix(column.selectedStream.subtitles) + ")"
+                    text: "Spara undertexter (till: " + (pathIsDir(fileName.text) ? "" : baseName(fileName.path)) + "." + suffix(column.selectedStream.subtitles).replace("?", "") + ")"
                     width: parent.width
                 }
             }
@@ -162,7 +162,7 @@ Flickable {
                     onClicked: {
                         downloadStack.addDownload(column.selectedStream.url, fileName.path, delay.ms, duration.ms);
                         if (saveSubs.checked) {
-                            var subFilePath = absDir(fileName.path) + nativeSeparator() + baseName(fileName.path) + "." + suffix(column.selectedStream.subtitles);
+                            var subFilePath = absDir(fileName.path) + nativeSeparator() + baseName(fileName.path) + "." + suffix(column.selectedStream.subtitles).replace("?", "");
                             downloadStack.addDownload(column.selectedStream.subtitles, subFilePath, delay.ms, duration.ms);
                         }
                     }
