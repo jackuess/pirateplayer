@@ -25,6 +25,11 @@ BarredListView {
             module: "live"
             url: ""
         }
+        ListElement {
+            title: "Öppet arkiv"
+            module: "open_a-z"
+            url: ""
+        }
     }
 
     delegate: ListDelegate {
