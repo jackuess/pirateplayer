@@ -51,7 +51,7 @@ Flickable {
                     width: parent.width
                     path: {
                         function replaceSpecialChars(s) {
-                            return s.replace ? s.replace(/[/\\?!]/g, '_') : "";
+                            return s.replace ? s.replace(/[/\\?!:<>*\"|]/g, '_') : "";
                         }
 
                         var title = replaceSpecialChars(programMetaInfo.title);
