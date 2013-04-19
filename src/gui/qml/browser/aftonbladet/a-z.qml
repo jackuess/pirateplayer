@@ -5,13 +5,17 @@ import "../../common.js" as Common
 
 AzListView {
     model: XmlListModel {
-        source: "tidy://www.aftonbladet.se/webbtv/"
+        source: "tidy://tv.aftonbladet.se/webbtv/"
         namespaceDeclarations: "declare default element namespace 'http://www.w3.org/1999/xhtml';"
-        query: '//*[@id="abNavProgrambox"]/div/ul/li[@class="level1"]/a'
+        query: "//div[@class=\"expanded_nav_programs\"]//a[@class=\"group\"]"
 
         XmlRole {
             name: "text"
-            query: "string()"
+            query: "span/strong/string()"
+        }
+        XmlRole {
+            name: "thumb"
+            query: "span/img/@data-src/string()"
         }
         XmlRole {
             name: "link"
@@ -20,9 +24,10 @@ AzListView {
     }
     delegate: ListDelegate {
         text: model.text.slim()
+        imgSource: decodeURIComponent(model.thumb)
 
         onClicked: {
-            go( Qt.resolvedUrl("program.qml"),
+            go( Qt.resolvedUrl("season.qml"),
                { url: model.link.replace('http://', 'tidy://'),
                    programName: model.text.slim() },
                model.index );
