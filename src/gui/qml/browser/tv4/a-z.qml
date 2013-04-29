@@ -22,7 +22,7 @@ AzListView {
 
         onClicked: {
             go( Qt.resolvedUrl("program.qml"),
-               { url: "tidy://www.tv4play.se" + decodeURIComponent(model.link),
+               { url: decodeURIComponent(model.link).replace("http://", "tidy://"),
                    programName: model.text.slim() },
                model.index );
         }
