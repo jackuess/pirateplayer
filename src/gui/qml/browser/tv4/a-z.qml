@@ -6,7 +6,7 @@ import "../../common.js" as Common
 AzListView {
     model: XmlListModel {
         source: "tidy://www.tv4play.se/program?per_page=999&per_row=4&page=1&content-type=a-o&is_premium=false"
-        query: "//ul[@class=\"a-o-list js-show-more-content\"]/li/ul/li/a"
+        query: "//ul[@class=\"row a-o-list-wrapper\"]/li/ul/li/a"
 
         XmlRole {
             name: "text"
