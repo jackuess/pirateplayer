@@ -6,8 +6,7 @@ import "../../common.js" as Common
 AzListView {
     model: XmlListModel {
         source: "tidy://www.tv" + /*ViewBrowser.currentView.args.n*/currentArgs.n + "play.se/program"
-        namespaceDeclarations: "declare default element namespace 'http://www.w3.org/1999/xhtml';"
-        query: "//div[@id=\"main-content\"]//a[string()]"
+        query: "//a[@class=\"list-item\"]"
 
         XmlRole {
             name: "text"
