@@ -6,7 +6,7 @@ import "../../common.js" as Common
 AzListView {
     model: XmlListModel {
         source: "tidy://www.kanal" + currentArgs.n + "play.se/program"
-        query: "//div[@class=\"logo\" and descendant::img]"
+        query: "//div[@class=\"logo\" and descendant::img]/div"
 
         XmlRole {
             name: "text"
