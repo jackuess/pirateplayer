@@ -8,8 +8,8 @@ AzListView {
     model: HttpREModel {
         id: indexModel
 
-        source: "http://svtplay.se/program"
-        regExp: "(<a href=\"[^\"]+\" class=\"playAlphabeticLetterLink\">(.|\n)*?</a>)"
+        source: "http://www.svtplay.se/program"
+        regExp: "(<a href=\"[^\"]+\" title=\"[^\"]+\" class=\"play_alphabetic-list__video-link\">(.|\n)*?</a>)"
 
         roles: [
             ReRole {
@@ -28,7 +28,7 @@ AzListView {
         text: model.text
         onClicked: {
             go( Qt.resolvedUrl("program.qml"),
-               { url: "http://www.svtplay.se" + model.link + "?tab=episodes&sida=999",
+               { url: "http://www.svtplay.se" + model.link + "?sida=999",
                    programName: model.text },
                model.index);
         }
