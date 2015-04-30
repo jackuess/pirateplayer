@@ -9,7 +9,7 @@ AzListView {
         id: indexModel
 
         source: "http://www.svtplay.se/program"
-        regExp: "(<a href=\"[^\"]+\" title=\"[^\"]+\" class=\"play_alphabetic-list__video-link\">(.|\n)*?</a>)"
+        regExp: "(<a href=\"[^\"]+\" title=\"[^\"]+\" class=\"play_link-list__link\">(.|\n)*?</a>)"
 
         roles: [
             ReRole {
