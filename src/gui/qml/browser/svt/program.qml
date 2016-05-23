@@ -16,16 +16,16 @@ BarredListView {
         roles: [
             ReRole {
                 name: "text"
-                regExp: 'class="play_vertical-list__header-link">([^<]+)</a>'
+                regExp: '<a [^>]*>([^>]*)</a>'
                 function decode(s) { return s.slim().decodeHTMLEntities(); }
             },
             ReRole {
                 name: "link"
-                regExp: '<a href="([^"]+)" class="play_vertical-list__header-link"'
+                regExp: ' href="([^"]+)"'
             },
             ReRole {
                 name: "thumb"
-                regExp: '<img .*? src="([^"]+)"'
+                regExp: ' src="([^"]+)"'
             }
         ]
     }

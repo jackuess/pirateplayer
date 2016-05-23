@@ -5,8 +5,8 @@ import "../../common.js" as Common
 
 AzListView {
     model: XmlListModel {
-        source: "tidy://www.oppetarkiv.se/kategori/titel"
-        query: "//li[@class=\"svtoa-anchor-list-item\"]/a"
+        source: "tidy://www.oppetarkiv.se/program"
+        query: '//li[contains(@class,"svtoa-anchor-list-item")]/a'
 
         XmlRole {
             name: "text"
@@ -22,9 +22,12 @@ AzListView {
 
         onClicked: {
             go( Qt.resolvedUrl("open_program.qml"),
-               { url: decodeURIComponent(model.link.replace("http://", "tidy://")),
-                   programName: model.text.slim() },
-               model.index );
+                {
+					url: "tidy://www.oppetarkiv.se" + decodeURI(model.link),
+					programName: model.text.slim() 
+				},
+                model.index );
         }
     }
 }
+

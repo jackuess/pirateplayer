@@ -9,12 +9,12 @@ AzListView {
         id: indexModel
 
         source: "http://www.svtplay.se/program"
-        regExp: "(<a href=\"[^\"]+\" title=\"[^\"]+\" class=\"play_link-list__link[^\"]*\">(.|\n)*?</a>)"
+		regExp: "<li class=\"play_alphabetic-list__item\"[^>]*>(<a[^>]*>[^<]*</a>)</li>"
 
         roles: [
             ReRole {
                 name: "text"
-                regExp: ">([^<]+)<"
+                regExp: ">([^<]+)</a>"
                 function decode(s) { return s.slim().decodeHTMLEntities(); }
             },
             ReRole {
