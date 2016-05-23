@@ -4,6 +4,7 @@ import QtDesktop 0.1
 
 Flickable {
     property variant programMetaInfo: { "title": "", "name": "", "season": "", "time": "", "description": "" }
+    property string videoPageUrl: ""
     anchors.fill: parent
     contentHeight: column.height
 
@@ -13,7 +14,8 @@ Flickable {
     }
 
     Column {
-        property variant selectedStream: qualityBox.model.get(qualityBox.selectedIndex)
+// quality
+//        property variant selectedStream: qualityBox.model.get(qualityBox.selectedIndex)
 
         id: column
         width: parent.width; height: childrenRect.height
@@ -27,7 +29,7 @@ Flickable {
                 id: headerLabel
                 anchors.verticalCenter: parent.verticalCenter; anchors.horizontalCenter: parent.horizontalCenter
                 font.bold: true
-                text: "Spara eller spela upp ström"
+                text: "Spara media"
             }
         }
 
@@ -41,12 +43,7 @@ Flickable {
                 FilePathField {
                     id: fileName
                     filter: {
-                        if (column.selectedStream.suffixHint == "mp4")
-                            return "MPEG4 (*.mp4);;TeleStream (*.ts)";
-                        else if (column.selectedStream.suffixHint == "flv")
-                            return "Flashvideo (*.flv)";
-                        else
-                            return "Alla filer (*.*)";
+                        return "MP4 (*.mp4)";
                     }
                     width: parent.width
                     path: {
@@ -65,7 +62,7 @@ Flickable {
                         newFileName = newFileName.replace(/%season%/g, season);
                         newFileName = newFileName.replace(/%time%/g, time);
                         newFileName = newFileName.replace(/%description%/g, description);
-                        newFileName = userSettings.startDir + "/" + newFileName + "." + streamsModel.get(0).suffixHint;
+                        newFileName = userSettings.startDir + "/" + newFileName + ".mp4";
                         newFileName = pathToNativeSeparators(newFileName);
                         return newFileName;
                     }
@@ -105,66 +102,62 @@ Flickable {
 
             FormRow {
                 label: ""
-                visible: column.selectedStream.subtitles
+                visible: true
 
                 CheckBox {
                     id: saveSubs
-                    text: "Spara undertexter (till: " + (pathIsDir(fileName.text) ? "" : baseName(fileName.path)) + "." + suffix(column.selectedStream.subtitles).replace("?", "") + ")"
+                    text: "Spara undertexter"
                     width: parent.width
                 }
             }
-            FormRow {
-                label: "Kvalitet"
 
-                ComboBox {
-                    id: qualityBox
-                    model: streamsModel
-                }
-            }
-
-            ToggleBox {
-                label: "timeralternativ"
-                width: parent.width
-
-                FormLayout {
-                    labelColumnWidth: formLayout.labelColumnWidth; customLabelColumnWidth: true
-                    FormRow {
-                        label: "Fördröjning"
-
-                        TimerField { id: delay }
-                    }
-                    FormRow {
-                        label: "Längd"
-
-                        TimerField { id: duration }
-                    }
-                    FormRow {
-                        label: ""
-                        Label { text: "Ange <em>noll</em> för obestämd längd" }
-                    }
-                }
-            }
+// quality
+//            FormRow {
+//                label: "Kvalitet"
+//
+//                ComboBox {
+//                    id: qualityBox
+//                    model: streamsModel
+//                }
+//            }
 
             FormRow {
                 label: ""
 
-                Button {
-                    id: playBtn
-                    text: "Spela upp"
-
-                    onClicked: play(column.selectedStream.url, column.selectedStream.subtitles, userSettings.playerCmd)
-                }
                 Button {
                     id: downloadBtn
                     text: "Starta nedladdning"
                     enabled: !isDir.when && !isEmpty.when && !isWritable.when
 
                     onClicked: {
-                        downloadStack.addDownload(column.selectedStream.url, fileName.path, delay.ms, duration.ms);
-                        if (saveSubs.checked) {
-                            var subFilePath = absDir(fileName.path) + nativeSeparator() + baseName(fileName.path) + "." + suffix(column.selectedStream.subtitles).replace("?", "");
-                            downloadStack.addDownload(column.selectedStream.subtitles, subFilePath, delay.ms, duration.ms);
-                        }
+                        var out = fileName.path
+							.replace(/\.mp4$/i, "")
+							.replace(/[åäöÅÄÖ\.]/g, function(match) {
+                            return {
+								"å": "a",
+								"ä": "a",
+								"ö": "o",
+								"Å": "A",
+								"Ä": "A",
+								"Ö": "O",
+								".": "_"
+							}[match];
+						});
+                        var xhr = new XMLHttpRequest;
+                        var url = 
+						    "http://localhost:1199/download"
+							+ "?url=" + encodeURIComponent(videoPageUrl)
+							+ "&out=" + encodeURIComponent(out)
+							+ "&sub=" + (saveSubs.checked ? "true" : "false");
+                        xhr.open("GET", url);
+                        xhr.send();
+
+// old/quality
+//                        downloadStack.addDownload(column.selectedStream.url, fileName.path, delay.ms, duration.ms);
+//                        if (saveSubs.checked) {
+//                            var subFilePath = absDir(fileName.path) + nativeSeparator() + baseName(fileName.path) + "." + suffix(column.selectedStream.subtitles).replace("?", "");
+//                            downloadStack.addDownload(column.selectedStream.subtitles, subFilePath, delay.ms, duration.ms);
+//                        }
                     }
                 }
             }

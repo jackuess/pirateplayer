@@ -63,15 +63,6 @@ MainWindow {
                 source: "browser/main.qml"
             }
         }
-
-        TabItem {
-            title: "Nedladdningar (" + downloadStack.count + ")"
-
-            Loader {
-                anchors.fill: parent
-                source: "downloads.qml"
-            }
-        }
     }
 
     NewsBox {
