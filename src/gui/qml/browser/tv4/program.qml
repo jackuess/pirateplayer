@@ -19,7 +19,7 @@ BarredListView {
 
     delegate: ListDelegate {
         text: 
-			"<strong>" + (model.season > 0 ? "Säsong " + model.season + " " : "")
+			"<strong>" + (model.season > 0 ? "Säsong " + model.season + " - " : "")
 			+ model.title + "</strong> - "
 			+ model.broadcast_date_time.replace(/:..\+.*/, "").replace("T", " ")
         onClicked: {
