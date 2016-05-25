@@ -7,37 +7,32 @@ BarredListView {
     model: XmlListModel {
         id: programModel
 
-        Component.onCompleted: source = currentArgs.url
+        source: currentArgs.url.replace("http://", "tidy://")
 
-        query: "//table[@class=\"clearfix clip-list video-tree\"]//tr[descendant::th[a]]"
-        namespaceDeclarations: "declare default element namespace 'http://www.w3.org/1999/xhtml';"
+        query: '//section[@data-section="episodelist"]//div[@data-title]'
 
         XmlRole {
             name: "title"
-            query: "th[@class=\"col1\"]/a/string()"
-        }
-        XmlRole {
-            name: "epNo"
-            query: "td[@class=\"col2\"]/string()"
+            query: "div/a/div/div/h3/string()"
         }
         XmlRole {
             name: "time"
-            query: "td[@class=\"col4\"]/string()"
+            query: "div/em/time/string()"
         }
         XmlRole {
             name: "link"
-            query: "th[@class=\"col1\"]/a/@href/string()"
+            query: "div/a/@href/string()"
         }
     }
 
     delegate: ListDelegate {
-        text: model.title.slim() + " avsnitt <strong>" + model.epNo + "</strong><br/>" + model.time
+        text: "<strong>" + model.title.slim() + "</strong><br/>" + model.time
 
         onClicked: {
             go( Qt.resolvedUrl("../pirateplay.qml"),
-               { url: "http://www.tv" + currentArgs.n + "play.se" + model.link,
-                   programTitle: "avsnitt " + model.epNo,
-                   programName: model.title.slim(),
+               { url: model.link,
+				   programName: currentArgs.programName,
+				   programTitle: model.title.slim(),
                    programTime: model.time },
                model.index);
         }

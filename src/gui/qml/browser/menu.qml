@@ -21,13 +21,13 @@ BarredListView {
             url: "ur/a-z.qml"
             logo: "http://urplay.se/design/ur_play/images/urplay-logo.png"
         }
+*/
         ListElement {
-            title: "TV3-play"
-            url: "mtg/a-z.qml"//"imports/Components/AzListView.qml"
+            title: "TV3/6/8/10-play"
+            url: "mtg/a-z.qml"
             logo: "http://images2.wikia.nocookie.net/__cb20091126144517/logopedia/images/c/c6/TV3_logo_1990.png"
             n: 3
         }
-*/
         ListElement {
             title: "TV4-play"
             url: "tv4/a-z.qml"

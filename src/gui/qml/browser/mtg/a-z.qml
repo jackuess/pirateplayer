@@ -5,12 +5,12 @@ import "../../common.js" as Common
 
 AzListView {
     model: XmlListModel {
-        source: "tidy://www.tv" + /*ViewBrowser.currentView.args.n*/currentArgs.n + "play.se/program"
-        query: "//a[@class=\"list-item\"]"
+        source: "tidy://www.tv3play.se/program"
+        query: '//a[@class="list-item"]'
 
         XmlRole {
             name: "text"
-            query: "string()"
+            query: "div/string()"
         }
         XmlRole {
             name: "link"
@@ -22,8 +22,7 @@ AzListView {
 
         onClicked: {
             go( Qt.resolvedUrl("program.qml"),
-               { url: "tidy://www.tv" + currentArgs.n + "play.se" + model.link,
-                   n: currentArgs.n,
+               { url: model.link,
                    programName: model.text.slim() },
                model.index);
         }
