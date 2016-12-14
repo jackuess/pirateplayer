@@ -19,7 +19,7 @@ AzListView {
             },
             ReRole {
                 name: "link"
-                regExp: "href=\"([^\"]+)\""
+                regExp: 'href="([^"]+)"'
             }
         ]
     }
@@ -28,7 +28,7 @@ AzListView {
         text: model.text
         onClicked: {
             go( Qt.resolvedUrl("program.qml"),
-               { url: "http://www.svtplay.se" + model.link + "?sida=999",
+               { url: "http://www.svtplay.se" + model.link,
                    programName: model.text },
                model.index);
         }

@@ -16,3 +16,4 @@ android/proguard-project.txt
 src/gui/qml/deploy.sh
 .DS_Store
 android/ant.properties
+/.project

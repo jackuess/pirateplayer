@@ -1,9 +1,9 @@
 import QtQuick 1.1
 
 Item {
-    property variant defaults: { "startDir": getHomeDir(),
+    property variant defaults: { "startDir": getHomeDir().match(/^(.*?)[\/\\]?$/),
                                  "playerCmd": (mac() ? applicationDirPath() + "/" : "") + "ffplay \"%0\"",
-                                 "filenameTemplate": "%name%_-_%title%",
+                                 "filenameTemplate": "%name%_%season%_%title%",
                                  "fontPointSize": getSetting("MainWindow/font_point_size") }
 
     property string startDir: getSetting("Location/start_dir", defaults.startDir)

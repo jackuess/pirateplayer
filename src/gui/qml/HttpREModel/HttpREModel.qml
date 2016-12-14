@@ -10,25 +10,35 @@ ListModel {
     property int status: XmlListModel.Loading
 	
 	Component.onCompleted: {
-		var doc = new XMLHttpRequest();
-        doc.onreadystatechange = function() {
-            if (doc.readyState == XMLHttpRequest.DONE) {
-                var re = new RegExp(regExp, "g");
-				//console.log(doc.responseText);
-				var l = doc.responseText.match(re);
-				
-				for (var x=0; x<l.length; x++) {
-					var listItem = {};
-					for (var i=0; i<roles.length; i++) {
-						var subRe = new RegExp(roles[i].regExp);
-                        listItem[roles[i].name] = roles[i].decode(subRe.exec(l[x])[1]);
-					}
-					list.append(listItem);
+		try {
+			var xhr = new XMLHttpRequest();
+	        xhr.onreadystatechange = function() {
+	        	try {
+		            if (xhr.readyState == XMLHttpRequest.DONE) {
+		                var re = new RegExp(regExp, "g");
+						//list.append({text:xhr.responseText});
+						var l = xhr.responseText.match(re);
+						
+						for (var x=0; x<l.length; x++) {
+							var listItem = {};
+							for (var i=0; i<roles.length; i++) {
+								var subRe = new RegExp(roles[i].regExp);
+		                        listItem[roles[i].name] = roles[i].decode(subRe.exec(l[x])[1]);
+							}
+							list.append(listItem);
+						}
+		                list.status = XmlListModel.Ready;
+		            }
+				} catch(ex) {
+					list.append({text:ex.toString()});
+					list.status = XmlListModel.Error;
 				}
-                list.status = XmlListModel.Ready;
-            }
-        }
-        doc.open("GET", source);
-        doc.send();
+	        }
+	        xhr.open("GET", source);
+	        xhr.send();
+		} catch(ex) {
+			list.append({text:ex.toString()});
+			list.status = XmlListModel.Error;
+		}
 	}
 }

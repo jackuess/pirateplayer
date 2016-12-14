@@ -10,12 +10,12 @@ BarredListView {
             url: "svt/alfabetical.qml"
             logo: "http://www.svtplay.se/public/2012.54/images/svt-play-2x.png"
         }
+/*
         ListElement {
             title: "SVT öppet arkiv"
             url: "svt/open_a-z.qml"
             logo: "http://www.svtplay.se/public/2012.54/images/svt-play-2x.png"
         }
-/*
         ListElement {
             title: "UR-play"
             url: "ur/a-z.qml"
