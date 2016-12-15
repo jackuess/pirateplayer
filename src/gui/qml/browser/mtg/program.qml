@@ -9,19 +9,19 @@ BarredListView {
 
         source: currentArgs.url.replace("http://", "tidy://")
 
-        query: '//section[@data-section="episodelist"]//div[@data-title]'
+        query: '//a[@class="info-link"]'
 
         XmlRole {
             name: "title"
-            query: "div/a/div/div/h3/string()"
+            query: "div/span/span/string()"
         }
         XmlRole {
             name: "time"
-            query: "div/em/time/string()"
+            query: "div/div[@class=thumbnail-published-at]/string()"
         }
         XmlRole {
             name: "link"
-            query: "div/a/@href/string()"
+            query: "@href/string()"
         }
     }
 
@@ -30,7 +30,7 @@ BarredListView {
 
         onClicked: {
             go( Qt.resolvedUrl("../pirateplay.qml"),
-               { url: model.link,
+               { url: "http://www.viafree.se" + model.link,
 				   programName: currentArgs.programName,
 				   programTitle: model.title.slim(),
                    programTime: model.time },
