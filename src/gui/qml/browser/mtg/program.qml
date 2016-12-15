@@ -13,7 +13,7 @@ BarredListView {
 
         XmlRole {
             name: "title"
-            query: "div/span/span/string()"
+            query: "div//span[not(*)]/string()"
         }
         XmlRole {
             name: "time"
