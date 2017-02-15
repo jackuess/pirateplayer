@@ -13,8 +13,8 @@ BarredListView {
         source: currentArgs.url ? currentArgs.url : ""
 		regExp: "__svtplay'] = ({.*});"
 		query: [
-			'$.videoTitlePage.realatedVideosTabs[?(@.key!="RELATED_VIDEO_TABS_LATEST" && @.key!="RELATED_VIDEO_TABS_CLIP")].videos[*]',
-			'$.videoTitlePage.realatedVideosTabs[?(@.key=="RELATED_VIDEO_TABS_CLIP")].videos[*]'
+			'$.videoTitlePage.relatedVideosTabs[?(@.type!="RELATED_VIDEO_TABS_LATEST" && @.type!="RELATED_VIDEO_TABS_CLIP")].videos[*]',
+			'$.videoTitlePage.relatedVideosTabs[?(@.type=="RELATED_VIDEO_TABS_CLIP")].videos[*]'
 		]
     }
 
