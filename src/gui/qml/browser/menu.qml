@@ -6,8 +6,14 @@ BarredListView {
 
     model: ListModel {
         ListElement {
-            title: "SvT-play"
-            url: "svt/initial.qml"
+            title: "SVT-play"
+            url: "svt/alfabetical.qml"
+            logo: "http://www.svtplay.se/public/2012.54/images/svt-play-2x.png"
+        }
+/*
+        ListElement {
+            title: "SVT öppet arkiv"
+            url: "svt/open_a-z.qml"
             logo: "http://www.svtplay.se/public/2012.54/images/svt-play-2x.png"
         }
         ListElement {
@@ -16,16 +22,18 @@ BarredListView {
             logo: "http://urplay.se/design/ur_play/images/urplay-logo.png"
         }
         ListElement {
-            title: "TV3-play"
-            url: "mtg/a-z.qml"//"imports/Components/AzListView.qml"
+            title: "TV3/6/8/10-play"
+            url: "mtg/a-z.qml"
             logo: "http://images2.wikia.nocookie.net/__cb20091126144517/logopedia/images/c/c6/TV3_logo_1990.png"
             n: 3
         }
+*/
         ListElement {
             title: "TV4-play"
             url: "tv4/a-z.qml"
             logo: "http://images1.wikia.nocookie.net/__cb20100305140436/logopedia/images/3/31/TV4_Play.svg"
         }
+/*
         ListElement {
             title: "Kanal 5-play"
             url: "kanal5/a-z.qml"
@@ -60,6 +68,7 @@ BarredListView {
             url: "aftonbladet/a-z.qml"
             logo: "http://www.tv14.net/wp-content/uploads/2010/10/Aftonbladet.jpg"
         }
+*/
     }
 
     delegate: ListDelegate {
